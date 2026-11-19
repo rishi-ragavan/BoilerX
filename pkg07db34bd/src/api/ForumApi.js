@@ -7,6 +7,7 @@
  *    No levels, badges, reputation, or likes. Students have no expertise.
  *  - Flair: professors show department + research interests; alumni show a broad career role (SWE, Product Manager…).
  *  - Only professors and alumni are tagged on questions, so only they have "Questions for you".
+ *  - Tagging happens only in the Experts and Alumni spaces. Student-space questions never tag or show experts.
  *  - Posts carry no topic tags. Replies are grouped by category, and the post's own space's category comes first.
  */
 
@@ -30,6 +31,12 @@ var SPACE_GROUP = { EXPERTS: 'EXPERTS', ALUMNI: 'ALUMNI', STUDENT: 'STUDENT' };
 var SPACE_ALIASES = { STUDENT: 'STUDENT', EXPERTS: 'EXPERTS', EXPERT: 'EXPERTS', FACULTY: 'EXPERTS', ALUMNI: 'ALUMNI' };
 /** Only these roles can be tagged on a question (and so have "Questions for you"). */
 var TAGGABLE_ROLES = ['FACULTY', 'ALUMNI'];
+/** Only questions in these spaces tag experts. Student-space questions are peer-to-peer: no one is tagged. */
+var TAGGING_SPACES = ['EXPERTS', 'ALUMNI'];
+
+function spaceTags(space) {
+  return TAGGING_SPACES.indexOf(str(space)) >= 0;
+}
 
 // ---------------------------------------------------------------------------------------------------------------
 // Helpers
@@ -204,7 +211,7 @@ function expertIdSet(matches) {
 function canView(post, actorId, matches) {
   if (str(post.visibility) !== 'EXPERTS_ONLY') return true;
   if (post.author && post.author.id === actorId) return true;
-  return !!expertIdSet(matches)[actorId];
+  return spaceTags(post.space) && !!expertIdSet(matches)[actorId];
 }
 
 function hoursSince(dt) {
@@ -228,7 +235,8 @@ function buildPostViews(posts, actorId) {
   var replies = repliesByPost(ids);
 
   return posts.map(function (p) {
-    var experts = matches[p.id] || [];
+    // Student-space questions never tag experts (any legacy match rows are ignored).
+    var experts = spaceTags(p.space) ? matches[p.id] || [] : [];
     var expertSet = expertIdSet(experts);
     var replyAuthors = replies[p.id] || [];
     var expertReplies = replyAuthors.filter(function (a) { return expertSet[a]; }).length;
@@ -333,7 +341,8 @@ function inbox(actorId) {
   if (!ids.length) return PostView.arrayBuilder().build();
   var posts = toNativePosts(
     Post.fetch({
-      filter: Filter.intersects('id', strArray(ids)).and().eq('postType', 'QUESTION'),
+      filter: Filter.intersects('id', strArray(ids)).and().eq('postType', 'QUESTION')
+        .and().intersects('space', strArray(TAGGING_SPACES)),
       include: POST_INCLUDE,
       order: 'descending(createdAt)',
       limit: FEED_LIMIT,
@@ -434,6 +443,9 @@ function createPost(actorId, input) {
   }
 
   var space = SPACE_ALIASES[String(result.space || '').toUpperCase()] || 'STUDENT';
+  // Nobody is tagged in the Student space, so an "experts only" question there would be visible to no one but the
+  // author: it is posted publicly instead.
+  if (!spaceTags(space)) visibility = 'PUBLIC';
   var isAnon = role === 'STUDENT' ? true : input.isAnonymous === null || input.isAnonymous === undefined ? !!actor.anonByDefault : !!input.isAnonymous;
 
   // 3. Save the post (no topic tags).
@@ -449,11 +461,12 @@ function createPost(actorId, input) {
     createdAt: DateTime.now(),
   }).create();
 
-  // 4. ExpertMatch rows (validated: a known professor/alum, not the author, max 5, no duplicates).
+  // 4. ExpertMatch rows, only in the Experts and Alumni spaces (validated: a known professor/alum, not the author,
+  //    max 5, no duplicates). Student-space questions tag no one.
   var seen = {};
   var rows = ExpertMatch.arrayBuilder();
   var rank = 0;
-  each(result.experts, function (e) {
+  each(spaceTags(space) ? result.experts : null, function (e) {
     if (rank >= 5 || !e || !known[e.memberId] || e.memberId === actorId || seen[e.memberId]) return;
     seen[e.memberId] = true;
     rank++;

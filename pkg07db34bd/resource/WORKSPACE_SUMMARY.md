@@ -27,7 +27,8 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
   de-anonymize 🎯 replies). Faculty cannot post at all (createPost rejects); they reply + DM.
 
 - Roles rules (latest): tags "Expert"/"Alumni" only (AuthorView.tag) + flair (AuthorView.flair); no 🎯; only FACULTY+
-  ALUMNI in the AI directory and inbox; replies grouped with the post space's category first (groupRankFor).
+  ALUMNI in the AI directory and inbox; tagging only in EXPERTS/ALUMNI spaces (TAGGING_SPACES; Student-space posts
+  save no ExpertMatch, show expertCount 0, are forced PUBLIC, and never appear in an inbox); replies grouped with the post space's category first (groupRankFor).
   Anonymous prof/alum display "Purdue professor"/"Purdue alum". AiPipeline.analyzePost 3rd arg = asker ROLE.
 
 ## Data (`data/`)

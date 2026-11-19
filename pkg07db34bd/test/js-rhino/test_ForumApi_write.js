@@ -75,7 +75,7 @@ describe(filename, function () {
         var s = function (id, score) { return ExpertSuggestion.make({ memberId: id, score: score, reason: 'fit' }); };
         return AnalyzeResult.make({
           safe: true,
-          space: title.indexOf('BADSPACE') === 0 ? 'MARS' : 'FACULTY',
+          space: title.indexOf('BADSPACE') === 0 ? 'MARS' : title.indexOf('PEER') === 0 ? 'STUDENT' : 'FACULTY',
           department: 'Finance',
           tags: ['stock market', 'research labs', 'undergrad research'],
           experts: [
@@ -105,6 +105,11 @@ describe(filename, function () {
     );
     this.safeMatches = this.safe.ok ? matchesFor(this.safe.post.id) : [];
     this.badSpace = ForumApi.createPost(ids.student, NewPostInput.make({ title: 'BADSPACE question', body: P }));
+    this.peer = ForumApi.createPost(
+      ids.student,
+      NewPostInput.make({ title: 'PEER best study spots on campus', body: P, visibility: 'EXPERTS_ONLY' })
+    );
+    this.peerMatches = this.peer.ok ? matchesFor(this.peer.post.id) : [];
     this.alumQuestion = ForumApi.createPost(ids.alum, NewPostInput.make({ title: 'SAFE alum question', body: P }));
     this.unverified = ForumApi.createPost(ids.fakeAlum, NewPostInput.make({ title: 'SAFE from an unverified alum', body: P }));
 
@@ -171,6 +176,18 @@ describe(filename, function () {
 
     it('falls back to the STUDENT space when the pipeline returns an invalid space', function () {
       expect(this.badSpace.post.space).toBe('STUDENT');
+    });
+
+    it('tags no one on a question routed to the Student space', function () {
+      expect(this.peerMatches.length).toBe(0);
+    });
+
+    it('reports 0 experts tagged on a Student-space question', function () {
+      expect(this.peer.post.expertCount).toBe(0);
+    });
+
+    it('posts a Student-space question publicly (nobody is tagged to see an experts-only one)', function () {
+      expect(this.peer.post.visibility).toBe('PUBLIC');
     });
 
     it('lets alumni ask questions', function () {

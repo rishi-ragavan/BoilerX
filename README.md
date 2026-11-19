@@ -45,6 +45,8 @@ pkg07db34bd/
 - **Flair:** professors show department + research interests (`Finance · stock market, asset pricing`); alumni show
   a broad career role (`SWE`, `Product Manager`, `Quant Trader`…), plus their employer only when they post under
   their name. Students have no flair and no listed expertise (`tags` is always empty for students).
+- **Tagging happens only in the Experts and Alumni spaces.** A Student-space question tags no one and never
+  shows "experts tagged" (it is always PUBLIC, since an experts-only post there would have no audience).
 - **Only professors and alumni are tagged on questions**, so only they have **Questions for you** (left nav + a right-rail
   panel). `ForumApi.inbox` returns nothing for students; the expert directory sent to the AI excludes students.
 - **Three spaces, identical behavior: Student, Experts, Alumni.** The AI routes every question into one space.

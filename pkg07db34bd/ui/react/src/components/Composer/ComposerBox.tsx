@@ -35,6 +35,8 @@ function postingAsLabel(member: MemberView | null, anonymous: boolean): string {
 }
 
 function successToast(post: PostView, coldEmail: boolean): string {
+  // Student-space questions are peer-to-peer: nobody is tagged there.
+  if (post.space === 'STUDENT') return 'Posted to the Student space';
   const n = post.expertCount ?? 0;
   const prefix = post.visibility === 'EXPERTS_ONLY' ? 'Shared privately · ' : 'Posted · ';
   if (!n) return `${prefix}no experts matched yet`;

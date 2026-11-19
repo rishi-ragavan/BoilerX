@@ -64,6 +64,8 @@ describe(filename, function () {
     TestApi.createBatchEntity(this.ctx, 'ExpertMatch', [
       { id: P + 'm1', post: { id: ids.publicPost }, expert: { id: ids.faculty }, rank: 1, score: 90, reason: 'r' },
       { id: P + 'm2', post: { id: ids.secretPost }, expert: { id: ids.faculty }, rank: 1, score: 90, reason: 'r' },
+      // A legacy match on a Student-space post: it must never surface (no tagging in the Student space).
+      { id: P + 'm4', post: { id: ids.otherPost }, expert: { id: ids.faculty }, rank: 1, score: 80, reason: 'r' },
       // A (legacy) match on a student: students still get no "Questions for you".
       { id: P + 'm3', post: { id: ids.alumPost }, expert: { id: ids.outsider }, rank: 1, score: 50, reason: 'r' },
     ]);
@@ -113,6 +115,7 @@ describe(filename, function () {
     this.facultyInbox = ForumApi.inbox(ids.faculty).mapToStr(function (p) { return p.id; });
     this.studentInbox = ForumApi.inbox(ids.outsider);
     this.facultyView = ForumApi.getPost(ids.faculty, ids.publicPost);
+    this.facultyStudentSpaceView = ForumApi.getPost(ids.faculty, ids.otherPost);
     this.unverifiedPost = ForumApi.createPost(ids.fakeAlum, NewPostInput.make({ title: 'Should be refused' }));
     this.articleAttempt = ForumApi.createPost(ids.student, NewPostInput.make({ title: 'x', postType: 'ARTICLE' }));
     this.facultyQuestion = ForumApi.createPost(ids.faculty, NewPostInput.make({ title: 'A professor asking' }));
@@ -220,6 +223,20 @@ describe(filename, function () {
       expect(this.facultyView.post.experts.mapToStr(function (e) { return e.memberId; }).toJson()).toEqual([
         this.ids.faculty,
       ]);
+    });
+  });
+
+  describe('Student space: no tagging', function () {
+    it('shows no tagged experts on a Student-space post', function () {
+      expect(this.otherDetail.post.expertCount).toBe(0);
+    });
+
+    it('does not treat a professor as tagged on a Student-space post', function () {
+      expect(this.facultyStudentSpaceView.post.viewerIsMatchedExpert).toBeFalse();
+    });
+
+    it("keeps Student-space posts out of a professor's Questions for you", function () {
+      expect(this.facultyInbox.contains(this.ids.otherPost)).toBeFalse();
     });
   });
 

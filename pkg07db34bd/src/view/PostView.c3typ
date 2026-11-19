@@ -38,7 +38,7 @@ type PostView {
    */
   experts: [ExpertView]
 
-  /** How many experts were tagged (safe to show to everyone). */
+  /** How many experts were tagged (safe to show to everyone). Always 0 for Student-space posts. */
   expertCount: int
 
 

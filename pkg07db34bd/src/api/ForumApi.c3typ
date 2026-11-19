@@ -21,7 +21,10 @@ type ForumApi {
    */
   feed: function(actorId: !string, tab: string, dept: string): [PostView] js-server
 
-  /** "Questions for you": posts where the actor is a matched expert (includes EXPERTS_ONLY). */
+  /**
+   * "Questions for you": Experts- and Alumni-space questions the actor was tagged on (includes EXPERTS_ONLY).
+   * Always empty for students.
+   */
   inbox: function(actorId: !string): [PostView] js-server
 
   /**
@@ -33,7 +36,8 @@ type ForumApi {
 
   /**
    * Creates a post: builds the expert directory, calls {@link AiPipeline#analyzePost}, blocks unsafe posts
-   * (nothing saved), then saves the question and its {@link ExpertMatch} rows. Only STUDENT and ALUMNI can post
+   * (nothing saved), then saves the question and — only when it is routed to the Experts or Alumni space — its
+   * {@link ExpertMatch} rows (Student-space questions tag no one and are always PUBLIC). Only STUDENT and ALUMNI can post
    * (experts/faculty answer, they never ask); there are no articles. The returned PostView carries only the
    * expert count — never the tagged experts' identities.
    */
