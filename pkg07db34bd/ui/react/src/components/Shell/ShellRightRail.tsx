@@ -1,6 +1,6 @@
 /*
  * Right column (Lane C owns Shell*): decorative "Search BoilerConnect" pill, "Top experts" card (top 5 members by
- * reputation from ForumApi.listMembers), and "Trending tags" (most common tags across the For You feed).
+ * reputation from ForumApi.listMembers), and "Trending topics" (most common tags across the For You feed; no '#').
  */
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -39,7 +39,7 @@ function TopExpertsCard() {
             </span>
             <span className="bc-card__row-sub">{m.department || personaSubtitle(m)}</span>
           </span>
-          <span className="bc-card__rep" title="Reputation (likes received on replies)">
+          <span className="bc-card__rep" title="Reputation (+1 per answer given)">
             {m.reputation ?? 0}
           </span>
         </Link>
@@ -85,14 +85,14 @@ function TrendingTagsCard() {
   return (
     <section className="bc-card" aria-labelledby="bc-trending">
       <h2 id="bc-trending" className="bc-card__heading">
-        Trending tags
+        Trending topics
       </h2>
       {posts === null && !error && <p className="bc-card__muted">Loading…</p>}
       {error && <p className="bc-card__muted">Couldn&apos;t load the feed: {error}</p>}
       {posts !== null && !tags.length && <p className="bc-card__muted">No tags yet.</p>}
       {tags.map(([tag, count]) => (
         <button key={tag} type="button" className="bc-card__row bc-card__row--stack" onClick={() => openTag(tag)}>
-          <span className="bc-card__row-title">#{tag}</span>
+          <span className="bc-card__row-title">{tag}</span>
           <span className="bc-card__row-sub">
             {count} {count === 1 ? 'post' : 'posts'}
           </span>

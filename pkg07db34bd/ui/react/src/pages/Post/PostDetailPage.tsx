@@ -21,28 +21,26 @@ export function PostDetailPage() {
             <IdentityAuthorLine author={post.author} createdAt={post.createdAt} />
             <h2 className="mt-2 text-xl font-bold text-foreground">{post.title}</h2>
             {post.body && <p className="mt-2 whitespace-pre-wrap text-[15px] text-foreground">{post.body}</p>}
-            {post.experts && post.experts.length > 0 && (
-              <div className="mt-3 flex flex-col gap-1">
-                <p className="text-xs font-semibold text-muted-foreground">🎯 Experts tagged</p>
-                {post.experts.map((e) => (
-                  <p key={e.memberId} className="text-sm text-foreground">
-                    <span className="font-semibold">{e.name}</span>{' '}
-                    <span className="text-muted-foreground">
-                      · {e.roleLabel} — {e.reason}
-                    </span>
-                  </p>
-                ))}
-              </div>
+            {(post.expertCount ?? 0) > 0 && (
+              <p className="mt-3 text-xs font-semibold text-muted-foreground">🎯 {post.expertCount} experts tagged</p>
+            )}
+            {post.experts?.[0] && (
+              <p className="mt-1 text-sm text-foreground">You were tagged: {post.experts[0].reason}</p>
             )}
           </article>
         )}
-        {data?.replies?.map((r) => (
+        {data?.replies?.map((r, i, all) => (
           <div key={r.id} className="border-b border-border px-4 py-3">
+            {(i === 0 || all[i - 1].authorGroup !== r.authorGroup) && (
+              <p className="mb-2 text-xs font-semibold uppercase text-muted-foreground">
+                {r.authorGroup === 'FACULTY' ? 'Professors' : r.authorGroup === 'ALUMNI' ? 'Alumni' : 'Students'}
+              </p>
+            )}
             <IdentityAuthorLine author={r.author} createdAt={r.createdAt} />
             <p className="mt-1 whitespace-pre-wrap text-sm text-foreground">{r.body}</p>
           </div>
         ))}
-        <p className="p-4 text-sm text-muted-foreground">Reply box, likes, and DM button come next (Lane D).</p>
+        <p className="p-4 text-sm text-muted-foreground">Reply box and DM button come next (Lane D).</p>
       </ShellStatus>
     </div>
   );

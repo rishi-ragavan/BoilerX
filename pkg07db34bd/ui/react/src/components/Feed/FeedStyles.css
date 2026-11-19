@@ -53,8 +53,7 @@
 .bc-post__author a,
 .bc-post__author button,
 .bc-post__tag,
-.bc-action,
-.bc-post__experts {
+.bc-action {
   position: relative;
   z-index: 1;
 }
@@ -114,50 +113,46 @@
   line-clamp: 3;
 }
 
+/* Topic chips: formal tone, no '#'. Muted outlined pills that turn gold on hover. */
 .bc-post__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0 var(--space-2);
-  margin-top: var(--space-1);
+  gap: var(--space-1) var(--space-2);
+  margin-top: var(--space-2);
 }
 
 .bc-post__tag {
-  padding: 0;
-  border: none;
-  border-radius: 0;
+  height: 24px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
   background: none;
   color: var(--text-muted);
-  font-size: var(--fs-body);
+  font-size: var(--fs-meta);
   font-weight: var(--fw-regular);
-  line-height: var(--lh-body);
-  transition: color var(--transition);
+  line-height: 22px;
+  transition:
+    color var(--transition),
+    border-color var(--transition);
 }
 
 .bc-post__tag:hover {
+  border-color: var(--gold);
   color: var(--gold);
-  text-decoration: underline;
 }
 
-.bc-post__experts {
+.bc-post__tagged {
   display: inline-flex;
   align-self: flex-start;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
   margin-top: var(--space-2);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--gold-soft);
+  color: var(--gold);
   font-size: var(--fs-meta);
-  color: var(--text-muted);
-}
-
-.bc-post__expert-stack {
-  display: inline-flex;
-}
-
-.bc-post__expert-avatar {
-  box-shadow: 0 0 0 2px var(--bg);
-}
-
-.bc-post__expert-avatar + .bc-post__expert-avatar {
-  margin-left: -6px;
+  font-weight: var(--fw-bold);
 }
 
 /* ---- Action row ---------------------------------------------------------------------------------------------- */
@@ -201,14 +196,6 @@
 
 .bc-action:hover .bc-action__icon {
   background: var(--gold-soft);
-}
-
-.bc-action--liked {
-  color: var(--gold);
-}
-
-.bc-action--liked svg {
-  fill: currentColor;
 }
 
 .bc-action--static,

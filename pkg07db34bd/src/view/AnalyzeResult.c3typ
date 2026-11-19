@@ -12,7 +12,7 @@ type AnalyzeResult {
   /** STUDENT, FACULTY, or ALUMNI. */
   space: string
 
-  /** Department (for FACULTY space). */
+  /** Best-fit department, for any space (null when none fits, e.g. campus life). */
   department: string
 
   /** 3–5 lowercase tags. */

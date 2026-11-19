@@ -22,7 +22,7 @@ export const VISIBILITY_OPTIONS: Option[] = [
     id: 'PUBLIC',
     label: 'Everyone',
     trigger: 'Everyone can see',
-    description: 'Shows in the feed for all verified Boilers',
+    description: 'Shows in the feed for all of Purdue',
     icon: Globe,
   },
   {

@@ -36,6 +36,29 @@ pkg07db34bd/
 - `DirectoryEntry` uses **`memberId`** (not `id`), matching `ExpertSuggestion.memberId`.
 - Extras: `AuthorView.memberId` (null when anonymous), `ExpertView.badges`, `MemberView.roleLabel` + `anonByDefault`.
 
+## Product rules (lead decisions, override the lane doc)
+
+- **Formal tone — no `#` anywhere.** Topic tags render as plain chips (`stock market`, not `#stock market`);
+  student handles are **`Boiler a3f1`** (not `Boiler #a3f1`).
+- **Tagged experts are never listed.** `PostView.experts` contains only the *viewer's own* match (for "why you were
+  tagged"); everyone else sees only `PostView.expertCount` ("5 experts tagged"). A public list + anonymous 🎯 replies
+  would de-anonymize the repliers. `createPost` therefore returns only the count, not names.
+- **Never say "verified".** Everyone on the platform passed the Purdue email gate (`Verify.check` at signup), so
+  no badge/label says Verified/Unverified. Anonymous handles: `Boiler a3f1`, `Faculty · Finance`, `Alum · Google`.
+  `MemberView.verified` was removed; `listMembers` returns only gate-passed members.
+- **No likes.** `Like`, `LikeResult`, `toggleLike`, `likeCount`, `likedByMe` are gone. A post card offers only
+  "View N comments" (`PostView.replyCount`). Feed `hot = (replies + 2·expertReplies + 1) / (hours + 2)^1.5`;
+  reputation = +1 per answer given.
+- **Anyone can answer; professors' answers come first.** `getPost` returns replies grouped FACULTY → ALUMNI →
+  STUDENT (oldest first within a group); each `ReplyView.authorGroup` says which, so the UI renders a header
+  ("Professors", "Alumni", "Students") whenever it changes. Do not re-sort replies in the UI.
+- **Three spaces, identical behavior: Student, Professors (`faculty`), Alumni.** The AI routes every new post
+  (question or article) into one space so no space gets crowded. Each space feed shows all PUBLIC posts routed
+  there; `dept` filters any space; For You shows all spaces. Anyone can read and reply in any space (only
+  EXPERTS_ONLY posts are restricted). The keyword fallback must route too — never dump everything into Student.
+- **Faculty cannot ask questions.** `createPost` rejects QUESTION from FACULTY; faculty publish ARTICLEs and reply.
+  Students and alumni ask.
+
 ## UI rules
 
 - The UI calls **only** `ForumApi`, `AiPipeline`, `DmApi` via `ui/react/src/api/boilerApi.ts` — never entity types.

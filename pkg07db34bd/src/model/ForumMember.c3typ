@@ -16,13 +16,16 @@ entity type ForumMember {
   /** Academic level, used for level-proximity matching (see {@link ForumMember.Level}). */
   level: !ForumMember.Level
 
-  /** True when {@link Verify#check} accepted the email for the role. Only verified members can post or reply. */
+  /**
+   * Set when {@link Verify#check} accepted the email at signup. Only verified Purdue members are on the platform, so
+   * this is an internal gate (re-checked on post/reply) and is never shown in the UI.
+   */
   verified: boolean = false
 
   /** Home department, e.g. `Finance`, `CS`, `ECE`. */
   department: string
 
-  /** Current employer (alumni) — shown as "Verified Alum · {employer}" when anonymous. */
+  /** Current employer (alumni) — shown as "Alum · {employer}" when anonymous. */
   employer: string
 
   /** Short bio (about two sentences). The first 120 characters feed the AI expert directory. */
@@ -37,6 +40,6 @@ entity type ForumMember {
   /** Faculty / alumni default for the per-post anonymity toggle. Students are always anonymous. */
   anonByDefault: boolean = false
 
-  /** Likes received on this member's replies (+5 per "Helpful" in P2). Feeds expert matching. */
+  /** +1 per answer given (+5 per "Helpful" in P2). Feeds expert matching. There are no likes. */
   reputation: int = 0
 }

@@ -1,5 +1,5 @@
 /*
- * Feed tabs + Faculty department chips (Lane C owns Feed*).
+ * Feed tabs + department chips (Lane C owns Feed*). Spaces: Students · Professors (`faculty`) · Alumni.
  * Tabs: equal width; active = bold text with a 4px gold rounded underline sized to the label.
  * Chips: outlined pills, horizontally scrollable; selected = gold-soft background + gold text.
  */
@@ -10,7 +10,7 @@ import './FeedStyles.css';
 export const FEED_TABS: { id: FeedTab; label: string }[] = [
   { id: 'foryou', label: 'For You' },
   { id: 'students', label: 'Students' },
-  { id: 'faculty', label: 'Faculty' },
+  { id: 'faculty', label: 'Professors' },
   { id: 'alumni', label: 'Alumni' },
   { id: 'articles', label: 'Articles' },
 ];
@@ -54,7 +54,7 @@ export function FeedDeptChips({
     ...departments.map((d) => ({ key: d, label: d, dept: d })),
   ];
   return (
-    <div className="bc-chips" role="group" aria-label="Filter Faculty posts by department">
+    <div className="bc-chips" role="group" aria-label="Filter by department">
       {chips.map((c) => {
         const selected = c.dept === value;
         return (

@@ -1,9 +1,10 @@
 {
   "author": "{{author}}",
   "name": "pkg07db34bd",
-  "description": "BoilerConnect \u2014 Purdue-wide Q&A forum that routes questions to student, faculty, and alumni experts",
+  "description": "BoilerConnect — Purdue-wide Q&A forum that routes questions to student, faculty, and alumni experts",
   "dependencies": {
-    "mcpServer": "8.10"
+    "mcpServer": "8.10",
+    "testtools": "8.12"
   },
   "version": "1.0.0"
 }

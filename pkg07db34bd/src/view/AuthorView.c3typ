@@ -1,13 +1,13 @@
 /**
  * How an author appears on a post or reply. For anonymous items this carries NO id, name, or email — only the
- * handle ("Boiler #a3f1", "Verified Faculty · Finance", "Verified Alum · Google").
+ * handle ("Boiler a3f1", "Faculty · Finance", "Alum · Google"). Never says "verified": everyone on the platform is.
  */
 type AuthorView {
 
   /** Name, or the anonymous handle. */
   displayName: string
 
-  /** e.g. "Faculty · Finance", "PhD · ECE", "Alum · Google", "Unverified alum". */
+  /** e.g. "Faculty · Finance", "PhD · ECE", "Alum · Google"; "Student" for student handles; null for anonymous faculty/alumni. */
   roleLabel: string
 
   /** Badges (empty when anonymous). */

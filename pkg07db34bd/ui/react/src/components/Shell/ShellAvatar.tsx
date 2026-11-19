@@ -31,7 +31,7 @@ export function ShellAvatar({
     <span
       aria-hidden
       className={`bc-avatar bc-avatar--${size} ${anonymous ? 'bc-avatar--anon' : ''} ${className}`}
-      title={anonymous ? 'Anonymous verified Boiler' : (name ?? undefined)}
+      title={anonymous ? 'Anonymous Boiler' : (name ?? undefined)}
     >
       {anonymous ? 'B' : size === 'xs' ? initials(name).slice(0, 1) : initials(name)}
     </span>

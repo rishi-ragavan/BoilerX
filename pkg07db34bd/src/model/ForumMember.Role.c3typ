@@ -11,7 +11,7 @@ enum type ForumMember.Role {
    */
   FACULTY,
   /**
-   * Purdue alum (verified via `@alumni.purdue.edu`, otherwise "Unverified alum").
+   * Purdue alum (must sign up with an `@alumni.purdue.edu` email).
    */
   ALUMNI
 }

@@ -1,32 +1,30 @@
 /*
  * Feed row (Lane C owns Feed*). X-style flat row: 40px avatar left; content column right with Lane D's
- * IdentityAuthorLine (+ relative time), space label, title, 3-line body, #tags, tagged experts, action row.
+ * IdentityAuthorLine (+ relative time), space/Article label, title, 3-line body, topic chips, and the action row.
  * The whole row opens the post (stretched title link); buttons and links inside sit above it.
+ *
+ * Lead rules: no likes; tags render without '#'; tagged experts are never listed — only `expertCount`
+ * (plus a gold "You were tagged" marker when the viewer is one of them).
  */
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { Heart, Lock, MessageCircle } from 'lucide-react';
-import { ForumApi } from '@/api/boilerApi';
+import { Lock, MessageCircle, Target, UsersRound } from 'lucide-react';
 import type { PostView } from '@/Interfaces';
 import { IdentityAuthorLine } from '@/components/Identity/IdentityAuthorLine';
-import { usePersona } from '@/components/Persona/PersonaContext';
 import { ShellAvatar } from '@/components/Shell/ShellAvatar';
-import { useShell } from '@/components/Shell/ShellContext';
 import './FeedStyles.css';
-
-const EXPERT_AVATARS = 3;
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function spaceLabel(post: Pick<PostView, 'space' | 'department'>): string {
+  const dept = post.department ? ` · ${post.department}` : '';
   switch (post.space) {
     case 'STUDENT':
-      return 'Students';
+      return `Students${dept}`;
     case 'FACULTY':
-      return post.department ? `Faculty · ${post.department}` : 'Faculty';
+      return `Professors${dept}`;
     case 'ALUMNI':
-      return 'Alumni';
+      return `Alumni${dept}`;
     default:
-      return '';
+      return post.department ?? '';
   }
 }
 
@@ -40,42 +38,11 @@ export function FeedPostCard({
   highlight?: boolean;
   onTagClick?: (tag: string) => void;
 }) {
-  const { actingMemberId } = usePersona();
-  const { toast } = useShell();
-  const [liked, setLiked] = useState(!!post.likedByMe);
-  const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
-  const [liking, setLiking] = useState(false);
-
-  // Server data wins whenever the feed is re-fetched.
-  useEffect(() => {
-    setLiked(!!post.likedByMe);
-    setLikeCount(post.likeCount ?? 0);
-  }, [post.likedByMe, post.likeCount]);
-
-  const toggleLike = async () => {
-    if (liking) return;
-    const prev = { liked, likeCount };
-    setLiked(!liked);
-    setLikeCount(likeCount + (liked ? -1 : 1));
-    setLiking(true);
-    try {
-      const res = await ForumApi.toggleLike(actingMemberId, post.id, null);
-      setLiked(res.liked);
-      setLikeCount(res.count);
-    } catch (err) {
-      setLiked(prev.liked);
-      setLikeCount(prev.likeCount);
-      toast(`Couldn't update like: ${err instanceof Error ? err.message : String(err)}`);
-    } finally {
-      setLiking(false);
-    }
-  };
-
   const isArticle = post.postType === 'ARTICLE';
-  const experts = post.experts ?? [];
   const tags = post.tags ?? [];
   const space = spaceLabel(post);
   const replyCount = post.replyCount ?? 0;
+  const expertCount = post.expertCount ?? 0;
 
   return (
     <article className={`bc-post ${highlight ? 'bc-post--new' : ''}`} aria-labelledby={`bc-post-title-${post.id}`}>
@@ -109,51 +76,47 @@ export function FeedPostCard({
                 type="button"
                 className="bc-post__tag"
                 onClick={() => onTagClick?.(t)}
-                aria-label={`Show posts tagged ${t}`}
+                aria-label={`Show posts about ${t}`}
               >
-                #{t}
+                {t}
               </button>
             ))}
           </p>
         )}
 
-        {experts.length > 0 && (
-          <p className="bc-post__experts" title={experts.map((e) => e.name).join(', ')}>
-            <span className="bc-post__expert-stack" aria-hidden>
-              {experts.slice(0, EXPERT_AVATARS).map((e) => (
-                <ShellAvatar key={e.memberId} name={e.name} size="xs" className="bc-post__expert-avatar" />
-              ))}
-            </span>
-            <span>
-              +{experts.length} {experts.length === 1 ? 'expert' : 'experts'} tagged
-            </span>
+        {post.viewerIsMatchedExpert && (
+          <p className="bc-post__tagged">
+            <Target size={14} aria-hidden />
+            You were tagged as an expert
           </p>
         )}
 
         <div className="bc-post__actions">
           <Link
             to={`/post/${post.id}`}
-            className="bc-action bc-action--reply"
-            aria-label={`${replyCount} ${replyCount === 1 ? 'reply' : 'replies'}. Open post`}
+            className="bc-action"
+            aria-label={`View ${replyCount} ${replyCount === 1 ? 'comment' : 'comments'}`}
           >
             <span className="bc-action__icon">
               <MessageCircle size={18} aria-hidden />
             </span>
-            <span className="bc-action__count">{replyCount || ''}</span>
+            <span className="bc-action__count">
+              {replyCount ? `View ${replyCount} ${replyCount === 1 ? 'comment' : 'comments'}` : 'Reply'}
+            </span>
           </Link>
 
-          <button
-            type="button"
-            className={`bc-action bc-action--like ${liked ? 'bc-action--liked' : ''}`}
-            aria-pressed={liked}
-            aria-label={`${liked ? 'Unlike' : 'Like'} (${likeCount} ${likeCount === 1 ? 'like' : 'likes'})`}
-            onClick={toggleLike}
-          >
-            <span className="bc-action__icon">
-              <Heart size={18} aria-hidden />
+          {!isArticle && expertCount > 0 ? (
+            <span className="bc-action bc-action--static" title="Tagged experts stay private to protect anonymous answers">
+              <span className="bc-action__icon">
+                <UsersRound size={18} aria-hidden />
+              </span>
+              <span className="bc-action__count">
+                {expertCount} {expertCount === 1 ? 'expert' : 'experts'} tagged
+              </span>
             </span>
-            <span className="bc-action__count">{likeCount || ''}</span>
-          </button>
+          ) : (
+            <span className="bc-action bc-action--spacer" aria-hidden />
+          )}
 
           {post.visibility === 'EXPERTS_ONLY' ? (
             <span className="bc-action bc-action--static" title="Visible only to you and the matched experts">

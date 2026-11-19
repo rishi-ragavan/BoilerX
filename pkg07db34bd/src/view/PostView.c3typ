@@ -34,17 +34,19 @@ type PostView {
   /** How the author is shown. */
   author: AuthorView
 
-  /** Matched experts, by rank. */
+  /**
+   * Only the VIEWER's own match (empty unless the viewer was tagged). The full list of tagged experts is never
+   * published: combined with anonymous 🎯 replies it would reveal who wrote them.
+   */
   experts: [ExpertView]
 
-  /** Number of likes on the post. */
-  likeCount: int
+  /** How many experts were tagged (safe to show to everyone). */
+  expertCount: int
 
-  /** Number of replies. */
+
+  /** Number of replies (shown as "View N comments"). */
   replyCount: int
 
-  /** Whether the acting member liked the post. */
-  likedByMe: boolean
 
   /** Whether the acting member wrote the post. */
   isMine: boolean

@@ -1,10 +1,12 @@
 /*
  * Composer (Lane C owns Composer*), styled like X's "What's happening?" box at the top of Home.
  *  - Collapsed: one line, "Ask Purdue anything…". On focus: bold title + auto-growing details textarea.
- *  - Icon row: anonymity (locked on for students), Question/Article (Article locked for students), ✨ Refine,
- *    and the gold "Post" pill (disabled until the title has text). Visibility menu sits above the icon row.
+ *  - Icon row: anonymity (locked on for students), Question/Article, ✨ Refine, and the gold "Post" pill (disabled
+ *    until the title has text). Visibility menu sits above the icon row.
+ *    Lead rules: students ask (Article locked); faculty publish articles only (Question locked); alumni do both.
+ *    No "verified" wording; tagged experts are never named (toast shows the count only).
  *  - Submit -> ForumApi.createPost (runs the AI pipeline). ok:false -> inline danger box, text kept.
- *    Success -> clear + collapse, onPosted(post), gold toast "Tagged N experts: …"; Cold-email opens the drafts modal.
+ *    Success -> clear + collapse, onPosted(post), gold toast "Tagged N experts"; Cold-email opens the drafts modal.
  *  - Cmd/Ctrl+Enter submits.
  */
 import { useCallback, useEffect, useRef, useState, type FocusEvent, type FormEvent, type KeyboardEvent } from 'react';
@@ -24,25 +26,28 @@ const TITLE_MAX = 200;
 const BODY_MAX = 5000;
 const STUDENT_ANON_REASON = 'Students are always anonymous';
 const ARTICLE_REASON = 'Articles are for faculty and alumni';
+const FACULTY_QUESTION_REASON = 'Faculty publish articles and answer questions; students and alumni ask';
 const ARTICLE_PUBLIC_REASON = 'Articles are always public';
-const UNVERIFIED_REASON = 'Only verified Purdue members can post';
 
 function postingAsLabel(member: MemberView | null, anonymous: boolean): string {
   if (!member) return '';
   if (!anonymous) return member.name;
-  if (member.role === 'FACULTY') return `Verified Faculty${member.department ? ` · ${member.department}` : ''}`;
-  if (member.role === 'ALUMNI') return `Verified Alum${member.employer ? ` · ${member.employer}` : ''}`;
-  return 'Boiler #…';
+  if (member.role === 'FACULTY') return `Faculty${member.department ? ` · ${member.department}` : ''}`;
+  if (member.role === 'ALUMNI') return `Alum${member.employer ? ` · ${member.employer}` : ''}`;
+  return 'Boiler ····';
+}
+
+/** Students and alumni ask; faculty publish articles. */
+function defaultPostType(role?: string): PostType {
+  return role === 'FACULTY' ? 'ARTICLE' : 'QUESTION';
 }
 
 function successToast(post: PostView, coldEmail: boolean): string {
   if (post.postType === 'ARTICLE') return 'Article published';
-  const experts = post.experts ?? [];
-  if (!experts.length) return post.visibility === 'EXPERTS_ONLY' ? 'Posted privately' : 'Posted';
-  const names = experts.slice(0, 2).map((e) => e.name);
-  const list = names.join(', ') + (experts.length > names.length ? ', …' : '');
-  const prefix = coldEmail ? 'Drafting emails · ' : '';
-  return `${prefix}Tagged ${experts.length} ${experts.length === 1 ? 'expert' : 'experts'}: ${list}`;
+  const n = post.expertCount ?? 0;
+  const prefix = post.visibility === 'EXPERTS_ONLY' ? 'Shared privately · ' : 'Posted · ';
+  if (!n) return `${prefix}no experts matched yet`;
+  return `${prefix}Tagged ${n} ${n === 1 ? 'expert' : 'experts'}${coldEmail ? ' · drafting emails' : ''}`;
 }
 
 function autoGrow(el: HTMLTextAreaElement | null) {
@@ -74,18 +79,18 @@ export function ComposerBox({ onPosted }: { onPosted: (post: PostView) => void }
   const role = actingMember?.role;
   const isStudent = role === 'STUDENT';
   const canArticle = role === 'FACULTY' || role === 'ALUMNI';
-  const verified = actingMember ? actingMember.verified !== false : true;
+  const canAsk = role !== 'FACULTY';
   const anonymous = isStudent ? true : anonChoice;
   const isArticle = postType === 'ARTICLE';
   const busy = submitting || refining;
-  const canSubmit = !!title.trim() && !busy && verified && !!actingMember;
+  const canSubmit = !!title.trim() && !busy && !!actingMember;
 
   // Persona switch: reset role-dependent controls to that member's defaults.
   const memberId = actingMember?.id;
   const anonByDefault = actingMember?.anonByDefault;
   useEffect(() => {
     setAnonChoice(role === 'STUDENT' ? true : anonByDefault !== false);
-    if (role !== 'FACULTY' && role !== 'ALUMNI') setPostType('QUESTION');
+    setPostType(defaultPostType(role));
     setError(null);
   }, [memberId, role, anonByDefault]);
 
@@ -105,7 +110,7 @@ export function ComposerBox({ onPosted }: { onPosted: (post: PostView) => void }
     setTitle('');
     setBody('');
     setVisibility('PUBLIC');
-    setPostType('QUESTION');
+    setPostType(defaultPostType(role));
     setUndo(null);
     setError(null);
     setExpanded(false);
@@ -228,7 +233,9 @@ export function ComposerBox({ onPosted }: { onPosted: (post: PostView) => void }
             ref={titleRef}
             rows={1}
             className="bc-composer__title"
-            placeholder={expanded ? (isArticle ? 'Article title' : 'Title') : 'Ask Purdue anything…'}
+            placeholder={
+              expanded ? (isArticle ? 'Article title' : 'Title') : canAsk ? 'Ask Purdue anything…' : 'Share an article with Purdue…'
+            }
             value={title}
             maxLength={TITLE_MAX}
             readOnly={busy}
@@ -257,13 +264,8 @@ export function ComposerBox({ onPosted }: { onPosted: (post: PostView) => void }
               />
 
               <p className="bc-composer__as">
-                {verified ? (
-                  <>
-                    Posting as <strong>{postingAsLabel(actingMember, anonymous)}</strong>
-                  </>
-                ) : (
-                  UNVERIFIED_REASON
-                )}
+                Posting as <strong>{postingAsLabel(actingMember, anonymous)}</strong>
+                {isStudent && ' · a new anonymous handle for each thread'}
               </p>
 
               {undo && (
@@ -314,8 +316,10 @@ export function ComposerBox({ onPosted }: { onPosted: (post: PostView) => void }
                       type="button"
                       className={`bc-seg__btn ${!isArticle ? 'bc-seg__btn--on' : ''}`}
                       aria-pressed={!isArticle}
+                      aria-disabled={!canAsk ? true : undefined}
+                      title={!canAsk ? FACULTY_QUESTION_REASON : 'Ask a question (AI tags the right experts)'}
                       disabled={busy}
-                      onClick={() => setPostType('QUESTION')}
+                      onClick={() => (canAsk ? setPostType('QUESTION') : explain(FACULTY_QUESTION_REASON))}
                     >
                       Question
                     </button>
@@ -350,7 +354,7 @@ export function ComposerBox({ onPosted }: { onPosted: (post: PostView) => void }
                   type="submit"
                   className="bc-btn bc-btn--gold bc-composer__post"
                   disabled={!canSubmit}
-                  title={!verified ? UNVERIFIED_REASON : 'Post (Ctrl/Cmd+Enter)'}
+                  title={isArticle ? 'Publish (Ctrl/Cmd+Enter)' : 'Post (Ctrl/Cmd+Enter)'}
                 >
                   {submitting && <LoaderCircle size={16} className="bc-spin" aria-hidden />}
                   {isArticle ? 'Publish' : 'Post'}
