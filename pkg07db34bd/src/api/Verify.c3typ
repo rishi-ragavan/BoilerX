@@ -4,8 +4,8 @@
 type Verify {
 
   /**
-   * `@purdue.edu` + STUDENT/FACULTY → verified; `@alumni.purdue.edu` → ALUMNI, verified; any other email as
-   * ALUMNI → unverified ("Unverified alum"); anything else → not verified.
+   * Signup gate. `@purdue.edu` + STUDENT/FACULTY → admitted; `@alumni.purdue.edu` → ALUMNI, admitted; anything
+   * else → not admitted. Everyone on the platform passed this check, so the UI never labels anyone "verified".
    */
   check: function(email: !string, role: string): VerifyResult js-server
 }

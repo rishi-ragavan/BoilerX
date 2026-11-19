@@ -15,11 +15,10 @@ type ReplyView {
   /** How the replier is shown, including the 🎯 flair. */
   author: AuthorView
 
-  /** Number of likes on the reply. */
-  likeCount: int
+  /** FACULTY, ALUMNI, or STUDENT — replies arrive grouped in that order; render a header per group. */
+  authorGroup: string
 
-  /** Whether the acting member liked the reply. */
-  likedByMe: boolean
+
 
   /** Whether the acting member wrote the reply. */
   isMine: boolean

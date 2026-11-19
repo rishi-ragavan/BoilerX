@@ -2,6 +2,7 @@
  * ForumApi — BoilerConnect forum data surface (Lane A).
  *
  * Every method returns VIEW types only. Anonymous items never carry the author's id, name, or email.
+ * Everyone on the platform is a verified Purdue member, so no view says "verified". There are no likes.
  */
 
 var MEMBER_FIELDS = 'id, name, email, role, level, verified, department, employer, bio, tags, badges, anonByDefault, reputation';
@@ -11,6 +12,8 @@ var POST_INCLUDE =
   AUTHOR_INCLUDE.map(function (f) { return 'author.' + f; }).join(', ');
 var FEED_LIMIT = 200;
 var TABS = { foryou: null, students: 'STUDENT', faculty: 'FACULTY', alumni: 'ALUMNI' };
+/** Reply grouping on a post: professors above, then alumni, then students. */
+var GROUP_ORDER = { FACULTY: 0, ALUMNI: 1, STUDENT: 2 };
 
 // ---------------------------------------------------------------------------------------------------------------
 // Helpers
@@ -43,7 +46,6 @@ function roleLabelOf(m) {
   var role = str(m.role);
   if (role === 'FACULTY') return 'Faculty' + (m.department ? ' · ' + m.department : '');
   if (role === 'ALUMNI') {
-    if (!m.verified) return 'Unverified alum';
     return 'Alum' + (m.employer ? ' · ' + m.employer : m.department ? ' · ' + m.department : '');
   }
   return levelLabel(m.level) + (m.department ? ' · ' + m.department : '');
@@ -59,13 +61,13 @@ function authorView(member, postId, isAnonymous, flair) {
   if (anon) {
     var role = str(member.role);
     var display;
-    if (role === 'FACULTY') display = 'Verified Faculty' + (member.department ? ' · ' + member.department : '');
-    else if (role === 'ALUMNI')
-      display = (member.verified ? 'Verified Alum' : 'Unverified Alum') + (member.employer ? ' · ' + member.employer : '');
+    if (role === 'FACULTY') display = 'Faculty' + (member.department ? ' · ' + member.department : '');
+    else if (role === 'ALUMNI') display = 'Alum' + (member.employer ? ' · ' + member.employer : '');
     else display = anonStudentHandle(member.id, postId);
     return AuthorView.make({
       displayName: display,
-      roleLabel: role === 'STUDENT' ? 'Verified Student' : role === 'FACULTY' ? 'Faculty' : 'Alum',
+      // The handle already says Faculty/Alum; only the student handle needs a role label.
+      roleLabel: role === 'STUDENT' ? 'Student' : null,
       badges: [],
       isAnonymous: true,
       flair: flair || null,
@@ -94,7 +96,6 @@ function memberView(m) {
     tags: m.tags || [],
     badges: m.badges || [],
     reputation: m.reputation || 0,
-    verified: !!m.verified,
     anonByDefault: str(m.role) === 'STUDENT' ? true : !!m.anonByDefault,
     roleLabel: roleLabelOf(m),
   });
@@ -146,21 +147,6 @@ function matchesByPost(postIds) {
   return out;
 }
 
-function likesFor(field, ids) {
-  var out = {};
-  if (!ids.length) return out;
-  var res = Like.fetch({
-    filter: Filter.intersects(field + '.id', strArray(ids)),
-    include: 'id, member.id, ' + field + '.id',
-    limit: 2000,
-  });
-  each(res.objs, function (l) {
-    var k = l[field].id;
-    (out[k] = out[k] || []).push(l.member.id);
-  });
-  return out;
-}
-
 function repliesByPost(postIds) {
   var out = {};
   if (!postIds.length) return out;
@@ -196,14 +182,12 @@ function hoursSince(dt) {
 function buildPostViews(posts, actorId) {
   var ids = posts.map(function (p) { return p.id; });
   var matches = matchesByPost(ids);
-  var likes = likesFor('post', ids);
   var replies = repliesByPost(ids);
 
   return posts.map(function (p) {
     var pm = matches[p.id] || [];
     var experts = str(p.postType) === 'ARTICLE' ? [] : pm;
     var expertSet = expertIdSet(experts);
-    var likers = likes[p.id] || [];
     var replyAuthors = replies[p.id] || [];
     var expertReplies = replyAuthors.filter(function (a) { return expertSet[a]; }).length;
 
@@ -238,13 +222,11 @@ function buildPostViews(posts, actorId) {
       author: authorView(p.author, p.id, p.isAnonymous, null),
       experts: expertViews.build(),
       expertCount: experts.length,
-      likeCount: likers.length,
       replyCount: replyAuthors.length,
-      likedByMe: likers.indexOf(actorId) >= 0,
       isMine: p.author.id === actorId,
       viewerIsMatchedExpert: !!expertSet[actorId],
     });
-    return { view: view, hot: Rank.hotScore(likers.length, expertReplies, hoursSince(p.createdAt)) };
+    return { view: view, hot: Rank.hotScore(replyAuthors.length, expertReplies, hoursSince(p.createdAt)) };
   });
 }
 
@@ -271,7 +253,8 @@ function loadPost(postId) {
 
 function listMembers() {
   var b = MemberView.arrayBuilder();
-  each(ForumMember.fetch({ include: MEMBER_FIELDS, order: 'name', limit: 500 }).objs, function (m) {
+  // Only verified Purdue members are on the platform.
+  each(ForumMember.fetch({ filter: Filter.eq('verified', true), include: MEMBER_FIELDS, order: 'name', limit: 500 }).objs, function (m) {
     b.add(memberView(m));
   });
   return b.build();
@@ -341,11 +324,14 @@ function getPost(actorId, postId) {
     }).objs,
     function (r) { replies.push(r); }
   );
-  var likes = likesFor('reply', replies.map(function (r) { return r.id; }));
+  // Professors' answers first, then alumni, then students; oldest first within each group.
+  replies = replies
+    .map(function (r, i) { return { r: r, g: GROUP_ORDER[str(r.author.role)], i: i }; })
+    .sort(function (a, b) { return a.g - b.g || a.i - b.i; }) // explicit tie-break keeps chronological order
+    .map(function (x) { return x.r; });
 
   var rb = ReplyView.arrayBuilder();
   replies.forEach(function (r) {
-    var likers = likes[r.id] || [];
     var flair = expertSet[r.author.id] ? '🎯 Expert: ' + flairLabel : null;
     rb.add(
       ReplyView.make({
@@ -353,8 +339,7 @@ function getPost(actorId, postId) {
         body: r.body,
         createdAt: r.createdAt,
         author: authorView(r.author, post.id, r.isAnonymous, flair),
-        likeCount: likers.length,
-        likedByMe: likers.indexOf(actorId) >= 0,
+        authorGroup: str(r.author.role),
         isMine: r.author.id === actorId,
       })
     );
@@ -365,7 +350,7 @@ function getPost(actorId, postId) {
 function createPost(actorId, input) {
   var actor = requireMember(actorId);
   var role = str(actor.role);
-  if (!isVerified(actor)) return CreatePostResult.make({ ok: false, error: 'Only verified members can post.' });
+  if (!isVerified(actor)) return CreatePostResult.make({ ok: false, error: 'Only Purdue members can post.' });
 
   var postType = String(input.postType || 'QUESTION').toUpperCase() === 'ARTICLE' ? 'ARTICLE' : 'QUESTION';
   if (postType === 'ARTICLE' && role !== 'FACULTY' && role !== 'ALUMNI') {
@@ -449,7 +434,7 @@ function createPost(actorId, input) {
 
 function reply(actorId, postId, body, isAnonymous) {
   var actor = requireMember(actorId);
-  if (!isVerified(actor)) throw new Error('Only verified members can reply.');
+  if (!isVerified(actor)) throw new Error('Only Purdue members can reply.');
   if (!body || !String(body).trim()) throw new Error('Reply cannot be empty.');
   var post = loadPost(postId);
   if (!post) throw new Error('Post not found');
@@ -469,6 +454,7 @@ function reply(actorId, postId, body, isAnonymous) {
     isAnonymous: anon,
     createdAt: DateTime.now(),
   }).create();
+  ForumMember.make({ id: actorId, reputation: (actor.reputation || 0) + 1 }).merge();
 
   var isExpert = !!expertIdSet(matches)[actorId] && str(post.postType) !== 'ARTICLE';
   var flairLabel = post.department || (post.tags && post.tags.length ? post.tags[0] : 'this topic');
@@ -477,44 +463,7 @@ function reply(actorId, postId, body, isAnonymous) {
     body: String(body).trim(),
     createdAt: DateTime.now(),
     author: authorView(actor, post.id, anon, isExpert ? '🎯 Expert: ' + flairLabel : null),
-    likeCount: 0,
-    likedByMe: false,
+    authorGroup: str(actor.role),
     isMine: true,
   });
-}
-
-function toggleLike(actorId, postId, replyId) {
-  requireMember(actorId);
-  if (!postId && !replyId) throw new Error('Pass a postId or a replyId.');
-  var field = replyId ? 'reply' : 'post';
-  var targetId = replyId || postId;
-
-  var existing = Like.fetch({
-    filter: Filter.eq('member.id', actorId).and().eq(field + '.id', targetId),
-    include: 'id',
-    limit: 1,
-  }).objs;
-  var liked;
-  if (existing && existing.length) {
-    existing[0].remove();
-    liked = false;
-  } else {
-    var like = { member: { id: actorId } };
-    like[field] = { id: targetId };
-    Like.make(like).create();
-    liked = true;
-  }
-
-  if (replyId) {
-    var res = Reply.fetch({ filter: Filter.eq('id', replyId), include: 'id, author.id', limit: 1 }).objs;
-    if (res && res.length) {
-      var author = loadMember(res[0].author.id);
-      if (author && author.id !== actorId) {
-        ForumMember.make({ id: author.id, reputation: Math.max(0, (author.reputation || 0) + (liked ? 1 : -1)) }).merge();
-      }
-    }
-  }
-
-  var count = Like.fetchCount({ filter: Filter.eq(field + '.id', targetId) });
-  return LikeResult.make({ liked: liked, count: count });
 }

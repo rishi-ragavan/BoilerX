@@ -695,10 +695,10 @@
   {
     "id": "bc_member_alum_ryan",
     "name": "Ryan Okoro",
-    "email": "ryan.okoro92@gmail.com",
+    "email": "rokoro@alumni.purdue.edu",
     "role": "ALUMNI",
     "level": "ALUMNI",
-    "verified": false,
+    "verified": true,
     "department": "Industrial Engineering",
     "employer": "JPMorgan",
     "bio": "Purdue IE '14 who now works in operations at JPMorgan. Still waiting on alumni verification, but happy to chat about corporate careers.",

@@ -33,12 +33,9 @@ type MemberView {
   /** Reputation. */
   reputation: int
 
-  /** Whether the member is verified. */
-  verified: boolean
-
   /** Default for the composer's anonymity toggle (always true for students). */
   anonByDefault: boolean
 
-  /** e.g. "Faculty · Finance", "Unverified alum". */
+  /** e.g. "Faculty · Finance", "Alum · Google". */
   roleLabel: string
 }

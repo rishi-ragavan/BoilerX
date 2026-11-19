@@ -10,8 +10,8 @@ var DM_INITIATOR_ROLES = ['FACULTY'];
 
 function sampleOtherParty() {
   return AuthorView.make({
-    displayName: 'Boiler #a3f1',
-    roleLabel: 'Verified Student',
+    displayName: 'Boiler a3f1',
+    roleLabel: 'Student',
     badges: [],
     isAnonymous: true,
     flair: null,

@@ -1,5 +1,5 @@
 /*
- * ForumApi tests (Lane A): anonymity stripping, EXPERTS_ONLY visibility, 🎯 flair, verification.
+ * ForumApi tests (Lane A): anonymity stripping, EXPERTS_ONLY visibility, 🎯 flair, reply grouping, membership gate.
  * Creates its own uniquely-named rows (never depends on data/ seed) and tears them down.
  */
 var filename = 'test_ForumApi.js';
@@ -55,9 +55,10 @@ describe(filename, function () {
       { id: P + 'm2', post: { id: ids.secretPost }, expert: { id: ids.faculty }, rank: 1, score: 90, reason: 'r' },
     ]);
     TestApi.createBatchEntity(this.ctx, 'Reply', [
-      { id: ids.expertReply, post: { id: ids.publicPost }, author: { id: ids.faculty }, body: 'expert answer',
-        isAnonymous: true, createdAt: now },
+      // The student replies FIRST in time; the professor's answer must still be listed above it.
       { id: ids.studentReply, post: { id: ids.publicPost }, author: { id: ids.student }, body: 'thanks!',
+        isAnonymous: true, createdAt: now.minusMinutes(10) },
+      { id: ids.expertReply, post: { id: ids.publicPost }, author: { id: ids.faculty }, body: 'expert answer',
         isAnonymous: true, createdAt: now },
     ]);
     TestApi.waitForSetup(this.ctx);
@@ -67,7 +68,12 @@ describe(filename, function () {
     this.otherDetail = ForumApi.getPost(ids.outsider, ids.otherPost);
     this.articleDetail = ForumApi.getPost(ids.outsider, ids.articlePost);
     this.replyById = {};
-    this.publicDetail.replies.each(function (r) { self.replyById[r.id] = r; });
+    this.replyOrder = [];
+    this.publicDetail.replies.each(function (r) {
+      self.replyById[r.id] = r;
+      self.replyOrder.push(r.id + ':' + r.authorGroup);
+    });
+    this.memberIds = ForumApi.listMembers().mapToStr(function (m) { return m.id; });
     this.feedIds = ForumApi.feed(ids.outsider, 'foryou', null).mapToStr(function (p) { return p.id; });
     this.inboxIds = ForumApi.inbox(ids.faculty).mapToStr(function (p) { return p.id; });
     this.unverifiedPost = ForumApi.createPost(ids.fakeAlum, NewPostInput.make({ title: 'Should be refused' }));
@@ -104,8 +110,8 @@ describe(filename, function () {
       expect(this.otherDetail.post.author.displayName).not.toBe(this.publicDetail.post.author.displayName);
     });
 
-    it('shows an anonymous faculty reply as "Verified Faculty · {department}"', function () {
-      expect(this.replyById[this.ids.expertReply].author.displayName).toBe('Verified Faculty · Finance');
+    it('shows an anonymous faculty reply as "Faculty · {department}" (never "Verified")', function () {
+      expect(this.replyById[this.ids.expertReply].author.displayName).toBe('Faculty · Finance');
     });
 
     it('never serializes an anonymous faculty id, name, or email', function () {
@@ -140,6 +146,12 @@ describe(filename, function () {
       expect(this.facultyView.post.experts.mapToStr(function (e) { return e.memberId; }).toJson()).toEqual([
         this.ids.faculty,
       ]);
+    });
+  });
+
+  describe('reply grouping', function () {
+    it("lists professors' answers above student responses, regardless of time", function () {
+      expect(this.replyOrder).toEqual([this.ids.expertReply + ':FACULTY', this.ids.studentReply + ':STUDENT']);
     });
   });
 
@@ -184,20 +196,24 @@ describe(filename, function () {
     });
   });
 
-  describe('verification and permissions', function () {
-    it('verifies @purdue.edu students', function () {
+  describe('membership gate and permissions', function () {
+    it('only lists verified Purdue members', function () {
+      expect(this.memberIds.contains(this.ids.fakeAlum)).toBeFalse();
+    });
+
+    it('admits @purdue.edu students', function () {
       expect(Verify.check('x@purdue.edu', 'STUDENT').verified).toBeTrue();
     });
 
-    it('verifies @alumni.purdue.edu as ALUMNI', function () {
+    it('admits @alumni.purdue.edu as ALUMNI', function () {
       expect(Verify.check('x@alumni.purdue.edu', 'STUDENT').role).toBe('ALUMNI');
     });
 
-    it('labels a non-Purdue alum as "Unverified alum"', function () {
-      expect(Verify.check('x@gmail.com', 'ALUMNI').label).toBe('Unverified alum');
+    it('does not admit a non-Purdue alum email', function () {
+      expect(Verify.check('x@gmail.com', 'ALUMNI').verified).toBeFalse();
     });
 
-    it('refuses createPost from an unverified member', function () {
+    it('refuses createPost from a member who never passed the gate', function () {
       expect(this.unverifiedPost.ok).toBeFalse();
     });
 

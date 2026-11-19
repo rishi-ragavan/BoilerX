@@ -43,6 +43,15 @@ pkg07db34bd/
 - **Tagged experts are never listed.** `PostView.experts` contains only the *viewer's own* match (for "why you were
   tagged"); everyone else sees only `PostView.expertCount` ("5 experts tagged"). A public list + anonymous 🎯 replies
   would de-anonymize the repliers. `createPost` therefore returns only the count, not names.
+- **Never say "verified".** Everyone on the platform passed the Purdue email gate (`Verify.check` at signup), so
+  no badge/label says Verified/Unverified. Anonymous handles: `Boiler a3f1`, `Faculty · Finance`, `Alum · Google`.
+  `MemberView.verified` was removed; `listMembers` returns only gate-passed members.
+- **No likes.** `Like`, `LikeResult`, `toggleLike`, `likeCount`, `likedByMe` are gone. A post card offers only
+  "View N comments" (`PostView.replyCount`). Feed `hot = (replies + 2·expertReplies + 1) / (hours + 2)^1.5`;
+  reputation = +1 per answer given.
+- **Anyone can answer; professors' answers come first.** `getPost` returns replies grouped FACULTY → ALUMNI →
+  STUDENT (oldest first within a group); each `ReplyView.authorGroup` says which, so the UI renders a header
+  ("Professors", "Alumni", "Students") whenever it changes. Do not re-sort replies in the UI.
 - **Faculty cannot ask questions.** `createPost` rejects QUESTION from FACULTY; faculty publish ARTICLEs and reply.
   Students and alumni ask.
 

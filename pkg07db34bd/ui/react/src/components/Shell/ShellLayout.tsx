@@ -49,11 +49,7 @@ export function ShellLayout() {
       <aside className="hidden w-80 shrink-0 flex-col gap-4 p-4 lg:flex">
         <div className="rounded-xl border border-border p-4">
           <PersonaSwitcher />
-          {actingMember && (
-            <p className="mt-2 text-xs text-muted-foreground">
-              {actingMember.verified ? '✅ Verified' : '⚠️ Unverified'} · {actingMember.roleLabel}
-            </p>
-          )}
+          {actingMember && <p className="mt-2 text-xs text-muted-foreground">{actingMember.roleLabel}</p>}
         </div>
         <div className="rounded-xl border border-border p-4 text-sm text-muted-foreground">
           Ask anything. BoilerConnect finds the Purdue students, faculty, and alumni who know the answer.

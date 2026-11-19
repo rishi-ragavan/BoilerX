@@ -4,9 +4,9 @@
 
 var LEVEL_ORDER = { UG: 0, MS: 1, PHD: 2, FACULTY: 3, ALUMNI: 3 };
 
-function hotScore(likes, expertReplies, hoursSincePost) {
+function hotScore(replies, expertReplies, hoursSincePost) {
   var h = Math.max(0, hoursSincePost || 0);
-  return ((likes || 0) + 2 * (expertReplies || 0) + 1) / Math.pow(h + 2, 1.5);
+  return ((replies || 0) + 2 * (expertReplies || 0) + 1) / Math.pow(h + 2, 1.5);
 }
 
 function levelProximity(askerLevel, expertLevel) {

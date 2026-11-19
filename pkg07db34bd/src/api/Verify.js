@@ -7,17 +7,17 @@ function check(email, role) {
   var r = String(role || '').toUpperCase();
 
   if (/@alumni\.purdue\.edu$/.test(e)) {
-    return VerifyResult.make({ verified: true, role: 'ALUMNI', label: 'Verified alum' });
+    return VerifyResult.make({ verified: true, role: 'ALUMNI', label: 'Purdue alum' });
   }
   if (/@purdue\.edu$/.test(e) && (r === 'STUDENT' || r === 'FACULTY')) {
     return VerifyResult.make({
       verified: true,
       role: r,
-      label: r === 'FACULTY' ? 'Verified faculty' : 'Verified student',
+      label: r === 'FACULTY' ? 'Purdue faculty' : 'Purdue student',
     });
   }
   if (r === 'ALUMNI') {
-    return VerifyResult.make({ verified: false, role: 'ALUMNI', label: 'Unverified alum' });
+    return VerifyResult.make({ verified: false, role: 'ALUMNI', label: 'Alumni must sign up with an @alumni.purdue.edu email' });
   }
-  return VerifyResult.make({ verified: false, role: r || null, label: 'Not a Purdue email' });
+  return VerifyResult.make({ verified: false, role: r || null, label: 'Sign up with your @purdue.edu email' });
 }

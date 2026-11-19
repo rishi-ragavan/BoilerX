@@ -43,14 +43,10 @@ type PostView {
   /** How many experts were tagged (safe to show to everyone). */
   expertCount: int
 
-  /** Number of likes on the post. */
-  likeCount: int
 
-  /** Number of replies. */
+  /** Number of replies (shown as "View N comments"). */
   replyCount: int
 
-  /** Whether the acting member liked the post. */
-  likedByMe: boolean
 
   /** Whether the acting member wrote the post. */
   isMine: boolean

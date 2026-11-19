@@ -12,7 +12,7 @@ export type Space = 'STUDENT' | 'FACULTY' | 'ALUMNI';
 export type FeedTab = 'foryou' | 'students' | 'faculty' | 'alumni' | 'articles';
 
 export interface AuthorView {
-  /** Name, or an anonymous handle: "Boiler a3f1" (no #), "Verified Faculty · Finance", "Verified Alum · Google". */
+  /** Name, or an anonymous handle: "Boiler a3f1" (no #), "Faculty · Finance", "Alum · Google". Never "verified". */
   displayName: string;
   roleLabel?: string;
   badges?: string[];
@@ -50,9 +50,8 @@ export interface PostView {
   experts?: ExpertView[];
   /** Number of experts tagged — the only expert info safe to show everyone. */
   expertCount?: number;
-  likeCount?: number;
+  /** Shown as "View N comments" — there are no likes on the platform. */
   replyCount?: number;
-  likedByMe?: boolean;
   isMine?: boolean;
   viewerIsMatchedExpert?: boolean;
 }
@@ -62,8 +61,8 @@ export interface ReplyView {
   body: string;
   createdAt?: string;
   author: AuthorView;
-  likeCount?: number;
-  likedByMe?: boolean;
+  /** Replies arrive grouped FACULTY → ALUMNI → STUDENT; render a section header when this changes. */
+  authorGroup?: Role;
   isMine?: boolean;
 }
 
@@ -83,7 +82,6 @@ export interface MemberView {
   tags?: string[];
   badges?: string[];
   reputation?: number;
-  verified?: boolean;
   anonByDefault?: boolean;
   roleLabel?: string;
 }
@@ -130,11 +128,6 @@ export interface NewPostInput {
   postType?: PostType;
   visibility?: Visibility;
   isAnonymous?: boolean;
-}
-
-export interface LikeResult {
-  liked: boolean;
-  count: number;
 }
 
 export interface RefinedQuestion {

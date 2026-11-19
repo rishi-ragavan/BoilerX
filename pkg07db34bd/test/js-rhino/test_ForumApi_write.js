@@ -1,5 +1,5 @@
 /*
- * ForumApi write-path tests (Lane A): createPost → AiPipeline → save, reply, toggleLike.
+ * ForumApi write-path tests (Lane A): createPost → AiPipeline → save, reply (+ reputation).
  * AiPipeline.analyzePost is spied so results are deterministic and independent of Lane B's LLM code.
  * Rows created by the API under test are untracked, so external teardown filters remove them.
  */
@@ -27,8 +27,8 @@ describe(filename, function () {
       alum: P + 'alum',
       fakeAlum: P + 'fakealum',
       e1: P + 'e1', e2: P + 'e2', e3: P + 'e3', e4: P + 'e4', e5: P + 'e5', e6: P + 'e6',
-      likedPost: P + 'post_liked',
-      likedReply: P + 'reply_liked',
+      seedPost: P + 'post_seed',
+      seedReply: P + 'reply_seed',
     });
 
     var members = [
@@ -45,17 +45,16 @@ describe(filename, function () {
     });
     TestApi.createBatchEntity(this.ctx, 'ForumMember', members);
     TestApi.createBatchEntity(this.ctx, 'Post', [
-      { id: ids.likedPost, author: { id: ids.student }, postType: 'QUESTION', title: 'Liked post', visibility: 'PUBLIC',
+      { id: ids.seedPost, author: { id: ids.student }, postType: 'QUESTION', title: 'Existing post', visibility: 'PUBLIC',
         space: 'STUDENT', isAnonymous: true, createdAt: DateTime.now() },
     ]);
     TestApi.createBatchEntity(this.ctx, 'Reply', [
-      { id: ids.likedReply, post: { id: ids.likedPost }, author: { id: ids.e1 }, body: 'answer', isAnonymous: false,
+      { id: ids.seedReply, post: { id: ids.seedPost }, author: { id: ids.e1 }, body: 'answer', isAnonymous: false,
         createdAt: DateTime.now() },
     ]);
     TestApi.waitForSetup(this.ctx);
 
     // Untracked rows written by the API under test.
-    TestApi.addExternalTeardownFilter(this.ctx, "startsWith(member.id, '" + P + "')", 'Like', 1000);
     TestApi.addExternalTeardownFilter(this.ctx, "startsWith(author.id, '" + P + "')", 'Reply', 1000);
     TestApi.addExternalTeardownFilter(this.ctx, "startsWith(expert.id, '" + P + "')", 'ExpertMatch', 1000);
     TestApi.addExternalTeardownFilter(this.ctx, "startsWith(author.id, '" + P + "')", 'Post', 1000);
@@ -119,12 +118,7 @@ describe(filename, function () {
       this.unverifiedReplyError = String(e.message || e);
     }
 
-    // Likes on a reply: +1 then -1 reputation for the reply author (e1 starts at 10).
-    this.like1 = ForumApi.toggleLike(ids.student, null, ids.likedReply);
-    this.repAfterLike = ForumMember.forId(ids.e1).reputation;
-    this.like2 = ForumApi.toggleLike(ids.student, null, ids.likedReply);
-    this.repAfterUnlike = ForumMember.forId(ids.e1).reputation;
-    this.postLike = ForumApi.toggleLike(ids.alum, ids.likedPost, null);
+    this.e1Reputation = ForumMember.forId(ids.e1).reputation; // started at 10, answered once
   });
 
   afterAll(function () {
@@ -188,7 +182,7 @@ describe(filename, function () {
       expect(this.articleMatches.length).toBe(0);
     });
 
-    it('refuses unverified members', function () {
+    it('refuses members who never passed the gate', function () {
       expect(this.unverified.ok).toBeFalse();
     });
   });
@@ -210,30 +204,14 @@ describe(filename, function () {
       expect(this.expertReply.author.displayName).toBe('Expert e1');
     });
 
-    it('refuses replies from unverified members', function () {
-      expect(this.unverifiedReplyError).toContain('verified');
+    it('refuses replies from members who never passed the gate', function () {
+      expect(this.unverifiedReplyError).toContain('Only Purdue members');
     });
   });
 
-  describe('toggleLike', function () {
-    it('likes a reply on the first toggle', function () {
-      expect(this.like1.liked + '/' + this.like1.count).toBe('true/1');
-    });
-
-    it('adds +1 reputation to the reply author', function () {
-      expect(this.repAfterLike).toBe(11);
-    });
-
-    it('unlikes on the second toggle', function () {
-      expect(this.like2.liked + '/' + this.like2.count).toBe('false/0');
-    });
-
-    it('removes the reputation again on unlike', function () {
-      expect(this.repAfterUnlike).toBe(10);
-    });
-
-    it('likes a post', function () {
-      expect(this.postLike.liked + '/' + this.postLike.count).toBe('true/1');
+  describe('reputation', function () {
+    it('adds +1 reputation per answer given', function () {
+      expect(this.e1Reputation).toBe(11);
     });
   });
 });
