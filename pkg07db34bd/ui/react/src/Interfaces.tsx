@@ -9,7 +9,11 @@ export type Badge = 'PROFESSOR' | 'TA' | 'CLUB_PRESIDENT' | 'CAMPUS_AMBASSADOR';
 export type PostType = 'QUESTION' | 'ARTICLE';
 export type Visibility = 'PUBLIC' | 'EXPERTS_ONLY';
 export type Space = 'STUDENT' | 'FACULTY' | 'ALUMNI';
-export type FeedTab = 'foryou' | 'students' | 'faculty' | 'alumni' | 'articles';
+/**
+ * Feed tabs. The three spaces (`students`, `faculty` — alias `professors`, `alumni`) all work the same: each shows
+ * every PUBLIC post (questions + articles) the AI routed there, and every tab accepts the optional `dept` filter.
+ */
+export type FeedTab = 'foryou' | 'students' | 'faculty' | 'professors' | 'alumni' | 'articles';
 
 export interface AuthorView {
   /** Name, or an anonymous handle: "Boiler a3f1" (no #), "Faculty · Finance", "Alum · Google". Never "verified". */

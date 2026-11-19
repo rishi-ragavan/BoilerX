@@ -18,6 +18,8 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
   "Verified Alum · {employer}". Flair `🎯 Expert: {post.department || tags[0]}` when replier has ExpertMatch.
 - JS gotchas: `removeAll({filter}, true)`; `fetch().objs` may be null → guard; use `Filter.intersects('post.id', strArray)`.
 
+- Spaces: feed tabs students|faculty(professors)|alumni all identical (questions+articles routed there, dept filter on
+  any tab); foryou = all PUBLIC; articles tab kept. Seed: 14 posts (Student 3 / Faculty 7 / Alumni 4).
 - Lead rules (see README "Product rules"): no "verified" wording anywhere; no likes (Like entity/toggleLike
   removed; hot uses replies; reputation +1 per answer); replies grouped FACULTY→ALUMNI→STUDENT via ReplyView.authorGroup.
 - Lead rules: PostView.experts = ONLY the viewer's own match; everyone sees `expertCount` (tagged list would
@@ -25,7 +27,7 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
 
 ## Data (`data/`)
 - A1: 35 members (12 UG/4 MS/5 PhD/8 faculty/6 alumni; ids `bc_member_<level>_<name>`, plus `bc_member_ta_jordan`),
-  12 posts (2 ARTICLE; `bc_post_rec_letters` is EXPERTS_ONLY), 28 ExpertMatch, 21 Reply (no likes).
+  14 posts (2 ARTICLE; `bc_post_rec_letters` is EXPERTS_ONLY), 34 ExpertMatch, 25 Reply (no likes).
   Demo personas: `bc_member_ug_alex` (default student), `bc_member_fac_chen` (Finance prof), `bc_member_phd_priya`
   (FE PhD), `bc_member_alum_maya` (Goldman quant). all 35 verified (ryan now @alumni.purdue.edu); `bc_member_fac_osei` anonByDefault.
 - Load: `App.State.inst().get().withFields({pkgFingerprint:-1, seeded:false}).update(); C3.pkg().upsertAllSeed()`.

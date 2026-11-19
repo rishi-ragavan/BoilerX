@@ -11,7 +11,12 @@ var POST_INCLUDE =
   'id, postType, title, body, visibility, space, department, tags, isAnonymous, createdAt, author.id, ' +
   AUTHOR_INCLUDE.map(function (f) { return 'author.' + f; }).join(', ');
 var FEED_LIMIT = 200;
-var TABS = { foryou: null, students: 'STUDENT', faculty: 'FACULTY', alumni: 'ALUMNI' };
+/** Feed tab → space. Aliases accepted so the UI can say "Professors". */
+var SPACE_TABS = {
+  students: 'STUDENT', student: 'STUDENT',
+  faculty: 'FACULTY', professors: 'FACULTY',
+  alumni: 'ALUMNI',
+};
 /** Reply grouping on a post: professors above, then alumni, then students. */
 var GROUP_ORDER = { FACULTY: 0, ALUMNI: 1, STUDENT: 2 };
 
@@ -266,15 +271,15 @@ function getMember(id) {
 
 function feed(actorId, tab, dept) {
   var t = String(tab || 'foryou').toLowerCase();
-  var filter;
-  if (t === 'articles') {
-    filter = Filter.eq('postType', 'ARTICLE');
-  } else {
-    filter = Filter.eq('postType', 'QUESTION').and().eq('visibility', 'PUBLIC');
-    if (TABS[t]) filter = filter.and().eq('space', TABS[t]);
-    if (t === 'faculty' && dept) filter = filter.and().eq('department', dept);
+  var filter = Filter.eq('visibility', 'PUBLIC');
+  if (SPACE_TABS[t]) {
+    // A space: every PUBLIC post the AI routed there, questions and articles alike. All spaces behave identically.
+    filter = filter.and().eq('space', SPACE_TABS[t]);
+  } else if (t === 'articles') {
+    filter = filter.and().eq('postType', 'ARTICLE');
   }
-  if (t === 'articles') filter = filter.and().eq('visibility', 'PUBLIC');
+  // 'foryou' (default): every PUBLIC post in every space.
+  if (dept) filter = filter.and().eq('department', dept);
 
   var posts = toNativePosts(
     Post.fetch({ filter: filter, include: POST_INCLUDE, order: 'descending(createdAt)', limit: FEED_LIMIT }).objs

@@ -112,7 +112,8 @@
       "big tech"
     ],
     "isAnonymous": true,
-    "createdAt": "2026-11-15T18:00:00Z"
+    "createdAt": "2026-11-15T18:00:00Z",
+    "department": "CS"
   },
   {
     "id": "bc_post_cummins_coop",
@@ -131,7 +132,8 @@
       "career advice"
     ],
     "isAnonymous": true,
-    "createdAt": "2026-11-16T13:30:00Z"
+    "createdAt": "2026-11-16T13:30:00Z",
+    "department": "ME"
   },
   {
     "id": "bc_post_psych_phd",
@@ -209,7 +211,8 @@
       "job offers"
     ],
     "isAnonymous": true,
-    "createdAt": "2026-11-16T20:00:00Z"
+    "createdAt": "2026-11-16T20:00:00Z",
+    "department": "Agriculture"
   },
   {
     "id": "bc_post_article_research",
@@ -229,5 +232,41 @@
     ],
     "isAnonymous": false,
     "createdAt": "2026-11-15T09:00:00Z"
+  },
+  {
+    "id": "bc_post_clubs",
+    "author": {
+      "id": "bc_member_ug_omar"
+    },
+    "postType": "QUESTION",
+    "title": "How do I find student organizations that are worth the time commitment?",
+    "body": "I am a first-year in ECE and joined several organizations at the involvement fair. I would like to focus on one or two where I can meet people and build skills. How did others decide?",
+    "visibility": "PUBLIC",
+    "space": "STUDENT",
+    "tags": [
+      "student clubs",
+      "campus life",
+      "time management"
+    ],
+    "isAnonymous": true,
+    "createdAt": "2026-11-19T07:30:00Z"
+  },
+  {
+    "id": "bc_post_housing",
+    "author": {
+      "id": "bc_member_ug_noah"
+    },
+    "postType": "QUESTION",
+    "title": "Is it better to live on campus or in an apartment for sophomore year?",
+    "body": "I am deciding between a residence hall and an apartment near Chauncey for next year. I would appreciate perspectives on cost, commute, and community.",
+    "visibility": "PUBLIC",
+    "space": "STUDENT",
+    "tags": [
+      "housing",
+      "campus life",
+      "budgeting"
+    ],
+    "isAnonymous": true,
+    "createdAt": "2026-11-18T16:00:00Z"
   }
 ]

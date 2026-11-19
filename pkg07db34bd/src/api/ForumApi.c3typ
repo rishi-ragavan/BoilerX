@@ -12,8 +12,10 @@ type ForumApi {
   getMember: function(id: !string): MemberView js-server
 
   /**
-   * Ranked feed for a tab: `foryou` | `students` | `faculty` | `alumni` | `articles`. PUBLIC questions only,
-   * except `articles`. `dept` filters the faculty tab. Sorted by
+   * Ranked feed. Three spaces that all work the same: `students` | `faculty` (alias `professors`) | `alumni` — each
+   * shows every PUBLIC post (questions and articles) that {@link AiPipeline#analyzePost} routed there. `foryou` shows
+   * every PUBLIC post across spaces; `articles` every PUBLIC article. `dept` (optional) filters any tab. Anyone can
+   * read and reply in any space; EXPERTS_ONLY posts never appear in feeds. Sorted by
    * `hot = (replies + 2·expertReplies + 1) / (hoursSincePost + 2)^1.5`.
    */
   feed: function(actorId: !string, tab: string, dept: string): [PostView] js-server

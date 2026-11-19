@@ -43,7 +43,7 @@ describe(filename, function () {
         body: 'b', visibility: 'PUBLIC', space: 'FACULTY', department: 'Finance', tags: ['stock market'],
         isAnonymous: true, createdAt: now },
       { id: ids.otherPost, author: { id: ids.student }, postType: 'QUESTION', title: 'Another thread',
-        body: 'b', visibility: 'PUBLIC', space: 'STUDENT', tags: ['campus life'], isAnonymous: true, createdAt: now },
+        body: 'b', visibility: 'PUBLIC', space: 'STUDENT', department: 'Economics', tags: ['campus life'], isAnonymous: true, createdAt: now },
       { id: ids.secretPost, author: { id: ids.student }, postType: 'QUESTION', title: 'Experts-only question',
         body: 'b', visibility: 'EXPERTS_ONLY', space: 'FACULTY', department: 'Finance', tags: ['grad school'],
         isAnonymous: true, createdAt: now },
@@ -73,6 +73,14 @@ describe(filename, function () {
       self.replyById[r.id] = r;
       self.replyOrder.push(r.id + ':' + r.authorGroup);
     });
+    var feedIds = function (tab, dept) {
+      return ForumApi.feed(ids.outsider, tab, dept || null).mapToStr(function (p) { return p.id; });
+    };
+    this.studentSpace = feedIds('students');
+    this.alumniSpace = feedIds('alumni');
+    this.professorSpace = feedIds('professors');
+    this.studentSpaceEcon = feedIds('students', 'Economics');
+    this.studentSpaceBio = feedIds('students', 'Biology');
     this.memberIds = ForumApi.listMembers().mapToStr(function (m) { return m.id; });
     this.feedIds = ForumApi.feed(ids.outsider, 'foryou', null).mapToStr(function (p) { return p.id; });
     this.inboxIds = ForumApi.inbox(ids.faculty).mapToStr(function (p) { return p.id; });
@@ -146,6 +154,36 @@ describe(filename, function () {
       expect(this.facultyView.post.experts.mapToStr(function (e) { return e.memberId; }).toJson()).toEqual([
         this.ids.faculty,
       ]);
+    });
+  });
+
+  describe('spaces', function () {
+    it('shows a post only in the space it was routed to', function () {
+      expect(this.studentSpace.contains(this.ids.publicPost)).toBeFalse();
+    });
+
+    it('shows the routed post in its own space', function () {
+      expect(this.professorSpace.contains(this.ids.publicPost)).toBeTrue();
+    });
+
+    it('shows articles inside their space like any other post', function () {
+      expect(this.alumniSpace.contains(this.ids.articlePost)).toBeTrue();
+    });
+
+    it('shows every space in For You', function () {
+      expect(this.feedIds.contains(this.ids.articlePost)).toBeTrue();
+    });
+
+    it('applies the department filter in the Student space (same as every space)', function () {
+      expect(this.studentSpaceEcon.contains(this.ids.otherPost)).toBeTrue();
+    });
+
+    it('excludes other departments when filtering a space', function () {
+      expect(this.studentSpaceBio.contains(this.ids.otherPost)).toBeFalse();
+    });
+
+    it('lets a member read a post in another space', function () {
+      expect(this.publicDetail.post.space).toBe('FACULTY'); // outsider is a student in Biology
     });
   });
 

@@ -334,5 +334,77 @@
     "rank": 3,
     "score": 64,
     "reason": "Big-tech engineer who can speak to large-company careers"
+  },
+  {
+    "id": "bc_match_clubs_sam",
+    "post": {
+      "id": "bc_post_clubs"
+    },
+    "expert": {
+      "id": "bc_member_ug_sam"
+    },
+    "rank": 1,
+    "score": 88,
+    "reason": "Club president who recruits and mentors new members"
+  },
+  {
+    "id": "bc_match_clubs_marcus",
+    "post": {
+      "id": "bc_post_clubs"
+    },
+    "expert": {
+      "id": "bc_member_ug_marcus"
+    },
+    "rank": 2,
+    "score": 82,
+    "reason": "Engineering club president; balances co-ops and club leadership"
+  },
+  {
+    "id": "bc_match_clubs_emily",
+    "post": {
+      "id": "bc_post_clubs"
+    },
+    "expert": {
+      "id": "bc_member_ug_emily"
+    },
+    "rank": 3,
+    "score": 74,
+    "reason": "Campus ambassador who knows the student organization landscape"
+  },
+  {
+    "id": "bc_match_housing_tyler",
+    "post": {
+      "id": "bc_post_housing"
+    },
+    "expert": {
+      "id": "bc_member_ug_tyler"
+    },
+    "rank": 1,
+    "score": 84,
+    "reason": "Campus ambassador who advises students on housing options"
+  },
+  {
+    "id": "bc_match_housing_alex",
+    "post": {
+      "id": "bc_post_housing"
+    },
+    "expert": {
+      "id": "bc_member_ug_alex"
+    },
+    "rank": 2,
+    "score": 76,
+    "reason": "Economics student focused on personal finance and budgeting"
+  },
+  {
+    "id": "bc_match_housing_emily",
+    "post": {
+      "id": "bc_post_housing"
+    },
+    "expert": {
+      "id": "bc_member_ug_emily"
+    },
+    "rank": 3,
+    "score": 70,
+    "reason": "Campus ambassador familiar with residence hall communities"
   }
 ]

@@ -250,5 +250,53 @@
     "body": "This is really helpful. I'll rewrite my email to name a specific paper before sending it.",
     "isAnonymous": true,
     "createdAt": "2026-11-15T12:00:00Z"
+  },
+  {
+    "id": "bc_reply_clubs_sam",
+    "post": {
+      "id": "bc_post_clubs"
+    },
+    "author": {
+      "id": "bc_member_ug_sam"
+    },
+    "body": "Attend two meetings of each organization before you commit. Choose the one where members build things together and where officers know your name by the second week.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-19T08:45:00Z"
+  },
+  {
+    "id": "bc_reply_clubs_emily",
+    "post": {
+      "id": "bc_post_clubs"
+    },
+    "author": {
+      "id": "bc_member_ug_emily"
+    },
+    "body": "BoilerLink lists meeting times and officer contacts for every registered organization. Many groups also post their weekly commitment, which makes comparisons easier.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-19T09:20:00Z"
+  },
+  {
+    "id": "bc_reply_housing_tyler",
+    "post": {
+      "id": "bc_post_housing"
+    },
+    "author": {
+      "id": "bc_member_ug_tyler"
+    },
+    "body": "Residence halls make it easier to stay connected during sophomore year, while apartments usually cost less over twelve months. Compare the full-year cost, including utilities and parking.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-18T18:10:00Z"
+  },
+  {
+    "id": "bc_reply_housing_alex",
+    "post": {
+      "id": "bc_post_housing"
+    },
+    "author": {
+      "id": "bc_member_ug_alex"
+    },
+    "body": "I built a simple budget comparing both options. An apartment shared with roommates saved me money, but it was worth it only because I could walk to class.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-18T19:30:00Z"
   }
 ]

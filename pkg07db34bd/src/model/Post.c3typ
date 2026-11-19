@@ -20,10 +20,10 @@ entity type Post {
   /** PUBLIC (feeds) or EXPERTS_ONLY (author + matched experts only). */
   visibility: Post.Visibility
 
-  /** Space the AI pipeline routed the post to. */
+  /** Space the AI pipeline routed the post to (questions and articles alike) so no single space gets crowded. */
   space: Post.Space
 
-  /** Department chosen by the AI pipeline (mostly for FACULTY space). */
+  /** Best-fit department chosen by the AI pipeline, in any space (optional). */
   department: string
 
   /** 3–5 lowercase topic tags from the AI pipeline. */
