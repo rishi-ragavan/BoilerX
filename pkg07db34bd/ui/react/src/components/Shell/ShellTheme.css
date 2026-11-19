@@ -73,6 +73,7 @@
   --icon: 20px;
   --icon-lg: 22px;
   --icon-sm: 16px;
+  --logo: 30px; /* Purdue P mark in the nav wordmark */
   --icon-stroke: 1.75;
   --icon-hit: 34px; /* circular hover halo behind action icons */
   --ask-height: 52px;

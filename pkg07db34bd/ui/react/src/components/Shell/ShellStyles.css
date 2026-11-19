@@ -68,10 +68,16 @@
   text-decoration: none;
 }
 
-.bc-wordmark__mark {
-  display: none;
-  width: 30px;
-  text-align: center;
+/* Purdue-style "P" mark before the wordmark; stays visible alone when the nav collapses. */
+.bc-wordmark {
+  gap: var(--space-2);
+}
+
+.bc-logo {
+  width: var(--logo);
+  height: var(--logo);
+  flex-shrink: 0;
+  fill: var(--gold);
 }
 
 .bc-nav__list {
@@ -714,7 +720,6 @@
     display: none;
   }
 
-  .bc-wordmark__mark,
   .bc-ask__icon {
     display: inline;
   }

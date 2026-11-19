@@ -7,6 +7,7 @@ import { Feather, House, Inbox, Mail, User, type LucideIcon } from 'lucide-react
 import { usePersona } from '@/components/Persona/PersonaContext';
 import { PersonaSwitcher } from '@/components/Persona/PersonaSwitcher';
 import { useShell } from '@/components/Shell/ShellContext';
+import { ShellPurdueP } from '@/components/Shell/ShellLogo';
 
 interface NavItem {
   key: string;
@@ -49,10 +50,8 @@ export function ShellNav() {
     <header className="bc-nav">
       <div className="bc-nav__inner">
         <Link to="/" className="bc-wordmark" aria-label="BoilerConnect home">
+          <ShellPurdueP className="bc-wordmark__logo" />
           <span className="bc-wordmark__full">BoilerConnect</span>
-          <span className="bc-wordmark__mark" aria-hidden>
-            B
-          </span>
         </Link>
 
         <nav aria-label="Primary" className="bc-nav__list">
