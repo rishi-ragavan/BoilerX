@@ -154,7 +154,7 @@ describe(filename, function () {
     });
 
     it('keeps students anonymous even when they ask not to be', function () {
-      expect(this.safe.post.author.displayName).toMatch(/^Boiler #[0-9a-f]{4}$/);
+      expect(this.safe.post.author.displayName).toMatch(/^Boiler [0-9a-f]{4}$/);
     });
 
     it('saves at most 5 ExpertMatch rows, ranked in order, without author/unknown/duplicates', function () {
@@ -168,8 +168,12 @@ describe(filename, function () {
       ]);
     });
 
-    it('returns the experts on the PostView', function () {
-      expect(this.safe.post.experts.length).toBe(5);
+    it('returns only the expert count on the PostView', function () {
+      expect(this.safe.post.expertCount).toBe(5);
+    });
+
+    it('does not reveal the tagged experts to the asker', function () {
+      expect(this.safe.post.experts ? this.safe.post.experts.length : 0).toBe(0);
     });
 
     it('falls back to the STUDENT space when the pipeline returns an invalid space', function () {

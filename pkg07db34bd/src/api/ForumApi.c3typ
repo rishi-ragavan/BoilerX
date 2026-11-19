@@ -26,7 +26,9 @@ type ForumApi {
 
   /**
    * Creates a post: builds the expert directory, calls {@link AiPipeline#analyzePost}, blocks unsafe posts
-   * (nothing saved), then saves the post and its {@link ExpertMatch} rows. ARTICLE requires FACULTY or ALUMNI.
+   * (nothing saved), then saves the post and its {@link ExpertMatch} rows. QUESTION requires STUDENT or ALUMNI
+   * (faculty cannot ask questions); ARTICLE requires FACULTY or ALUMNI. The returned PostView carries only the
+   * expert count — never the tagged experts' identities.
    */
   createPost: function(actorId: !string, input: !NewPostInput): CreatePostResult js-server
 

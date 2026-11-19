@@ -12,6 +12,7 @@ export type Space = 'STUDENT' | 'FACULTY' | 'ALUMNI';
 export type FeedTab = 'foryou' | 'students' | 'faculty' | 'alumni' | 'articles';
 
 export interface AuthorView {
+  /** Name, or an anonymous handle: "Boiler a3f1" (no #), "Verified Faculty · Finance", "Verified Alum · Google". */
   displayName: string;
   roleLabel?: string;
   badges?: string[];
@@ -42,7 +43,13 @@ export interface PostView {
   tags?: string[];
   createdAt?: string;
   author: AuthorView;
+  /**
+   * ONLY the viewer's own match (empty unless the viewer was tagged). The list of tagged experts is never sent:
+   * with anonymous 🎯 replies it would reveal who wrote them. Show `expertCount` instead.
+   */
   experts?: ExpertView[];
+  /** Number of experts tagged — the only expert info safe to show everyone. */
+  expertCount?: number;
   likeCount?: number;
   replyCount?: number;
   likedByMe?: boolean;

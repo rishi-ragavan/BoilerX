@@ -36,6 +36,16 @@ pkg07db34bd/
 - `DirectoryEntry` uses **`memberId`** (not `id`), matching `ExpertSuggestion.memberId`.
 - Extras: `AuthorView.memberId` (null when anonymous), `ExpertView.badges`, `MemberView.roleLabel` + `anonByDefault`.
 
+## Product rules (lead decisions, override the lane doc)
+
+- **Formal tone — no `#` anywhere.** Topic tags render as plain chips (`stock market`, not `#stock market`);
+  student handles are **`Boiler a3f1`** (not `Boiler #a3f1`).
+- **Tagged experts are never listed.** `PostView.experts` contains only the *viewer's own* match (for "why you were
+  tagged"); everyone else sees only `PostView.expertCount` ("5 experts tagged"). A public list + anonymous 🎯 replies
+  would de-anonymize the repliers. `createPost` therefore returns only the count, not names.
+- **Faculty cannot ask questions.** `createPost` rejects QUESTION from FACULTY; faculty publish ARTICLEs and reply.
+  Students and alumni ask.
+
 ## UI rules
 
 - The UI calls **only** `ForumApi`, `AiPipeline`, `DmApi` via `ui/react/src/api/boilerApi.ts` — never entity types.

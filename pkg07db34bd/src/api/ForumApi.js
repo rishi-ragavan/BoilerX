@@ -31,7 +31,7 @@ function shortHash(s) {
 }
 
 function anonStudentHandle(memberId, postId) {
-  return 'Boiler #' + shortHash(String(memberId) + String(postId)).substring(0, 4);
+  return 'Boiler ' + shortHash(String(memberId) + String(postId)).substring(0, 4);
 }
 
 function levelLabel(level) {
@@ -207,8 +207,11 @@ function buildPostViews(posts, actorId) {
     var replyAuthors = replies[p.id] || [];
     var expertReplies = replyAuthors.filter(function (a) { return expertSet[a]; }).length;
 
+    // Anonymity: never publish WHO was tagged (it would de-anonymize anonymous expert replies). Everyone gets the
+    // count; a matched expert additionally gets their own entry ("why you were tagged").
     var expertViews = ExpertView.arrayBuilder();
     experts.forEach(function (m) {
+      if (m.expert.id !== actorId) return;
       expertViews.add(
         ExpertView.make({
           memberId: m.expert.id,
@@ -234,6 +237,7 @@ function buildPostViews(posts, actorId) {
       createdAt: p.createdAt,
       author: authorView(p.author, p.id, p.isAnonymous, null),
       experts: expertViews.build(),
+      expertCount: experts.length,
       likeCount: likers.length,
       replyCount: replyAuthors.length,
       likedByMe: likers.indexOf(actorId) >= 0,
@@ -366,6 +370,9 @@ function createPost(actorId, input) {
   var postType = String(input.postType || 'QUESTION').toUpperCase() === 'ARTICLE' ? 'ARTICLE' : 'QUESTION';
   if (postType === 'ARTICLE' && role !== 'FACULTY' && role !== 'ALUMNI') {
     return CreatePostResult.make({ ok: false, error: 'Only faculty and alumni can publish articles.' });
+  }
+  if (postType === 'QUESTION' && role === 'FACULTY') {
+    return CreatePostResult.make({ ok: false, error: 'Faculty can publish articles, but cannot ask questions.' });
   }
   var visibility = String(input.visibility || 'PUBLIC').toUpperCase() === 'EXPERTS_ONLY' ? 'EXPERTS_ONLY' : 'PUBLIC';
   if (!input.title || !String(input.title).trim()) return CreatePostResult.make({ ok: false, error: 'Title is required.' });

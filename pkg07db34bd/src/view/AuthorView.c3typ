@@ -1,6 +1,6 @@
 /**
  * How an author appears on a post or reply. For anonymous items this carries NO id, name, or email — only the
- * handle ("Boiler #a3f1", "Verified Faculty · Finance", "Verified Alum · Google").
+ * handle ("Boiler a3f1", "Verified Faculty · Finance", "Verified Alum · Google").
  */
 type AuthorView {
 

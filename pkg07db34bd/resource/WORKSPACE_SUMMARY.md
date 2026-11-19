@@ -15,9 +15,12 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
   post?, reply?}, Conversation, Message. Enums are nested types (ForumMember.Role, Post.Space, …); values compare as strings.
 - Views (`src/view/`): see README. APIs (`src/api/`): ForumApi (real impl), Verify, Rank (real), AiPipeline (Step 0:
   deterministic fallback only), DmApi (Step 0: hard-coded stubs + real FACULTY-only check).
-- Anonymity: students → `Boiler #` + FNV-1a(memberId+postId)[0..4]; anon faculty "Verified Faculty · {dept}", anon alum
+- Anonymity: students → `Boiler ` + FNV-1a(memberId+postId)[0..4] (NO `#`, formal tone; tags render without `#` too); anon faculty "Verified Faculty · {dept}", anon alum
   "Verified Alum · {employer}". Flair `🎯 Expert: {post.department || tags[0]}` when replier has ExpertMatch.
 - JS gotchas: `removeAll({filter}, true)`; `fetch().objs` may be null → guard; use `Filter.intersects('post.id', strArray)`.
+
+- Lead rules: PostView.experts = ONLY the viewer's own match; everyone sees `expertCount` (tagged list would
+  de-anonymize 🎯 replies). Faculty cannot ask QUESTIONs (createPost rejects); they publish ARTICLEs + reply.
 
 ## Data (`data/`)
 - A1: 35 members (12 UG/4 MS/5 PhD/8 faculty/6 alumni; ids `bc_member_<level>_<name>`, plus `bc_member_ta_jordan`),

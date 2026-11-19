@@ -72,6 +72,8 @@ describe(filename, function () {
     this.inboxIds = ForumApi.inbox(ids.faculty).mapToStr(function (p) { return p.id; });
     this.unverifiedPost = ForumApi.createPost(ids.fakeAlum, NewPostInput.make({ title: 'Should be refused' }));
     this.studentArticle = ForumApi.createPost(ids.student, NewPostInput.make({ title: 'x', postType: 'ARTICLE' }));
+    this.facultyQuestion = ForumApi.createPost(ids.faculty, NewPostInput.make({ title: 'A professor asking' }));
+    this.facultyView = ForumApi.getPost(ids.faculty, ids.publicPost);
   });
 
   afterAll(function () {
@@ -79,8 +81,8 @@ describe(filename, function () {
   });
 
   describe('anonymity stripping', function () {
-    it('shows a student author as "Boiler #" + 4 hex chars', function () {
-      expect(this.publicDetail.post.author.displayName).toMatch(/^Boiler #[0-9a-f]{4}$/);
+    it('shows a student author as "Boiler " + 4 hex chars (no #)', function () {
+      expect(this.publicDetail.post.author.displayName).toMatch(/^Boiler [0-9a-f]{4}$/);
     });
 
     it('never serializes a student author id, name, or email', function () {
@@ -115,6 +117,29 @@ describe(filename, function () {
 
     it('shows a non-anonymous alum by name', function () {
       expect(this.articleDetail.post.author.displayName).toBe('Alan Alum');
+    });
+  });
+
+  describe('tagged-expert anonymity', function () {
+    it('never lists tagged experts to other viewers', function () {
+      expect(this.publicDetail.post.experts ? this.publicDetail.post.experts.length : 0).toBe(0);
+    });
+
+    it('never serializes a tagged expert id or name to other viewers', function () {
+      var json = JSON.stringify(this.publicDetail.post.toJson());
+      ['Testwell', this.ids.faculty].forEach(function (secret) {
+        expect(json.indexOf(secret)).withContext('leaked ' + secret).toBe(-1);
+      });
+    });
+
+    it('still reports how many experts were tagged', function () {
+      expect(this.publicDetail.post.expertCount).toBe(1);
+    });
+
+    it('gives a matched expert only their own entry', function () {
+      expect(this.facultyView.post.experts.mapToStr(function (e) { return e.memberId; }).toJson()).toEqual([
+        this.ids.faculty,
+      ]);
     });
   });
 
@@ -178,6 +203,10 @@ describe(filename, function () {
 
     it('refuses an ARTICLE from a student', function () {
       expect(this.studentArticle.ok).toBeFalse();
+    });
+
+    it('refuses a QUESTION from faculty', function () {
+      expect(this.facultyQuestion.error).toBe('Faculty can publish articles, but cannot ask questions.');
     });
   });
 });
