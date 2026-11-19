@@ -28,7 +28,12 @@ export function DmConversationList({
               }`}
             >
               <IdentityAuthorLine author={c.otherParty} createdAt={c.createdAt} />
-              {c.postTitle && <p className="mt-1 truncate pl-10 text-xs text-muted-foreground">Re: {c.postTitle}</p>}
+              {c.postTitle && (
+                <p className="mt-1 truncate pl-10 text-xs text-muted-foreground">
+                  Re: {c.postTitle}
+                  {c.ended && <span className="ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-[10px]">Ended</span>}
+                </p>
+              )}
               {c.lastMessage && <p className="mt-0.5 line-clamp-2 pl-10 text-sm text-foreground">{c.lastMessage}</p>}
             </Link>
           </li>

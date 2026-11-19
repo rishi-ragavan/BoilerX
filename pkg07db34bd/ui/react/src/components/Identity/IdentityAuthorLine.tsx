@@ -49,8 +49,23 @@ export function anonymousHandle(author: AuthorView): { handle: string; role: str
   return { handle, role: null };
 }
 
-export function IdentityAuthorLine({ author, createdAt }: { author: AuthorView; createdAt?: string }) {
+export function IdentityAuthorLine({
+  author,
+  createdAt,
+  onHandleClick,
+}: {
+  author: AuthorView;
+  createdAt?: string;
+  /** When set, the handle is a button (e.g. a professor clicking a student's handle to DM them). */
+  onHandleClick?: () => void;
+}) {
   const { handle } = anonymousHandle(author);
+  const handleText = (
+    <>
+      {handle}
+      <ShieldCheck className="size-3.5 shrink-0 text-primary" aria-label="Anonymous Purdue member" />
+    </>
+  );
 
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-sm">
@@ -60,10 +75,18 @@ export function IdentityAuthorLine({ author, createdAt }: { author: AuthorView; 
       >
         <ShieldCheck className="size-4" />
       </span>
-      <span className="inline-flex min-w-0 items-center gap-1 truncate font-semibold text-foreground">
-        {handle}
-        <ShieldCheck className="size-3.5 shrink-0 text-primary" aria-label="Anonymous Purdue member" />
-      </span>
+      {onHandleClick ? (
+        <button
+          type="button"
+          aria-haspopup="menu"
+          onClick={onHandleClick}
+          className="inline-flex min-w-0 items-center gap-1 truncate font-semibold text-foreground underline-offset-2 hover:underline"
+        >
+          {handleText}
+        </button>
+      ) : (
+        <span className="inline-flex min-w-0 items-center gap-1 truncate font-semibold text-foreground">{handleText}</span>
+      )}
       <IdentityTag tag={author.tag} />
       <IdentityFlair flair={author.flair} />
       {createdAt && (

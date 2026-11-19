@@ -31,6 +31,11 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
   save no ExpertMatch, show expertCount 0, are forced PUBLIC, and never appear in an inbox); replies grouped with the post space's category first (groupRankFor).
   Anonymous prof/alum display "Purdue professor"/"Purdue alum". AiPipeline.analyzePost 3rd arg = asker ROLE.
 
+- DMs: DmApi.startConversation(actorId, postId, body, replyId?) — any professor who can see the thread → a STUDENT
+  (asker, or the replyId's author); endConversation (initiator only) sets Conversation.endedAt → read-only; restart =
+  new conversation. UI: Dm/DmAuthorLine (click student handle → menu → DmStartDialog); DmThread "End conversation".
+  PostDmButton ("Message asker privately") removed.
+
 ## Data (`data/`)
 - A1: 35 members (12 UG/4 MS/5 PhD/8 faculty/6 alumni; ids `bc_member_<level>_<name>`, plus `bc_member_ta_jordan`),
   12 posts (no articles, no topic tags; `bc_post_rec_letters` is EXPERTS_ONLY), 16 ExpertMatch (profs + alumni only), 23 Reply.

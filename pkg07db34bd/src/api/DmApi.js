@@ -2,9 +2,12 @@
  * DmApi — BoilerConnect private messages (Lane D).
  *
  * Rules (§1.4 + lead "Product rules"):
- *  - Only roles in DM_INITIATOR_ROLES (FACULTY) can START a conversation, and only from a post they were tagged on
- *    (an ExpertMatch exists). The recipient is that post's author. Students can never start one.
- *  - Either participant can reply inside an existing conversation; nobody else can read or write it.
+ *  - Only roles in DM_INITIATOR_ROLES (FACULTY) can START a conversation, from a thread they can see, and only with
+ *    a STUDENT: the question's asker or the author of one of its replies (the professor clicks the handle → DM).
+ *    Students and alumni can never start one.
+ *  - Either participant can reply inside an open conversation; nobody else can read or write it.
+ *  - Only the professor who started it can END it (endedAt); an ended conversation is read-only and is never
+ *    reopened — starting again creates a new conversation.
  *  - Anonymity — product rule: no real names ever reach the frontend. BOTH sides are anonymous in every view:
  *      · a student asker is "Boiler xxxx" (FNV-1a(memberId + postId), the same handle ForumApi shows on that
  *        thread); an alum asker is "Alum · {employer}";
@@ -20,7 +23,7 @@ var MAX_MESSAGES = 1000;
 // Names are never loaded here: nothing in a DM view may carry one.
 var MEMBER_FIELDS = 'id, role, department, employer';
 var CONVERSATION_FIELDS =
-  'id, createdAt, post.id, post.title, ' +
+  'id, createdAt, endedAt, post.id, post.title, ' +
   'initiator.id, initiator.role, initiator.department, initiator.employer, ' +
   'recipient.id, recipient.role, recipient.department, recipient.employer';
 
@@ -105,13 +108,31 @@ function requireOwnConversation(conversationId, actorId) {
 }
 
 function conversationView(conv, actorId, lastMessage, lastAt) {
+  var ended = !!conv.endedAt;
   return ConversationView.make({
     id: conv.id,
     otherParty: otherPartyFor(conv, actorId),
     postTitle: conv.post && conv.post.title ? conv.post.title : null,
     lastMessage: lastMessage || null,
     createdAt: lastAt || conv.createdAt || null,
+    ended: ended,
+    endedAt: conv.endedAt || null,
+    canEnd: !ended && conv.initiator.id === actorId,
   });
+}
+
+function requireOpen(conv) {
+  if (conv.endedAt) throw new Error('This conversation has ended.');
+}
+
+function latestMessage(conversationId) {
+  var res = Message.fetch({
+    filter: Filter.eq('conversation.id', conversationId),
+    include: 'id, body, createdAt',
+    order: 'descending(createdAt)',
+    limit: 1,
+  }).objs;
+  return res && res.length ? res[0] : null;
 }
 
 function messageView(msg, actorId) {
@@ -216,35 +237,48 @@ function getConversation(actorId, conversationId) {
   return b.build();
 }
 
-function startConversation(actorId, postId, body) {
+function startConversation(actorId, postId, body, replyId) {
   var actor = requireMember(actorId);
   if (DM_INITIATOR_ROLES.indexOf(str(actor.role)) < 0) {
     throw new Error('Only professors can start private messages.');
   }
   var text = cleanBody(body);
 
-  var posts = Post.fetch({ filter: Filter.eq('id', postId), include: 'id, title, author.id', limit: 1 }).objs;
+  var posts = Post.fetch({ filter: Filter.eq('id', postId), include: 'id, title, visibility, author.id', limit: 1 }).objs;
   if (!posts || !posts.length) throw new Error('Post not found.');
   var post = posts[0];
-  var recipientId = post.author && post.author.id;
-  if (!recipientId) throw new Error('This post has no author to message.');
-  if (recipientId === actorId) throw new Error('You cannot message yourself.');
 
-  var matched = ExpertMatch.fetchCount({
-    filter: Filter.eq('post.id', postId).and().eq('expert.id', actorId),
-  });
-  if (!matched) throw new Error('You can only message the asker of a question you were tagged on.');
+  // The professor must be able to see the thread: an experts-only question is visible only to the tagged.
+  if (str(post.visibility) === 'EXPERTS_ONLY') {
+    var tagged = ExpertMatch.fetchCount({ filter: Filter.eq('post.id', postId).and().eq('expert.id', actorId) });
+    if (!tagged) throw new Error('Post not found.');
+  }
 
-  // Reuse the (initiator, recipient, post) conversation if it exists.
-  var existing = Conversation.fetch({
-    filter: Filter.eq('initiator.id', actorId).and().eq('recipient.id', recipientId).and().eq('post.id', postId),
-    include: 'id',
-    limit: 1,
-  }).objs;
-  var convId;
-  if (existing && existing.length) {
-    convId = existing[0].id;
+  // The student: the author of the clicked reply (on this post), else the asker.
+  var recipientId;
+  if (replyId) {
+    var replies = Reply.fetch({ filter: Filter.eq('id', replyId), include: 'id, post.id, author.id', limit: 1 }).objs;
+    if (!replies || !replies.length || !replies[0].post || replies[0].post.id !== postId) {
+      throw new Error('Reply not found on this post.');
+    }
+    recipientId = replies[0].author && replies[0].author.id;
   } else {
+    recipientId = post.author && post.author.id;
+  }
+  if (!recipientId) throw new Error('There is no one to message here.');
+  if (recipientId === actorId) throw new Error('You cannot message yourself.');
+  var recipient = requireMember(recipientId);
+  if (str(recipient.role) !== 'STUDENT') throw new Error('Professors can only start private messages with students.');
+
+  // Continue the open (initiator, recipient, post) conversation if there is one; never reopen an ended one.
+  var convId = null;
+  var mine = Conversation.fetch({
+    filter: Filter.eq('initiator.id', actorId).and().eq('recipient.id', recipientId).and().eq('post.id', postId),
+    include: 'id, endedAt',
+    limit: 50,
+  }).objs;
+  if (mine) mine.each(function (c) { if (!convId && !c.endedAt) convId = c.id; });
+  if (!convId) {
     convId = Conversation.make({
       post: { id: postId },
       initiator: { id: actorId },
@@ -258,8 +292,21 @@ function startConversation(actorId, postId, body) {
 
 function sendMessage(actorId, conversationId, body) {
   requireMember(actorId);
-  requireOwnConversation(conversationId, actorId);
+  var conv = requireOwnConversation(conversationId, actorId);
+  requireOpen(conv);
   var text = cleanBody(body);
   var msg = createMessage(conversationId, actorId, text);
   return MessageView.make({ id: msg.id, body: text, createdAt: msg.createdAt || DateTime.now(), isMine: true });
+}
+
+function endConversation(actorId, conversationId) {
+  requireMember(actorId);
+  var conv = requireOwnConversation(conversationId, actorId);
+  if (conv.initiator.id !== actorId) throw new Error('Only the professor who started this conversation can end it.');
+  if (!conv.endedAt) {
+    Conversation.make({ id: conv.id, endedAt: DateTime.now() }).merge();
+    conv = loadConversation(conv.id);
+  }
+  var last = latestMessage(conv.id);
+  return conversationView(conv, actorId, last ? last.body : null, last ? last.createdAt : conv.createdAt);
 }

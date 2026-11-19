@@ -57,6 +57,10 @@ pkg07db34bd/
 - **Anonymity:** students are always `Boiler a3f1` (new handle per thread). Anonymous professors/alumni show as
   `Purdue professor` / `Purdue alum` with their tag + flair. The UI never renders real names. Tagged experts are
   never listed (only `expertCount`).
+- **DMs:** a professor starts one from any thread they can see by clicking a STUDENT's handle (on the question or
+  on a reply) → "Message privately (DM)". Only students can be messaged; students and alumni can't start DMs. The
+  student can reply; only the professor who started it can **End conversation**, after which it is read-only for both
+  (starting again creates a new conversation). Both sides stay anonymous.
 - **Questions only; faculty don't post.** No articles. Faculty answer (and start DMs); students and alumni ask.
 - **Formal tone:** no `#` anywhere.
 

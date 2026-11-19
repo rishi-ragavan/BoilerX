@@ -4,7 +4,8 @@
  */
 import { Lock, MessageCircle } from 'lucide-react';
 import type { PostView } from '@/Interfaces';
-import { IdentityAuthorLine, fullTimestamp } from '@/components/Identity/IdentityAuthorLine';
+import { fullTimestamp } from '@/components/Identity/IdentityAuthorLine';
+import { DmAuthorLine } from '@/components/Dm/DmAuthorLine';
 import { ExpertChips } from '@/components/Expert/ExpertChips';
 import { PostSpacePill } from '@/components/Post/PostSpacePill';
 
@@ -17,7 +18,7 @@ export function PostFocused({ post, replyCount }: PostFocusedProps) {
   return (
     <article className="flex flex-col gap-3 border-b border-border px-4 pt-3 pb-2">
       <div className="flex items-start justify-between gap-2">
-        <IdentityAuthorLine author={post.author} />
+        <DmAuthorLine author={post.author} postId={post.id} postTitle={post.title} isMine={post.isMine} />
         {post.isMine && (
           <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">Your post</span>
         )}

@@ -15,6 +15,15 @@ type ConversationView {
   /** Preview of the latest message. */
   lastMessage: string
 
-  /** When the conversation started. */
+  /** Time of the latest message (or the start). */
   createdAt: datetime
+
+  /** True once the professor ended it; no more messages can be sent. */
+  ended: boolean
+
+  /** When it was ended (null while open). */
+  endedAt: datetime
+
+  /** True when the viewer is the professor who started it and it is still open. */
+  canEnd: boolean
 }

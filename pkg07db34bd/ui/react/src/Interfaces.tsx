@@ -105,6 +105,11 @@ export interface ConversationView {
   postTitle?: string;
   lastMessage?: string;
   createdAt?: string;
+  /** True once the professor ended it: read-only, no more messages. */
+  ended?: boolean;
+  endedAt?: string | null;
+  /** True for the professor who started it while it is still open. */
+  canEnd?: boolean;
 }
 
 export interface MessageView {

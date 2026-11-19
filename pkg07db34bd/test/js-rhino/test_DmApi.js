@@ -27,6 +27,10 @@ describe(filename, function () {
       alum: P + 'alum',
       post: P + 'post',
       alumPost: P + 'post_alum',
+      secretPost: P + 'post_secret',
+      replyStudent: P + 'reply_student',
+      replyProf: P + 'reply_prof',
+      replyElsewhere: P + 'reply_elsewhere',
     });
     var now = DateTime.now();
     TestApi.createBatchEntity(this.ctx, 'ForumMember', [
@@ -46,12 +50,24 @@ describe(filename, function () {
       // Posted NON-anonymously on purpose: DMs must still never show the alum's name.
       { id: ids.alumPost, author: { id: ids.alum }, postType: 'QUESTION', title: 'Alum named question', body: 'b',
         visibility: 'PUBLIC', space: 'ALUMNI', isAnonymous: false, createdAt: now },
+      { id: ids.secretPost, author: { id: ids.student }, postType: 'QUESTION', title: 'Experts-only DM question',
+        body: 'b', visibility: 'EXPERTS_ONLY', space: 'EXPERTS', department: 'Finance', isAnonymous: true,
+        createdAt: now },
+    ]);
+    TestApi.createBatchEntity(this.ctx, 'Reply', [
+      { id: ids.replyStudent, post: { id: ids.post }, author: { id: ids.outsider }, body: 'A student reply',
+        isAnonymous: true, createdAt: now },
+      { id: ids.replyProf, post: { id: ids.post }, author: { id: ids.otherFaculty }, body: 'A professor reply',
+        isAnonymous: true, createdAt: now },
+      { id: ids.replyElsewhere, post: { id: ids.alumPost }, author: { id: ids.outsider }, body: 'Elsewhere',
+        isAnonymous: true, createdAt: now },
     ]);
     TestApi.createBatchEntity(this.ctx, 'ExpertMatch', [
       { id: P + 'm1', post: { id: ids.post }, expert: { id: ids.faculty }, rank: 1, score: 90, reason: 'r' },
       { id: P + 'm2', post: { id: ids.alumPost }, expert: { id: ids.faculty }, rank: 1, score: 80, reason: 'r' },
       // A matched STUDENT expert still cannot start a DM.
       { id: P + 'm3', post: { id: ids.post }, expert: { id: ids.outsider }, rank: 2, score: 70, reason: 'r' },
+      { id: P + 'm4', post: { id: ids.secretPost }, expert: { id: ids.faculty }, rank: 1, score: 90, reason: 'r' },
     ]);
     // Rows created through the API (not TestApi) are removed by filter.
     TestApi.addExternalTeardownFilter(this.ctx, "startsWith(sender.id, '" + P + "')", 'Message', 1000);
@@ -76,9 +92,9 @@ describe(filename, function () {
     expect(err).toContain('Only professors can start private messages.');
   });
 
-  it('rejects a professor who was not tagged on the post', function () {
-    var err = errorOf(function () { DmApi.startConversation(this.ids.otherFaculty, this.ids.post, 'hi'); }.bind(this));
-    expect(err).toContain('tagged');
+  it('rejects an untagged professor on an experts-only question they cannot see', function () {
+    var err = errorOf(function () { DmApi.startConversation(this.ids.otherFaculty, this.ids.secretPost, 'hi'); }.bind(this));
+    expect(err).toContain('Post not found.');
   });
 
   it('rejects an empty message', function () {
@@ -156,11 +172,80 @@ describe(filename, function () {
     expect(json).not.toContain(this.ids.student);
   });
 
-  it('shows an alum asker as "Purdue alum" (Alumni tag) even if they posted under their name', function () {
-    var conv = DmApi.startConversation(this.ids.faculty, this.ids.alumPost, 'Hi alum');
-    var json = JSON.stringify(conv.toJson());
-    expect(json).not.toContain('Ava');
-    expect(conv.otherParty.displayName + '|' + conv.otherParty.tag).toBe('Purdue alum|Alumni');
-    expect(conv.otherParty.memberId).toBeFalsy();
+  it('refuses a DM to an alum asker (professors only message students)', function () {
+    var err = errorOf(function () { DmApi.startConversation(this.ids.faculty, this.ids.alumPost, 'Hi alum'); }.bind(this));
+    expect(err).toContain('only start private messages with students');
+  });
+
+  describe('starting from a reply in the thread, and ending', function () {
+    beforeAll(function () {
+      var ids = this.ids;
+      // Professor clicks the handle of a student who REPLIED in the thread → DM.
+      this.replyConv = DmApi.startConversation(ids.faculty, ids.post, 'About your reply', ids.replyStudent);
+      this.threadReplyHandle = null;
+      var self = this;
+      ForumApi.getPost(ids.faculty, ids.post).replies.each(function (r) {
+        if (r.id === ids.replyStudent) self.threadReplyHandle = r.author.displayName;
+      });
+      this.outsiderList = DmApi.listConversations(ids.outsider).mapToStr(function (c) { return c.id; });
+      // Any professor who can see a public thread can start a DM (no tagging needed).
+      this.anyProf = DmApi.startConversation(ids.otherFaculty, ids.post, 'Happy to help too');
+      this.wrongPostErr = errorOf(function () { DmApi.startConversation(ids.faculty, ids.post, 'x', ids.replyElsewhere); });
+      this.profReplyErr = errorOf(function () { DmApi.startConversation(ids.faculty, ids.post, 'x', ids.replyProf); });
+      this.studentEndErr = errorOf(function () { DmApi.endConversation(ids.outsider, self.replyConv.id); });
+      this.ended = DmApi.endConversation(ids.faculty, this.replyConv.id);
+      this.studentSendErr = errorOf(function () { DmApi.sendMessage(ids.outsider, self.replyConv.id, 'one more'); });
+      this.profSendErr = errorOf(function () { DmApi.sendMessage(ids.faculty, self.replyConv.id, 'one more'); });
+      this.endedReadable = DmApi.getConversation(ids.outsider, this.replyConv.id).length;
+      this.restarted = DmApi.startConversation(ids.faculty, ids.post, 'Starting fresh', ids.replyStudent);
+    });
+
+    it('messages the student who wrote the reply', function () {
+      expect(this.outsiderList.contains(this.replyConv.id)).toBe(true);
+    });
+
+    it("shows that student by the same handle as their reply in the thread", function () {
+      expect(this.replyConv.otherParty.displayName).toBe(this.threadReplyHandle);
+    });
+
+    it('lets any professor start a DM from a public thread', function () {
+      expect(this.anyProf.id).toBeTruthy();
+    });
+
+    it('refuses a reply id from a different post', function () {
+      expect(this.wrongPostErr).toContain('Reply not found on this post.');
+    });
+
+    it("refuses to DM a professor's reply", function () {
+      expect(this.profReplyErr).toContain('only start private messages with students');
+    });
+
+    it('lets only the professor who started it end the conversation', function () {
+      expect(this.studentEndErr).toContain('Only the professor who started this conversation can end it.');
+    });
+
+    it('marks the conversation ended', function () {
+      expect(this.ended.ended + '|' + this.ended.canEnd).toBe('true|false');
+    });
+
+    it('blocks the student from sending after it ended', function () {
+      expect(this.studentSendErr).toContain('This conversation has ended.');
+    });
+
+    it('blocks the professor from sending after it ended', function () {
+      expect(this.profSendErr).toContain('This conversation has ended.');
+    });
+
+    it('keeps an ended conversation readable', function () {
+      expect(this.endedReadable).toBeGreaterThan(0);
+    });
+
+    it('starts a new conversation instead of reopening an ended one', function () {
+      expect(this.restarted.id).not.toBe(this.replyConv.id);
+    });
+
+    it('shows the professor an end option on an open conversation', function () {
+      expect(this.restarted.canEnd).toBe(true);
+    });
   });
 });

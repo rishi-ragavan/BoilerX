@@ -13,7 +13,6 @@ import { usePersona } from '@/components/Persona/PersonaContext';
 import { ShellStatus } from '@/components/Shell/ShellStatus';
 import { PostFocused } from '@/components/Post/PostFocused';
 import { PostLockedNotice, isAccessError } from '@/components/Post/PostLockedNotice';
-import { PostDmButton } from '@/components/Post/PostDmButton';
 import { ReplyCard } from '@/components/Reply/ReplyCard';
 import { ReplyComposer } from '@/components/Reply/ReplyComposer';
 import { REPLY_GROUP_LABEL, insertReply } from '@/components/Reply/replySort';
@@ -39,7 +38,6 @@ function PostDetailBody({ detail }: { detail: PostDetailView }) {
   return (
     <>
       <PostFocused post={post} replyCount={replies.length} />
-      <PostDmButton post={post} />
       <ReplyComposer postId={post.id} onReplied={onReplied} />
       {replies.length === 0 ? (
         <p className="p-6 text-center text-sm text-muted-foreground">No replies yet. Be the first to help.</p>
@@ -51,7 +49,7 @@ function PostDetailBody({ detail }: { detail: PostDetailView }) {
                 {REPLY_GROUP_LABEL[(r.authorGroup ?? 'STUDENT') as ReplyGroup] ?? 'Replies'}
               </h3>
             )}
-            <ReplyCard reply={r} />
+            <ReplyCard reply={r} postId={post.id} postTitle={post.title} />
           </div>
         ))
       )}

@@ -1,7 +1,7 @@
 /*
  * Messages (Lane D), X-DM style. Routes: /messages (list) and /messages/:conversationId (list + open thread).
  * Left: DmApi.listConversations(actingMemberId). Right: DmThread. On narrow screens only one pane shows.
- * No "new message" button anywhere: professors start DMs from a post ("Message asker privately").
+ * No "new message" button anywhere: a professor starts a DM by clicking a student's handle in a thread.
  */
 import { useParams } from 'react-router';
 import { MessageSquareLock } from 'lucide-react';
@@ -19,7 +19,7 @@ function DmEmpty({ isFaculty }: { isFaculty: boolean }) {
       <p className="text-base font-semibold text-foreground">No messages yet</p>
       <p className="max-w-sm text-sm text-muted-foreground">
         {isFaculty
-          ? 'Open a question from "Questions for you" and choose "Message asker privately" to reach the asker.'
+          ? "Open any thread and click a student's handle, then choose \"Message privately (DM)\"."
           : 'Professors can reach out to you here after you post a question.'}
       </p>
     </div>
@@ -29,7 +29,10 @@ function DmEmpty({ isFaculty }: { isFaculty: boolean }) {
 export function DmMessagesPage() {
   const { conversationId } = useParams();
   const { actingMemberId, actingMember } = usePersona();
-  const { data, loading, error } = useApi(() => DmApi.listConversations(actingMemberId), [actingMemberId, conversationId]);
+  const { data, loading, error, reload } = useApi(
+    () => DmApi.listConversations(actingMemberId),
+    [actingMemberId, conversationId]
+  );
   const conversations = data ?? [];
   const selected = conversations.find((c) => c.id === conversationId);
   const isFaculty = actingMember?.role === 'FACULTY';
@@ -51,7 +54,12 @@ export function DmMessagesPage() {
             </div>
             <div className={`min-w-0 flex-1 flex-col ${conversationId ? 'flex' : 'hidden md:flex'}`}>
               {conversationId ? (
-                <DmThread key={`${actingMemberId}:${conversationId}`} conversation={selected} conversationId={conversationId} />
+                <DmThread
+                  key={`${actingMemberId}:${conversationId}`}
+                  conversation={selected}
+                  conversationId={conversationId}
+                  onChanged={reload}
+                />
               ) : (
                 <p className="m-auto px-6 text-center text-sm text-muted-foreground">Select a conversation.</p>
               )}

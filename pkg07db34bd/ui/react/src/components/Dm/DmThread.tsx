@@ -2,10 +2,11 @@
  * One DM thread (Lane D): messages from DmApi.getConversation (oldest first) and a send box (DmApi.sendMessage).
  * Mine = right-aligned blue bubbles; theirs = left-aligned gray. MessageView has no sender identity, only isMine.
  * No realtime (cut from scope): the refresh button re-fetches; switching persona re-fetches automatically.
+ * The professor who started the conversation can END it (DmApi.endConversation): it becomes read-only for both.
  */
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowLeft, LoaderCircle, RefreshCw, SendHorizontal } from 'lucide-react';
+import { ArrowLeft, CircleStop, LoaderCircle, RefreshCw, SendHorizontal } from 'lucide-react';
 import { DmApi } from '@/api/boilerApi';
 import { useApi } from '@/hooks/useApi';
 import { usePersona } from '@/components/Persona/PersonaContext';
@@ -35,7 +36,15 @@ function DmBubble({ message }: { message: MessageView }) {
   );
 }
 
-function DmMessages({ initial, conversationId }: { initial: MessageView[]; conversationId: string }) {
+function DmMessages({
+  initial,
+  conversationId,
+  ended,
+}: {
+  initial: MessageView[];
+  conversationId: string;
+  ended: boolean;
+}) {
   const { actingMemberId } = usePersona();
   const [messages, setMessages] = useState<MessageView[]>(initial);
   const [body, setBody] = useState('');
@@ -72,6 +81,11 @@ function DmMessages({ initial, conversationId }: { initial: MessageView[]; conve
         ))}
         <div ref={endRef} />
       </div>
+      {ended ? (
+        <p role="status" className="border-t border-border px-4 py-3 text-center text-sm text-muted-foreground">
+          This conversation has ended. No more messages can be sent.
+        </p>
+      ) : (
       <form
         className="flex flex-col gap-1 border-t border-border p-2"
         onSubmit={(e) => {
@@ -113,16 +127,47 @@ function DmMessages({ initial, conversationId }: { initial: MessageView[]; conve
           </p>
         )}
       </form>
+      )}
     </>
   );
 }
 
-export function DmThread({ conversation, conversationId }: { conversation?: ConversationView; conversationId: string }) {
+export function DmThread({
+  conversation,
+  conversationId,
+  onChanged,
+}: {
+  conversation?: ConversationView;
+  conversationId: string;
+  /** Called after the conversation was ended so the list can refresh. */
+  onChanged?: () => void;
+}) {
   const { actingMemberId } = usePersona();
   const { data, loading, error, reload } = useApi(
     () => DmApi.getConversation(actingMemberId, conversationId),
     [actingMemberId, conversationId]
   );
+  const [endedLocally, setEndedLocally] = useState(false);
+  const [ending, setEnding] = useState(false);
+  const [endError, setEndError] = useState<string | null>(null);
+  const ended = endedLocally || !!conversation?.ended;
+  const canEnd = !ended && !!conversation?.canEnd;
+
+  const end = async () => {
+    if (!canEnd || ending) return;
+    if (!window.confirm('End this conversation? Neither of you will be able to send more messages.')) return;
+    setEnding(true);
+    setEndError(null);
+    try {
+      await DmApi.endConversation(actingMemberId, conversationId);
+      setEndedLocally(true);
+      onChanged?.();
+    } catch (err) {
+      setEndError(err instanceof Error ? err.message : 'Could not end the conversation');
+    } finally {
+      setEnding(false);
+    }
+  };
 
   return (
     <section aria-label="Conversation" className="flex min-h-0 flex-1 flex-col">
@@ -142,12 +187,37 @@ export function DmThread({ conversation, conversationId }: { conversation?: Conv
             <p className="px-2 text-sm font-semibold text-foreground">Conversation</p>
           )}
         </div>
+        {canEnd && (
+          <button
+            type="button"
+            className="bc-btn bc-btn--outline inline-flex items-center gap-1.5 text-sm"
+            onClick={() => void end()}
+            disabled={ending}
+            title="End this conversation for both of you"
+          >
+            {ending ? <LoaderCircle size={16} className="bc-spin" aria-hidden /> : <CircleStop size={16} aria-hidden />}
+            End conversation
+          </button>
+        )}
+        {ended && <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">Ended</span>}
         <button type="button" aria-label="Refresh" className="bc-iconbtn" onClick={reload}>
           <RefreshCw size={18} aria-hidden />
         </button>
       </header>
+      {endError && (
+        <p role="alert" className="border-b border-border px-4 py-2 text-sm text-destructive">
+          {endError}
+        </p>
+      )}
       <ShellStatus loading={loading} error={error}>
-        {data && <DmMessages key={`${actingMemberId}:${conversationId}:${data.length}`} initial={data} conversationId={conversationId} />}
+        {data && (
+          <DmMessages
+            key={`${actingMemberId}:${conversationId}:${data.length}`}
+            initial={data}
+            conversationId={conversationId}
+            ended={ended}
+          />
+        )}
       </ShellStatus>
     </section>
   );

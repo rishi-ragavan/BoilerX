@@ -44,8 +44,12 @@ export const DmApi = {
     arr(await c3Call<ConversationView[]>('DmApi', 'listConversations', null, [actorId])),
   getConversation: async (actorId: string, conversationId: string): Promise<MessageView[]> =>
     arr(await c3Call<MessageView[]>('DmApi', 'getConversation', null, [actorId, conversationId])),
-  startConversation: (actorId: string, postId: string, body: string) =>
-    c3Call<ConversationView>('DmApi', 'startConversation', null, [actorId, postId, body]),
+  /** Professor → student. `replyId` targets that reply's author; omit it to message the question's asker. */
+  startConversation: (actorId: string, postId: string, body: string, replyId?: string | null) =>
+    c3Call<ConversationView>('DmApi', 'startConversation', null, [actorId, postId, body, replyId ?? null]),
+  /** Only the professor who started it can end it; it becomes read-only. */
+  endConversation: (actorId: string, conversationId: string) =>
+    c3Call<ConversationView>('DmApi', 'endConversation', null, [actorId, conversationId]),
   sendMessage: (actorId: string, conversationId: string, body: string) =>
     c3Call<MessageView>('DmApi', 'sendMessage', null, [actorId, conversationId, body]),
 };

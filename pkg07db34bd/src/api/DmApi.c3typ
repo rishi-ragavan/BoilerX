@@ -1,18 +1,28 @@
 /**
- * BoilerConnect direct messages (owned by Lane D). Only roles in DM_INITIATOR_ROLES (`FACULTY`) can start a
- * conversation; the recipient can only reply inside an existing one. Students are shown by anonymous handle.
+ * BoilerConnect direct messages (owned by Lane D). Only professors (role FACULTY, DM_INITIATOR_ROLES) can start a
+ * conversation, and only with a STUDENT, from a thread they can see: the question's asker or the author of one of
+ * its replies. The student can reply inside it; only the professor can end it, after which it is read-only.
+ * Both sides stay anonymous (students by their thread handle, professors as "Purdue professor").
  */
 type DmApi {
 
-  /** Conversations the actor participates in, newest first. */
+  /** Conversations the actor participates in (open and ended), newest activity first. */
   listConversations: function(actorId: !string): [ConversationView] js-server
 
   /** Messages in a conversation the actor participates in, oldest first. */
   getConversation: function(actorId: !string, conversationId: !string): [MessageView] js-server
 
-  /** Starts a DM with the author of `postId`. Throws unless the actor's role is FACULTY. */
-  startConversation: function(actorId: !string, postId: !string, body: !string): ConversationView js-server
+  /**
+   * Starts (or continues the open) DM between a professor and a student on `postId`. The student is the author of
+   * `replyId` when given (it must be a reply on that post), otherwise the post's author. Throws unless the actor is
+   * a professor who can see the post and the recipient is a student. An ended conversation is never reopened: a new
+   * one is created instead.
+   */
+  startConversation: function(actorId: !string, postId: !string, body: !string, replyId: string): ConversationView js-server
 
-  /** Sends a message in an existing conversation the actor participates in. */
+  /** Sends a message in an open conversation the actor participates in. Throws once the conversation has ended. */
   sendMessage: function(actorId: !string, conversationId: !string, body: !string): MessageView js-server
+
+  /** Ends a conversation. Only the professor who started it can end it; afterwards nobody can send messages. */
+  endConversation: function(actorId: !string, conversationId: !string): ConversationView js-server
 }
