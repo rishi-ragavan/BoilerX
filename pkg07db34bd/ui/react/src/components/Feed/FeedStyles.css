@@ -1,0 +1,344 @@
+/* Feed styles (Lane C): post rows, tabs, department chips, tag filter. Tokens only (ShellTheme.css). */
+
+/* ---- Post row ------------------------------------------------------------------------------------------------ */
+.bc-post {
+  position: relative;
+  display: flex;
+  gap: var(--avatar-gap);
+  padding: var(--row-padding);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.bc-post:hover {
+  background: var(--bg-hover);
+}
+
+.bc-post--new {
+  animation: bc-new-post 2.4s ease-out;
+}
+
+@keyframes bc-new-post {
+  0%,
+  40% {
+    box-shadow: inset 3px 0 0 var(--gold);
+    background: var(--gold-soft);
+  }
+  100% {
+    box-shadow: inset 3px 0 0 transparent;
+    background: transparent;
+  }
+}
+
+.bc-post__content {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Lane D's IdentityAuthorLine: we render the 40px avatar ourselves, so hide its inline one and match X's 15px. */
+.bc-post__author > div {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.bc-post__author > div > span[aria-hidden='true']:first-child {
+  display: none;
+}
+
+/* Raise real controls above the stretched row link. */
+.bc-post__author a,
+.bc-post__author button,
+.bc-post__tag,
+.bc-action {
+  position: relative;
+  z-index: 1;
+}
+
+.bc-post__space {
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+}
+
+.bc-post__article {
+  font-weight: var(--fw-bold);
+  color: var(--gold);
+}
+
+.bc-post__title {
+  margin-top: 2px;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-body);
+  overflow-wrap: anywhere;
+}
+
+.bc-post__title--article {
+  font-size: var(--fs-article-title);
+  line-height: 22px;
+}
+
+.bc-post__link,
+.bc-post__link:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.bc-post__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.bc-app .bc-post__link:focus-visible {
+  outline: none;
+}
+
+.bc-post__link:focus-visible::after {
+  outline: var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.bc-post__body {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+/* Topic chips: formal tone, no '#'. Muted outlined pills that turn gold on hover. */
+.bc-post__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.bc-post__tag {
+  height: 24px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--text-muted);
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-regular);
+  line-height: 22px;
+  transition:
+    color var(--transition),
+    border-color var(--transition);
+}
+
+.bc-post__tag:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.bc-post__tagged {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--gold-soft);
+  color: var(--gold);
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-bold);
+}
+
+/* ---- Action row ---------------------------------------------------------------------------------------------- */
+.bc-post__actions {
+  display: flex;
+  justify-content: space-between;
+  max-width: 425px;
+  margin: var(--space-1) 0 0 calc(-1 * var(--space-2));
+}
+
+.bc-action {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  color: var(--text-muted);
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-regular);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.bc-action:hover {
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.bc-action__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-hit);
+  height: var(--icon-hit);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--transition);
+}
+
+.bc-action:hover .bc-action__icon {
+  background: var(--gold-soft);
+}
+
+.bc-action--static,
+.bc-action--static:hover {
+  cursor: default;
+  color: var(--text-muted);
+}
+
+.bc-action--static:hover .bc-action__icon {
+  background: none;
+}
+
+.bc-action--spacer {
+  pointer-events: none;
+}
+
+.bc-action__count {
+  min-width: 1ch;
+  padding-right: var(--space-3);
+}
+
+/* ---- Tabs ---------------------------------------------------------------------------------------------------- */
+.bc-tabs {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.bc-tab {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  min-width: max-content;
+  height: var(--tab-height);
+  padding: 0 var(--space-4);
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.bc-tab:hover {
+  background: var(--bg-hover-tab);
+}
+
+.bc-tab__label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.bc-tab--active {
+  color: var(--text);
+  font-weight: var(--fw-bold);
+}
+
+.bc-tab--active .bc-tab__label::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: var(--tab-underline);
+  border-radius: var(--radius-pill);
+  background: var(--gold);
+}
+
+/* ---- Department chips + tag filter --------------------------------------------------------------------------- */
+.bc-chips {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  overflow-x: auto;
+  border-top: 1px solid var(--border);
+  scrollbar-width: none;
+}
+
+.bc-chip {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-1);
+  height: 32px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.bc-chip:hover {
+  background: var(--bg-hover-card);
+}
+
+.bc-chip--selected,
+.bc-chip--selected:hover {
+  border-color: transparent;
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.bc-filterbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+}
+
+@media (max-width: 699px) {
+  .bc-tab {
+    padding: 0 var(--space-2);
+  }
+}
+
+/* ---- Home page ----------------------------------------------------------------------------------------------- */
+.bc-home {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.bc-filterbar__tag {
+  color: var(--text);
+}
+
+.bc-home__retry {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-2) 0 var(--space-6);
+}

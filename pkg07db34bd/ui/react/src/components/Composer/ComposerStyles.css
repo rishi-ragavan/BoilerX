@@ -1,0 +1,302 @@
+/* Composer styles (Lane C). Tokens only (ShellTheme.css). */
+
+.bc-composer {
+  display: flex;
+  gap: var(--avatar-gap);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.bc-composer[aria-busy='true'] .bc-composer__title,
+.bc-composer[aria-busy='true'] .bc-composer__body {
+  color: var(--text-muted);
+}
+
+.bc-composer__main {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+}
+
+/* Borderless inputs (override the vendored base input styles). */
+.bc-app .bc-composer__title,
+.bc-app .bc-composer__body {
+  width: 100%;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  outline: none;
+  resize: none;
+}
+
+.bc-app .bc-composer__title {
+  min-height: var(--avatar);
+  padding: var(--space-2) 0;
+  overflow: hidden;
+  font-size: var(--fs-composer);
+  font-weight: var(--fw-regular);
+  line-height: 24px;
+}
+
+.bc-app .bc-composer--expanded .bc-composer__title {
+  font-weight: var(--fw-bold);
+}
+
+.bc-app .bc-composer__body {
+  min-height: 48px;
+  max-height: 50vh;
+  padding: var(--space-1) 0;
+  font-size: var(--fs-composer-body);
+  line-height: 24px;
+  overflow-y: auto;
+}
+
+.bc-composer__title::placeholder,
+.bc-composer__body::placeholder {
+  color: var(--text-muted);
+  font-weight: var(--fw-regular);
+}
+
+.bc-app .bc-composer__title:focus-visible,
+.bc-app .bc-composer__body:focus-visible {
+  outline: none;
+}
+
+.bc-composer__as,
+.bc-composer__refined {
+  margin-top: var(--space-2);
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+}
+
+.bc-composer__as strong {
+  color: var(--text);
+  font-weight: var(--fw-bold);
+}
+
+.bc-composer__working {
+  margin-top: var(--space-2);
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+  animation: bc-pulse 1.6s ease-in-out infinite;
+}
+
+.bc-composer__error {
+  border-bottom: 1px solid var(--border);
+}
+
+.bc-composer__visibility {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.bc-composer__warn {
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+}
+
+.bc-composer__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+}
+
+.bc-composer__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: calc(-1 * var(--space-2));
+}
+
+.bc-composer__post {
+  flex-shrink: 0;
+}
+
+/* Gold icon buttons (like X's media icons). */
+.bc-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: var(--icon-hit);
+  height: var(--icon-hit);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--gold);
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-bold);
+  transition: background-color var(--transition);
+}
+
+.bc-tool:hover:not(:disabled):not([aria-disabled='true']) {
+  background: var(--gold-soft);
+}
+
+.bc-tool--on {
+  background: var(--gold-soft);
+}
+
+.bc-tool--text {
+  padding: 0 var(--space-3);
+}
+
+/* Question / Article segmented pill. */
+.bc-seg {
+  display: inline-flex;
+  height: 28px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+}
+
+.bc-seg__btn {
+  padding: 0 var(--space-3);
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.bc-seg__btn:hover:not(:disabled):not([aria-disabled='true']) {
+  color: var(--text);
+}
+
+.bc-seg__btn--on {
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+/* ---- Visibility menu ----------------------------------------------------------------------------------------- */
+.bc-vis {
+  position: relative;
+}
+
+.bc-vis__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 24px;
+  margin-left: calc(-1 * var(--space-2));
+  padding: 0 var(--space-2);
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--gold);
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  transition: background-color var(--transition);
+}
+
+.bc-vis__trigger:hover:not(:disabled):not([aria-disabled='true']) {
+  background: var(--gold-soft);
+}
+
+.bc-vis__menu {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  z-index: 40;
+  width: 320px;
+  max-width: 80vw;
+  padding: var(--space-3) 0;
+  border-radius: var(--radius-card);
+  background: var(--bg-elevated);
+  box-shadow: var(--menu-shadow);
+}
+
+.bc-vis__menu-title {
+  padding: 0 var(--space-4) var(--space-2);
+  font-weight: var(--fw-bold);
+}
+
+.bc-vis__option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  transition: background-color var(--transition);
+}
+
+.bc-vis__option:hover {
+  background: var(--bg-hover-card);
+}
+
+.bc-vis__option-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--avatar);
+  height: var(--avatar);
+  border-radius: var(--radius-pill);
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.bc-vis__option-text {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.bc-vis__option-label {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+}
+
+.bc-vis__option-desc {
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+}
+
+.bc-vis__check {
+  color: var(--gold);
+}
+
+/* ---- Cold-email placeholder modal ----------------------------------------------------------------------------- */
+.bc-maildraft {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.bc-maildraft__line {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.bc-maildraft__icon {
+  margin-top: 1px;
+  color: var(--gold);
+}
+
+.bc-maildraft__muted {
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+}
