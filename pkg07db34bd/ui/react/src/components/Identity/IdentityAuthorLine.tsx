@@ -1,42 +1,90 @@
 /*
- * "Display name · role · badges · flair · time" line for posts and replies (Lane D owns Identity*; Lane C imports).
- * Badges are hidden for anonymous authors; the server already strips identity, this is belt-and-braces.
+ * Author line for posts, replies, and DMs: avatar · display name · role · badges · 🎯 flair · time.
+ * Lane D owns Identity*; Lane C imports it. Props are frozen: IdentityAuthorLine({ author, createdAt? }).
+ *
+ * Anonymity: when `author.isAnonymous` is true, only displayName (+ roleLabel when it adds information) is shown,
+ * with a verified-shield icon. The name never links to a profile, and badges are never rendered.
+ * The server already strips identity, so this is a second safeguard.
  */
 import { Link } from 'react-router';
+import { ShieldCheck } from 'lucide-react';
 import type { AuthorView } from '@/Interfaces';
 import { IdentityBadge } from '@/components/Identity/IdentityBadge';
 import { IdentityFlair } from '@/components/Identity/IdentityFlair';
 
+/** Compact relative time like X: "now", "5m", "3h", "2d", then "Mar 4". */
+// eslint-disable-next-line react-refresh/only-export-components
 export function timeAgo(iso?: string): string {
   if (!iso) return '';
-  const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+  const t = new Date(iso).getTime();
+  if (Number.isNaN(t)) return '';
+  const diff = (Date.now() - t) / 1000;
   if (diff < 60) return 'now';
   if (diff < 3600) return `${Math.floor(diff / 60)}m`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
-  return `${Math.floor(diff / 86400)}d`;
+  if (diff < 7 * 86400) return `${Math.floor(diff / 86400)}d`;
+  return new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+
+/** Full timestamp, e.g. "3:42 PM · Nov 19, 2026". */
+// eslint-disable-next-line react-refresh/only-export-components
+export function fullTimestamp(iso?: string): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const time = d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  const date = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  return `${time} · ${date}`;
+}
+
+function avatarInitial(author: AuthorView): string {
+  return author.displayName.replace(/^(Prof\.|Dr\.)\s*/, '').charAt(0).toUpperCase() || '?';
 }
 
 export function IdentityAuthorLine({ author, createdAt }: { author: AuthorView; createdAt?: string }) {
-  const initial = author.isAnonymous ? '🚂' : author.displayName.replace(/^Prof\.\s*/, '').charAt(0);
+  const anon = author.isAnonymous;
+  // "Verified Faculty · Finance" already says the role; don't repeat "· Faculty" after it.
+  const showRole = !!author.roleLabel && !(anon && author.displayName.startsWith('Verified'));
+
   return (
-    <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-      <span
-        aria-hidden
-        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-foreground"
-      >
-        {initial}
-      </span>
-      {!author.isAnonymous && author.memberId ? (
-        <Link to={`/profile/${author.memberId}`} className="font-semibold text-foreground hover:underline">
+    <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-sm">
+      {anon ? (
+        <span
+          aria-hidden
+          className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground"
+        >
+          <ShieldCheck className="size-4" />
+        </span>
+      ) : (
+        <span
+          aria-hidden
+          className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-accent-foreground"
+        >
+          {avatarInitial(author)}
+        </span>
+      )}
+
+      {!anon && author.memberId ? (
+        <Link to={`/profile/${author.memberId}`} className="truncate font-semibold text-foreground hover:underline">
           {author.displayName}
         </Link>
       ) : (
-        <span className="font-semibold text-foreground">{author.displayName}</span>
+        <span className="inline-flex items-center gap-1 truncate font-semibold text-foreground">
+          {author.displayName}
+          {anon && (
+            <ShieldCheck className="size-3.5 shrink-0 text-primary" aria-label="Verified Purdue member" />
+          )}
+        </span>
       )}
-      {author.roleLabel && <span className="text-muted-foreground">· {author.roleLabel}</span>}
-      {!author.isAnonymous && author.badges?.map((b) => <IdentityBadge key={b} badge={b} />)}
+
+      {showRole && <span className="text-muted-foreground">· {author.roleLabel}</span>}
+      {!anon && author.badges?.map((b) => <IdentityBadge key={b} badge={b} />)}
       <IdentityFlair flair={author.flair} />
-      {createdAt && <span className="text-muted-foreground">· {timeAgo(createdAt)}</span>}
+      {createdAt && (
+        <time dateTime={createdAt} title={fullTimestamp(createdAt)} className="text-muted-foreground">
+          · {timeAgo(createdAt)}
+        </time>
+      )}
     </div>
   );
 }
