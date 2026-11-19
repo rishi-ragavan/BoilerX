@@ -10,7 +10,7 @@ export function FeedPostCard({ post }: { post: PostView }) {
       <IdentityAuthorLine author={post.author} createdAt={post.createdAt} />
       <Link to={`/post/${post.id}`} className="mt-1 block">
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          {post.postType === 'ARTICLE' ? '📝 Article' : `${post.space ?? ''}${post.department ? ' · ' + post.department : ''}`}
+          {`${post.space ?? ''}${post.department ? ' · ' + post.department : ''}`}
           {post.visibility === 'EXPERTS_ONLY' && (
             <span className="inline-flex items-center gap-1">
               <Lock className="size-3" /> Experts only

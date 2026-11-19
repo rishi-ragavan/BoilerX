@@ -9,7 +9,7 @@ type NewPostInput {
   /** Body. */
   body: string
 
-  /** QUESTION (default) or ARTICLE. */
+  /** Optional; only QUESTION is accepted. */
   postType: string
 
   /** PUBLIC (default) or EXPERTS_ONLY. */

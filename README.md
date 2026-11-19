@@ -53,11 +53,11 @@ pkg07db34bd/
   STUDENT (oldest first within a group); each `ReplyView.authorGroup` says which, so the UI renders a header
   ("Professors", "Alumni", "Students") whenever it changes. Do not re-sort replies in the UI.
 - **Three spaces, identical behavior: Student, Professors (`faculty`), Alumni.** The AI routes every new post
-  (question or article) into one space so no space gets crowded. Each space feed shows all PUBLIC posts routed
+  into one space so no space gets crowded. Each space feed shows all PUBLIC questions routed
   there; `dept` filters any space; For You shows all spaces. Anyone can read and reply in any space (only
   EXPERTS_ONLY posts are restricted). The keyword fallback must route too — never dump everything into Student.
-- **Faculty cannot ask questions.** `createPost` rejects QUESTION from FACULTY; faculty publish ARTICLEs and reply.
-  Students and alumni ask.
+- **No articles.** Every post is a question (`postType` is always QUESTION; there is no Articles tab).
+- **Faculty cannot post.** `createPost` rejects FACULTY; faculty answer (and start DMs). Students and alumni ask.
 
 ## UI rules
 

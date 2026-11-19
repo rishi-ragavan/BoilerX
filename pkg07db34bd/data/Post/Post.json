@@ -37,25 +37,6 @@
     "createdAt": "2026-11-18T20:00:00Z"
   },
   {
-    "id": "bc_post_article_internship",
-    "author": {
-      "id": "bc_member_alum_maya"
-    },
-    "postType": "ARTICLE",
-    "title": "What I wish I knew before my first trading internship",
-    "body": "Three lessons from my summer on a trading desk: learn to explain your reasoning fast, own your mistakes immediately, and keep a daily notebook of what moved the market and why.",
-    "visibility": "PUBLIC",
-    "space": "ALUMNI",
-    "department": "Finance",
-    "tags": [
-      "internships",
-      "quant trading",
-      "career advice"
-    ],
-    "isAnonymous": false,
-    "createdAt": "2026-11-17T15:00:00Z"
-  },
-  {
     "id": "bc_post_ml_lab",
     "author": {
       "id": "bc_member_ug_lily"
@@ -213,25 +194,6 @@
     "isAnonymous": true,
     "createdAt": "2026-11-16T20:00:00Z",
     "department": "Agriculture"
-  },
-  {
-    "id": "bc_post_article_research",
-    "author": {
-      "id": "bc_member_fac_okafor"
-    },
-    "postType": "ARTICLE",
-    "title": "How to write a cold email to a research lab that gets answered",
-    "body": "Most undergrad emails I receive are generic. Name a specific paper from the lab, say what you've built or studied that relates to it, and propose a time-boxed commitment such as ten hours a week this semester.",
-    "visibility": "PUBLIC",
-    "space": "FACULTY",
-    "department": "CS",
-    "tags": [
-      "undergrad research",
-      "research labs",
-      "cold emails"
-    ],
-    "isAnonymous": false,
-    "createdAt": "2026-11-15T09:00:00Z"
   },
   {
     "id": "bc_post_clubs",

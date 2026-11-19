@@ -18,7 +18,7 @@ describe(filename, function () {
       publicPost: P + 'post_public',
       otherPost: P + 'post_other',
       secretPost: P + 'post_secret',
-      articlePost: P + 'post_article',
+      alumPost: P + 'post_alum',
       expertReply: P + 'reply_expert',
       studentReply: P + 'reply_student',
     };
@@ -47,7 +47,7 @@ describe(filename, function () {
       { id: ids.secretPost, author: { id: ids.student }, postType: 'QUESTION', title: 'Experts-only question',
         body: 'b', visibility: 'EXPERTS_ONLY', space: 'FACULTY', department: 'Finance', tags: ['grad school'],
         isAnonymous: true, createdAt: now },
-      { id: ids.articlePost, author: { id: ids.alum }, postType: 'ARTICLE', title: 'Alum article', body: 'b',
+      { id: ids.alumPost, author: { id: ids.alum }, postType: 'QUESTION', title: 'Alum question', body: 'b',
         visibility: 'PUBLIC', space: 'ALUMNI', tags: ['internships'], isAnonymous: false, createdAt: now },
     ]);
     TestApi.createBatchEntity(this.ctx, 'ExpertMatch', [
@@ -66,7 +66,7 @@ describe(filename, function () {
     var self = this;
     this.publicDetail = ForumApi.getPost(ids.outsider, ids.publicPost);
     this.otherDetail = ForumApi.getPost(ids.outsider, ids.otherPost);
-    this.articleDetail = ForumApi.getPost(ids.outsider, ids.articlePost);
+    this.alumDetail = ForumApi.getPost(ids.outsider, ids.alumPost);
     this.replyById = {};
     this.replyOrder = [];
     this.publicDetail.replies.each(function (r) {
@@ -85,7 +85,7 @@ describe(filename, function () {
     this.feedIds = ForumApi.feed(ids.outsider, 'foryou', null).mapToStr(function (p) { return p.id; });
     this.inboxIds = ForumApi.inbox(ids.faculty).mapToStr(function (p) { return p.id; });
     this.unverifiedPost = ForumApi.createPost(ids.fakeAlum, NewPostInput.make({ title: 'Should be refused' }));
-    this.studentArticle = ForumApi.createPost(ids.student, NewPostInput.make({ title: 'x', postType: 'ARTICLE' }));
+    this.articleAttempt = ForumApi.createPost(ids.student, NewPostInput.make({ title: 'x', postType: 'ARTICLE' }));
     this.facultyQuestion = ForumApi.createPost(ids.faculty, NewPostInput.make({ title: 'A professor asking' }));
     this.facultyView = ForumApi.getPost(ids.faculty, ids.publicPost);
   });
@@ -130,7 +130,7 @@ describe(filename, function () {
     });
 
     it('shows a non-anonymous alum by name', function () {
-      expect(this.articleDetail.post.author.displayName).toBe('Alan Alum');
+      expect(this.alumDetail.post.author.displayName).toBe('Alan Alum');
     });
   });
 
@@ -166,12 +166,12 @@ describe(filename, function () {
       expect(this.professorSpace.contains(this.ids.publicPost)).toBeTrue();
     });
 
-    it('shows articles inside their space like any other post', function () {
-      expect(this.alumniSpace.contains(this.ids.articlePost)).toBeTrue();
+    it('shows an alumni-space question in the Alumni space', function () {
+      expect(this.alumniSpace.contains(this.ids.alumPost)).toBeTrue();
     });
 
     it('shows every space in For You', function () {
-      expect(this.feedIds.contains(this.ids.articlePost)).toBeTrue();
+      expect(this.feedIds.contains(this.ids.alumPost)).toBeTrue();
     });
 
     it('applies the department filter in the Student space (same as every space)', function () {
@@ -255,12 +255,12 @@ describe(filename, function () {
       expect(this.unverifiedPost.ok).toBeFalse();
     });
 
-    it('refuses an ARTICLE from a student', function () {
-      expect(this.studentArticle.ok).toBeFalse();
+    it('refuses anything but a question (no articles)', function () {
+      expect(this.articleAttempt.error).toBe('Only questions can be posted.');
     });
 
     it('refuses a QUESTION from faculty', function () {
-      expect(this.facultyQuestion.error).toBe('Faculty can publish articles, but cannot ask questions.');
+      expect(this.facultyQuestion.error).toBe('Faculty answer questions but cannot post them.');
     });
   });
 });

@@ -7,7 +7,7 @@ type PostView {
   /** Post id. */
   id: string
 
-  /** QUESTION or ARTICLE. */
+  /** Always QUESTION. */
   postType: string
 
   /** Title. */

@@ -191,7 +191,7 @@ function buildPostViews(posts, actorId) {
 
   return posts.map(function (p) {
     var pm = matches[p.id] || [];
-    var experts = str(p.postType) === 'ARTICLE' ? [] : pm;
+    var experts = pm;
     var expertSet = expertIdSet(experts);
     var replyAuthors = replies[p.id] || [];
     var expertReplies = replyAuthors.filter(function (a) { return expertSet[a]; }).length;
@@ -273,10 +273,8 @@ function feed(actorId, tab, dept) {
   var t = String(tab || 'foryou').toLowerCase();
   var filter = Filter.eq('visibility', 'PUBLIC');
   if (SPACE_TABS[t]) {
-    // A space: every PUBLIC post the AI routed there, questions and articles alike. All spaces behave identically.
+    // A space: every PUBLIC question the AI routed there. All spaces behave identically.
     filter = filter.and().eq('space', SPACE_TABS[t]);
-  } else if (t === 'articles') {
-    filter = filter.and().eq('postType', 'ARTICLE');
   }
   // 'foryou' (default): every PUBLIC post in every space.
   if (dept) filter = filter.and().eq('department', dept);
@@ -314,7 +312,7 @@ function getPost(actorId, postId) {
   if (!canView(post, actorId, matches)) throw new Error('This post is only visible to its author and matched experts.');
 
   var postView = buildPostViews([post], actorId)[0].view;
-  var expertSet = expertIdSet(str(post.postType) === 'ARTICLE' ? [] : matches);
+  var expertSet = expertIdSet(matches);
   var flairLabel = post.department || (post.tags && post.tags.length ? post.tags[0] : 'this topic');
 
   var replies = [];
@@ -357,12 +355,12 @@ function createPost(actorId, input) {
   var role = str(actor.role);
   if (!isVerified(actor)) return CreatePostResult.make({ ok: false, error: 'Only Purdue members can post.' });
 
-  var postType = String(input.postType || 'QUESTION').toUpperCase() === 'ARTICLE' ? 'ARTICLE' : 'QUESTION';
-  if (postType === 'ARTICLE' && role !== 'FACULTY' && role !== 'ALUMNI') {
-    return CreatePostResult.make({ ok: false, error: 'Only faculty and alumni can publish articles.' });
+  if (input.postType && String(input.postType).toUpperCase() !== 'QUESTION') {
+    return CreatePostResult.make({ ok: false, error: 'Only questions can be posted.' });
   }
-  if (postType === 'QUESTION' && role === 'FACULTY') {
-    return CreatePostResult.make({ ok: false, error: 'Faculty can publish articles, but cannot ask questions.' });
+  var postType = 'QUESTION';
+  if (role === 'FACULTY') {
+    return CreatePostResult.make({ ok: false, error: 'Faculty answer questions but cannot post them.' });
   }
   var visibility = String(input.visibility || 'PUBLIC').toUpperCase() === 'EXPERTS_ONLY' ? 'EXPERTS_ONLY' : 'PUBLIC';
   if (!input.title || !String(input.title).trim()) return CreatePostResult.make({ ok: false, error: 'Title is required.' });
@@ -412,8 +410,8 @@ function createPost(actorId, input) {
     createdAt: DateTime.now(),
   }).create();
 
-  // 4. ExpertMatch rows (validated: known member, not the author, max 5, no duplicates). None for articles.
-  if (postType === 'QUESTION') {
+  // 4. ExpertMatch rows (validated: known member, not the author, max 5, no duplicates).
+  {
     var seen = {};
     var rows = ExpertMatch.arrayBuilder();
     var rank = 0;
@@ -461,7 +459,7 @@ function reply(actorId, postId, body, isAnonymous) {
   }).create();
   ForumMember.make({ id: actorId, reputation: (actor.reputation || 0) + 1 }).merge();
 
-  var isExpert = !!expertIdSet(matches)[actorId] && str(post.postType) !== 'ARTICLE';
+  var isExpert = !!expertIdSet(matches)[actorId];
   var flairLabel = post.department || (post.tags && post.tags.length ? post.tags[0] : 'this topic');
   return ReplyView.make({
     id: r.id,

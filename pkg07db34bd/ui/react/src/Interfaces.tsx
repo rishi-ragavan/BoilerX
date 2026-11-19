@@ -6,14 +6,15 @@
 export type Role = 'STUDENT' | 'FACULTY' | 'ALUMNI';
 export type Level = 'UG' | 'MS' | 'PHD' | 'FACULTY' | 'ALUMNI';
 export type Badge = 'PROFESSOR' | 'TA' | 'CLUB_PRESIDENT' | 'CAMPUS_AMBASSADOR';
-export type PostType = 'QUESTION' | 'ARTICLE';
+/** Only questions exist (articles were removed). */
+export type PostType = 'QUESTION';
 export type Visibility = 'PUBLIC' | 'EXPERTS_ONLY';
 export type Space = 'STUDENT' | 'FACULTY' | 'ALUMNI';
 /**
  * Feed tabs. The three spaces (`students`, `faculty` — alias `professors`, `alumni`) all work the same: each shows
- * every PUBLIC post (questions + articles) the AI routed there, and every tab accepts the optional `dept` filter.
+ * every PUBLIC question the AI routed there, and every tab accepts the optional `dept` filter.
  */
-export type FeedTab = 'foryou' | 'students' | 'faculty' | 'professors' | 'alumni' | 'articles';
+export type FeedTab = 'foryou' | 'students' | 'faculty' | 'professors' | 'alumni';
 
 export interface AuthorView {
   /** Name, or an anonymous handle: "Boiler a3f1" (no #), "Faculty · Finance", "Alum · Google". Never "verified". */

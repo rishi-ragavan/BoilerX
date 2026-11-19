@@ -1,5 +1,5 @@
 /**
- * A forum thread: a question or an article. Never returned to the UI directly — {@link ForumApi} serializes it
+ * A forum thread (always a question). Never returned to the UI directly — {@link ForumApi} serializes it
  * into {@link PostView} with the author identity stripped when anonymous.
  */
 @db(index=['author', 'space', 'postType'])
@@ -8,7 +8,7 @@ entity type Post {
   /** The member who wrote the post. Never exposed to the UI for anonymous posts. */
   author: !ForumMember
 
-  /** QUESTION or ARTICLE (named `postType` because `type` is reserved). */
+  /** Always QUESTION (named `postType` because `type` is reserved). */
   postType: !Post.PostType
 
   /** Post title. */
@@ -20,7 +20,7 @@ entity type Post {
   /** PUBLIC (feeds) or EXPERTS_ONLY (author + matched experts only). */
   visibility: Post.Visibility
 
-  /** Space the AI pipeline routed the post to (questions and articles alike) so no single space gets crowded. */
+  /** Space the AI pipeline routed the post to so no single space gets crowded. */
   space: Post.Space
 
   /** Best-fit department chosen by the AI pipeline, in any space (optional). */

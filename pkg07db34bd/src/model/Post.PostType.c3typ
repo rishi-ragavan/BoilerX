@@ -1,13 +1,9 @@
 /**
- * The kind of a {@link Post}.
+ * The kind of a {@link Post}. Only questions exist (articles were removed from the product).
  */
 enum type Post.PostType {
   /**
-   * A question; gets AI routing and expert matching.
+   * A question; gets AI routing into a space and expert matching.
    */
-  QUESTION,
-  /**
-   * An article by FACULTY or ALUMNI; safety check + tags only, no expert matching.
-   */
-  ARTICLE
+  QUESTION
 }

@@ -12,7 +12,6 @@ const TABS: { id: FeedTab; label: string }[] = [
   { id: 'students', label: 'Students' },
   { id: 'faculty', label: 'Faculty' },
   { id: 'alumni', label: 'Alumni' },
-  { id: 'articles', label: 'Articles' },
 ];
 
 export function HomePage() {

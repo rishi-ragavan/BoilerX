@@ -228,30 +228,6 @@
     "createdAt": "2026-11-17T08:30:00Z"
   },
   {
-    "id": "bc_reply_article_internship_ethan",
-    "post": {
-      "id": "bc_post_article_internship"
-    },
-    "author": {
-      "id": "bc_member_ug_ethan"
-    },
-    "body": "The daily market notebook idea is great, starting one this week for my paper portfolio.",
-    "isAnonymous": true,
-    "createdAt": "2026-11-17T18:20:00Z"
-  },
-  {
-    "id": "bc_reply_article_research_aisha",
-    "post": {
-      "id": "bc_post_article_research"
-    },
-    "author": {
-      "id": "bc_member_ug_aisha"
-    },
-    "body": "This is really helpful. I'll rewrite my email to name a specific paper before sending it.",
-    "isAnonymous": true,
-    "createdAt": "2026-11-15T12:00:00Z"
-  },
-  {
     "id": "bc_reply_clubs_sam",
     "post": {
       "id": "bc_post_clubs"

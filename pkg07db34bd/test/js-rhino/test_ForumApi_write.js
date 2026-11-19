@@ -101,11 +101,7 @@ describe(filename, function () {
     );
     this.safeMatches = this.safe.ok ? matchesFor(this.safe.post.id) : [];
     this.badSpace = ForumApi.createPost(ids.student, NewPostInput.make({ title: 'BADSPACE question', body: P }));
-    this.article = ForumApi.createPost(
-      ids.alum,
-      NewPostInput.make({ title: 'ARTICLE lessons from Google', postType: 'ARTICLE', isAnonymous: false, body: P })
-    );
-    this.articleMatches = this.article.ok ? matchesFor(this.article.post.id) : [];
+    this.alumQuestion = ForumApi.createPost(ids.alum, NewPostInput.make({ title: 'SAFE alum question', body: P }));
     this.unverified = ForumApi.createPost(ids.fakeAlum, NewPostInput.make({ title: 'SAFE from an unverified alum', body: P }));
 
     // Replies
@@ -174,12 +170,8 @@ describe(filename, function () {
       expect(this.badSpace.post.space).toBe('STUDENT');
     });
 
-    it('lets alumni publish articles', function () {
-      expect(this.article.ok).toBeTrue();
-    });
-
-    it('saves no expert matches for articles', function () {
-      expect(this.articleMatches.length).toBe(0);
+    it('lets alumni ask questions', function () {
+      expect(this.alumQuestion.ok).toBeTrue();
     });
 
     it('refuses members who never passed the gate', function () {

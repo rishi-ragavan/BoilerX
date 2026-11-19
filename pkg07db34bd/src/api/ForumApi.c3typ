@@ -13,8 +13,8 @@ type ForumApi {
 
   /**
    * Ranked feed. Three spaces that all work the same: `students` | `faculty` (alias `professors`) | `alumni` — each
-   * shows every PUBLIC post (questions and articles) that {@link AiPipeline#analyzePost} routed there. `foryou` shows
-   * every PUBLIC post across spaces; `articles` every PUBLIC article. `dept` (optional) filters any tab. Anyone can
+   * shows every PUBLIC question that {@link AiPipeline#analyzePost} routed there. `foryou` shows every PUBLIC
+   * question across spaces. `dept` (optional) filters any tab. Anyone can
    * read and reply in any space; EXPERTS_ONLY posts never appear in feeds. Sorted by
    * `hot = (replies + 2·expertReplies + 1) / (hoursSincePost + 2)^1.5`.
    */
@@ -32,8 +32,8 @@ type ForumApi {
 
   /**
    * Creates a post: builds the expert directory, calls {@link AiPipeline#analyzePost}, blocks unsafe posts
-   * (nothing saved), then saves the post and its {@link ExpertMatch} rows. QUESTION requires STUDENT or ALUMNI
-   * (faculty cannot ask questions); ARTICLE requires FACULTY or ALUMNI. The returned PostView carries only the
+   * (nothing saved), then saves the question and its {@link ExpertMatch} rows. Only STUDENT and ALUMNI can post
+   * (faculty answer, they never ask); there are no articles. The returned PostView carries only the
    * expert count — never the tagged experts' identities.
    */
   createPost: function(actorId: !string, input: !NewPostInput): CreatePostResult js-server
