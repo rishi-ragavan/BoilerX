@@ -1,43 +1,37 @@
 /*
- * Reply box on the post detail page (Lane D). Calls ForumApi.reply(actorId, postId, body, isAnonymous).
- * Anonymity: students are always anonymous (toggle locked on); faculty/alumni default to their anonByDefault.
- * Anyone on the platform can reply to any question in any space.
+ * Reply box on the post detail page (Lane D). Calls ForumApi.reply(actorId, postId, body, isAnonymous=true).
+ * Product rule: every reply is anonymous for every role, so experts can answer without reputation pressure.
+ * There is no anonymity toggle; the box just tells you how you'll appear.
  */
 import { useState } from 'react';
-import { Lock, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ForumApi } from '@/api/boilerApi';
 import { usePersona } from '@/components/Persona/PersonaContext';
-import type { ReplyView } from '@/Interfaces';
+import type { MemberView, ReplyView } from '@/Interfaces';
 
 const MAX_LEN = 4000;
 
+function appearsAs(m: MemberView | null): string {
+  if (!m) return 'an anonymous member';
+  if (m.role === 'FACULTY') return `Expert${m.department ? ` · ${m.department}` : ''}`;
+  if (m.role === 'ALUMNI') return `Alum${m.employer ? ` · ${m.employer}` : ''}`;
+  return 'Boiler ····, a handle unique to this thread';
+}
+
 export function ReplyComposer({ postId, onReplied }: { postId: string; onReplied: (reply: ReplyView) => void }) {
   const { actingMemberId, actingMember } = usePersona();
-  const isStudent = actingMember?.role === 'STUDENT';
   const [body, setBody] = useState('');
-  const [anonChoice, setAnonChoice] = useState<boolean | null>(null);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const isAnonymous = isStudent ? true : (anonChoice ?? !!actingMember?.anonByDefault);
   const canSend = body.trim().length > 0 && !sending;
-  const anonLabel = isStudent ? (
-    <>
-      <Lock className="size-3" /> Students always reply anonymously
-    </>
-  ) : (
-    <>
-      <ShieldCheck className="size-3" /> Reply anonymously
-    </>
-  );
 
   const submit = async () => {
     if (!canSend) return;
     setSending(true);
     setError(null);
     try {
-      const reply = await ForumApi.reply(actingMemberId, postId, body.trim(), isAnonymous);
+      const reply = await ForumApi.reply(actingMemberId, postId, body.trim(), true);
       onReplied(reply);
       setBody('');
     } catch (err) {
@@ -71,22 +65,10 @@ export function ReplyComposer({ postId, onReplied }: { postId: string; onReplied
         className="w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-[15px] text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
       />
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="inline-flex items-center gap-2 text-xs">
-          <input
-            id="reply-anon"
-            type="checkbox"
-            checked={isAnonymous}
-            disabled={isStudent}
-            onChange={(e) => setAnonChoice(e.target.checked)}
-            className="size-4 accent-current"
-          />
-          <label
-            htmlFor="reply-anon"
-            className={`inline-flex items-center gap-1 ${isStudent ? 'text-muted-foreground' : 'cursor-pointer text-foreground'}`}
-          >
-            {anonLabel}
-          </label>
-        </div>
+        <p className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+          <ShieldCheck className="size-3.5 shrink-0" aria-hidden />
+          Anonymous. You appear as <span className="font-semibold text-foreground">{appearsAs(actingMember)}</span>
+        </p>
         <Button type="submit" size="sm" className="rounded-full px-4" disabled={!canSend}>
           {sending ? 'Replying…' : 'Reply'}
         </Button>

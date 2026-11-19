@@ -1,15 +1,15 @@
 /*
- * Author line for posts, replies, and DMs: avatar · display name · role · badges · 🎯 flair · time.
+ * Author line for posts, replies, and DMs: anonymous avatar · handle · role · 🎯 flair · time.
  * Lane D owns Identity*; Lane C imports it. Props are frozen: IdentityAuthorLine({ author, createdAt? }).
  *
- * Anonymity: when `author.isAnonymous` is true, only displayName (+ roleLabel when it adds information) is shown,
- * with a verified-shield icon. The name never links to a profile, and badges are never rendered.
- * The server already strips identity, so this is a second safeguard.
+ * Product rule: the frontend NEVER shows a real name. Names exist only on the backend for Purdue identity checks.
+ *  - Anonymous authors show their handle ("Boiler a3f1", "Expert · Finance", "Alum · Google").
+ *  - If the API ever sends a named author (isAnonymous=false), the name is NOT rendered: we fall back to the
+ *    role label ("Expert · Finance"), so a server regression can't leak a name.
+ *  - No profile links and no badges (a "Professor" badge next to a department narrows who it is).
  */
-import { Link } from 'react-router';
 import { ShieldCheck } from 'lucide-react';
 import type { AuthorView } from '@/Interfaces';
-import { IdentityBadge } from '@/components/Identity/IdentityBadge';
 import { IdentityFlair } from '@/components/Identity/IdentityFlair';
 
 /** Compact relative time like X: "now", "5m", "3h", "2d", then "Mar 4". */
@@ -37,48 +37,32 @@ export function fullTimestamp(iso?: string): string {
   return `${time} · ${date}`;
 }
 
-function avatarInitial(author: AuthorView): string {
-  return author.displayName.replace(/^(Prof\.|Dr\.)\s*/, '').charAt(0).toUpperCase() || '?';
+/**
+ * The only text the UI may show for a person: their anonymous handle, never a real name.
+ * Lane C: use this for avatars/labels too (e.g. ShellAvatar) instead of `author.displayName`.
+ */
+// eslint-disable-next-line react-refresh/only-export-components
+export function anonymousHandle(author: AuthorView): { handle: string; role: string | null } {
+  if (author.isAnonymous) return { handle: author.displayName, role: author.roleLabel ?? null };
+  return { handle: author.roleLabel || 'Purdue member', role: null };
 }
 
 export function IdentityAuthorLine({ author, createdAt }: { author: AuthorView; createdAt?: string }) {
-  const anon = author.isAnonymous;
-  // Anonymous handles ("Expert · Finance", "Alum · Google") already carry the role; the API sends no roleLabel then.
-  const showRole = !!author.roleLabel;
+  const { handle, role } = anonymousHandle(author);
 
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-sm">
-      {anon ? (
-        <span
-          aria-hidden
-          className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground"
-        >
-          <ShieldCheck className="size-4" />
-        </span>
-      ) : (
-        <span
-          aria-hidden
-          className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-accent-foreground"
-        >
-          {avatarInitial(author)}
-        </span>
-      )}
-
-      {!anon && author.memberId ? (
-        <Link to={`/profile/${author.memberId}`} className="truncate font-semibold text-foreground hover:underline">
-          {author.displayName}
-        </Link>
-      ) : (
-        <span className="inline-flex items-center gap-1 truncate font-semibold text-foreground">
-          {author.displayName}
-          {anon && (
-            <ShieldCheck className="size-3.5 shrink-0 text-primary" aria-label="Anonymous Purdue member" />
-          )}
-        </span>
-      )}
-
-      {showRole && <span className="text-muted-foreground">· {author.roleLabel}</span>}
-      {!anon && author.badges?.map((b) => <IdentityBadge key={b} badge={b} />)}
+      <span
+        aria-hidden
+        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground"
+      >
+        <ShieldCheck className="size-4" />
+      </span>
+      <span className="inline-flex min-w-0 items-center gap-1 truncate font-semibold text-foreground">
+        {handle}
+        <ShieldCheck className="size-3.5 shrink-0 text-primary" aria-label="Anonymous Purdue member" />
+      </span>
+      {role && <span className="text-muted-foreground">· {role}</span>}
       <IdentityFlair flair={author.flair} />
       {createdAt && (
         <time dateTime={createdAt} title={fullTimestamp(createdAt)} className="text-muted-foreground">
