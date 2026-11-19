@@ -8,10 +8,317 @@
     "verified": true,
     "department": "Economics",
     "bio": "Sophomore in Economics who loves markets and data. Treasurer of a student investing club and hunting for a first research role.",
-    "tags": ["investing", "economics", "student clubs", "personal finance"],
+    "tags": [
+      "investing",
+      "economics",
+      "student clubs",
+      "personal finance"
+    ],
     "badges": [],
     "anonByDefault": true,
     "reputation": 2
+  },
+  {
+    "id": "bc_member_ug_sam",
+    "name": "Sam Patel",
+    "email": "spatel42@purdue.edu",
+    "role": "STUDENT",
+    "level": "UG",
+    "verified": true,
+    "department": "CS",
+    "bio": "Junior in Computer Science and president of Purdue Hackers. I spend most weekends building side projects and prepping for SWE interviews.",
+    "tags": [
+      "software engineering",
+      "internships",
+      "hackathons",
+      "student clubs",
+      "interview prep"
+    ],
+    "badges": [
+      "CLUB_PRESIDENT"
+    ],
+    "anonByDefault": true,
+    "reputation": 7
+  },
+  {
+    "id": "bc_member_ug_emily",
+    "name": "Emily Nguyen",
+    "email": "enguyen7@purdue.edu",
+    "role": "STUDENT",
+    "level": "UG",
+    "verified": true,
+    "department": "Biology",
+    "bio": "Sophomore in Biological Sciences and a Purdue campus ambassador. I give admitted-student tours and am trying to land my first wet-lab position.",
+    "tags": [
+      "campus life",
+      "pre-med",
+      "biology",
+      "student orgs",
+      "undergrad research"
+    ],
+    "badges": [
+      "CAMPUS_AMBASSADOR"
+    ],
+    "anonByDefault": true,
+    "reputation": 6
+  },
+  {
+    "id": "bc_member_ug_marcus",
+    "name": "Marcus Johnson",
+    "email": "mjohns88@purdue.edu",
+    "role": "STUDENT",
+    "level": "UG",
+    "verified": true,
+    "department": "ME",
+    "bio": "Senior in Mechanical Engineering and president of Purdue Formula SAE. I love powertrain design and am weighing co-op offers.",
+    "tags": [
+      "co-ops",
+      "powertrain",
+      "cad design",
+      "student clubs",
+      "automotive"
+    ],
+    "badges": [
+      "CLUB_PRESIDENT"
+    ],
+    "anonByDefault": true,
+    "reputation": 8
+  },
+  {
+    "id": "bc_member_ug_aisha",
+    "name": "Aisha Bello",
+    "email": "abello3@purdue.edu",
+    "role": "STUDENT",
+    "level": "UG",
+    "verified": true,
+    "department": "ECE",
+    "bio": "Junior in Electrical and Computer Engineering focused on embedded systems. Thinking hard about whether to go straight into a master's program.",
+    "tags": [
+      "embedded systems",
+      "circuits",
+      "grad school",
+      "signal processing"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 3
+  },
+  {
+    "id": "bc_member_ug_tyler",
+    "name": "Tyler Brooks",
+    "email": "tbrooks5@purdue.edu",
+    "role": "STUDENT",
+    "level": "UG",
+    "verified": true,
+    "department": "Agriculture",
+    "bio": "Senior in Agricultural Systems Management and a College of Agriculture ambassador. I grew up on a corn farm in Tipton County and am into precision ag.",
+    "tags": [
+      "precision agriculture",
+      "campus life",
+      "startups",
+      "career advice",
+      "farm management"
+    ],
+    "badges": [
+      "CAMPUS_AMBASSADOR"
+    ],
+    "anonByDefault": true,
+    "reputation": 5
+  },
+  {
+    "id": "bc_member_ug_sofia",
+    "name": "Sofia Martinez",
+    "email": "smarti92@purdue.edu",
+    "role": "STUDENT",
+    "level": "UG",
+    "verified": true,
+    "department": "Psychology",
+    "bio": "Junior in Psychological Sciences working in a cognition lab. I plan to apply to clinical psychology PhD programs next fall.",
+    "tags": [
+      "clinical psychology",
+      "grad school",
+      "undergrad research",
+      "cognition"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 4
+  },
+  {
+    "id": "bc_member_ug_ethan",
+    "name": "Ethan Park",
+    "email": "epark21@purdue.edu",
+    "role": "STUDENT",
+    "level": "UG",
+    "verified": true,
+    "department": "Finance",
+    "bio": "Sophomore in Finance at the Daniels School of Business. I manage a small paper-trading portfolio and want to learn corporate valuation.",
+    "tags": [
+      "investing",
+      "valuation",
+      "personal finance",
+      "internships"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 2
+  },
+  {
+    "id": "bc_member_ug_hannah",
+    "name": "Hannah Kim",
+    "email": "hkim63@purdue.edu",
+    "role": "STUDENT",
+    "level": "UG",
+    "verified": true,
+    "department": "Chemistry",
+    "bio": "Junior in Chemistry with an interest in organic synthesis. Planning to apply to chemistry graduate programs.",
+    "tags": [
+      "organic chemistry",
+      "grad school",
+      "lab skills",
+      "recommendation letters"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 3
+  },
+  {
+    "id": "bc_member_ug_noah",
+    "name": "Noah Williams",
+    "email": "nwilli17@purdue.edu",
+    "role": "STUDENT",
+    "level": "UG",
+    "verified": true,
+    "department": "Industrial Engineering",
+    "bio": "Sophomore in Industrial Engineering who enjoys optimization and supply chains. Currently learning Python and SQL on the side.",
+    "tags": [
+      "supply chain",
+      "optimization",
+      "python",
+      "internships"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 1
+  },
+  {
+    "id": "bc_member_ug_lily",
+    "name": "Lily Zhang",
+    "email": "lzhang88@purdue.edu",
+    "role": "STUDENT",
+    "level": "UG",
+    "verified": true,
+    "department": "CS",
+    "bio": "Sophomore in Computer Science with a growing interest in deep learning. I'm looking for my first undergraduate research position.",
+    "tags": [
+      "machine learning",
+      "python",
+      "undergrad research",
+      "data science"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 3
+  },
+  {
+    "id": "bc_member_ug_omar",
+    "name": "Omar Haddad",
+    "email": "ohaddad@purdue.edu",
+    "role": "STUDENT",
+    "level": "UG",
+    "verified": true,
+    "department": "ECE",
+    "bio": "Freshman in First-Year Engineering planning to major in ECE. I tinker with Arduino and robotics in my dorm at Wiley.",
+    "tags": [
+      "robotics",
+      "first-year engineering",
+      "arduino",
+      "campus life"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 0
+  },
+  {
+    "id": "bc_member_ta_jordan",
+    "name": "Jordan Lee",
+    "email": "jlee@purdue.edu",
+    "role": "STUDENT",
+    "level": "MS",
+    "verified": true,
+    "department": "CS",
+    "bio": "MS student in Computer Science and a CS 251 TA. I work on machine learning systems and like helping people debug.",
+    "tags": [
+      "data structures",
+      "machine learning",
+      "python",
+      "teaching"
+    ],
+    "badges": [
+      "TA"
+    ],
+    "anonByDefault": true,
+    "reputation": 9
+  },
+  {
+    "id": "bc_member_ms_rahul",
+    "name": "Rahul Mehta",
+    "email": "rmehta12@purdue.edu",
+    "role": "STUDENT",
+    "level": "MS",
+    "verified": true,
+    "department": "ECE",
+    "bio": "MS student in ECE working on VLSI design and a TA for ECE 270. I came straight from undergrad and am happy to share how it went.",
+    "tags": [
+      "vlsi",
+      "grad school",
+      "digital design",
+      "teaching",
+      "semiconductors"
+    ],
+    "badges": [
+      "TA"
+    ],
+    "anonByDefault": true,
+    "reputation": 11
+  },
+  {
+    "id": "bc_member_ms_grace",
+    "name": "Grace Okonkwo",
+    "email": "gokonkwo@purdue.edu",
+    "role": "STUDENT",
+    "level": "MS",
+    "verified": true,
+    "department": "ME",
+    "bio": "MS student in Mechanical Engineering at Ray W. Herrick Labs studying thermal systems. I did two co-op rotations before starting grad school.",
+    "tags": [
+      "co-ops",
+      "thermal systems",
+      "hvac",
+      "grad school"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 8
+  },
+  {
+    "id": "bc_member_ms_daniel",
+    "name": "Daniel Schmidt",
+    "email": "dschmid4@purdue.edu",
+    "role": "STUDENT",
+    "level": "MS",
+    "verified": true,
+    "department": "Agriculture",
+    "bio": "MS student in Agricultural and Biological Engineering building sensor networks for crop monitoring. I work part-time with a West Lafayette ag-tech startup.",
+    "tags": [
+      "precision agriculture",
+      "iot sensors",
+      "startups",
+      "data analysis"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 7
   },
   {
     "id": "bc_member_phd_priya",
@@ -22,10 +329,97 @@
     "verified": true,
     "department": "Industrial Engineering",
     "bio": "Fourth-year PhD student in financial engineering. I build stochastic models of equity markets and mentor undergrads in our lab.",
-    "tags": ["financial engineering", "stock market", "quantitative finance", "stochastic models", "research labs"],
+    "tags": [
+      "financial engineering",
+      "stock market",
+      "quantitative finance",
+      "stochastic models",
+      "research labs"
+    ],
     "badges": [],
     "anonByDefault": true,
     "reputation": 14
+  },
+  {
+    "id": "bc_member_phd_wei",
+    "name": "Wei Liu",
+    "email": "wliu327@purdue.edu",
+    "role": "STUDENT",
+    "level": "PHD",
+    "verified": true,
+    "department": "CS",
+    "bio": "Third-year PhD student in Computer Science working on computer vision. I TA CS 373 and onboard new undergrads in our ML lab.",
+    "tags": [
+      "machine learning",
+      "computer vision",
+      "deep learning",
+      "teaching",
+      "undergrad mentoring"
+    ],
+    "badges": [
+      "TA"
+    ],
+    "anonByDefault": true,
+    "reputation": 16
+  },
+  {
+    "id": "bc_member_phd_olivia",
+    "name": "Olivia Grant",
+    "email": "ogrant@purdue.edu",
+    "role": "STUDENT",
+    "level": "PHD",
+    "verified": true,
+    "department": "Biology",
+    "bio": "Fifth-year PhD candidate in Biological Sciences studying plant immunity. I have trained more than a dozen undergrads at the bench.",
+    "tags": [
+      "molecular biology",
+      "wet lab",
+      "undergrad mentoring",
+      "plant biology",
+      "grad school"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 17
+  },
+  {
+    "id": "bc_member_phd_kenji",
+    "name": "Kenji Watanabe",
+    "email": "kwatanab@purdue.edu",
+    "role": "STUDENT",
+    "level": "PHD",
+    "verified": true,
+    "department": "Economics",
+    "bio": "Third-year PhD student in Economics studying monetary policy transmission. I teach recitations for ECON 252.",
+    "tags": [
+      "macroeconomics",
+      "econometrics",
+      "monetary policy",
+      "grad school",
+      "stata"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 12
+  },
+  {
+    "id": "bc_member_phd_nadia",
+    "name": "Nadia Rahman",
+    "email": "nrahman2@purdue.edu",
+    "role": "STUDENT",
+    "level": "PHD",
+    "verified": true,
+    "department": "Psychology",
+    "bio": "Fourth-year PhD student in Clinical Psychology. I went through the application cycle twice and love demystifying it for undergrads.",
+    "tags": [
+      "clinical psychology",
+      "grad school",
+      "phd applications",
+      "mental health"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 15
   },
   {
     "id": "bc_member_fac_chen",
@@ -36,10 +430,164 @@
     "verified": true,
     "department": "Finance",
     "bio": "Associate Professor of Finance at Daniels School of Business. My research covers empirical asset pricing and stock market anomalies.",
-    "tags": ["stock market", "quantitative finance", "asset pricing", "research labs", "grad school"],
-    "badges": ["PROFESSOR"],
+    "tags": [
+      "stock market",
+      "quantitative finance",
+      "asset pricing",
+      "research labs",
+      "grad school"
+    ],
+    "badges": [
+      "PROFESSOR"
+    ],
     "anonByDefault": false,
     "reputation": 31
+  },
+  {
+    "id": "bc_member_fac_okafor",
+    "name": "Prof. Chidi Okafor",
+    "email": "cokafor@purdue.edu",
+    "role": "FACULTY",
+    "level": "FACULTY",
+    "verified": true,
+    "department": "CS",
+    "bio": "Professor of Computer Science leading a machine learning lab focused on robust deep learning. I hire several undergraduate researchers every semester.",
+    "tags": [
+      "machine learning",
+      "deep learning",
+      "undergrad research",
+      "grad school",
+      "ai ethics"
+    ],
+    "badges": [
+      "PROFESSOR"
+    ],
+    "anonByDefault": false,
+    "reputation": 34
+  },
+  {
+    "id": "bc_member_fac_ramirez",
+    "name": "Prof. Elena Ramirez",
+    "email": "eramirez@purdue.edu",
+    "role": "FACULTY",
+    "level": "FACULTY",
+    "verified": true,
+    "department": "Biology",
+    "bio": "Associate Professor of Biological Sciences studying microbial genetics. My lab in Hansen Life Sciences welcomes undergrads with no prior experience.",
+    "tags": [
+      "microbiology",
+      "genetics",
+      "undergrad research",
+      "wet lab",
+      "pre-med"
+    ],
+    "badges": [
+      "PROFESSOR"
+    ],
+    "anonByDefault": false,
+    "reputation": 28
+  },
+  {
+    "id": "bc_member_fac_shah",
+    "name": "Prof. Anika Shah",
+    "email": "ashah@purdue.edu",
+    "role": "FACULTY",
+    "level": "FACULTY",
+    "verified": true,
+    "department": "Psychology",
+    "bio": "Professor of Psychological Sciences researching anxiety and emotion regulation. I serve on the clinical PhD admissions committee.",
+    "tags": [
+      "clinical psychology",
+      "phd applications",
+      "grad school",
+      "emotion regulation"
+    ],
+    "badges": [
+      "PROFESSOR"
+    ],
+    "anonByDefault": false,
+    "reputation": 30
+  },
+  {
+    "id": "bc_member_fac_mueller",
+    "name": "Prof. Thomas Mueller",
+    "email": "tmueller@purdue.edu",
+    "role": "FACULTY",
+    "level": "FACULTY",
+    "verified": true,
+    "department": "ECE",
+    "bio": "Professor of Electrical and Computer Engineering working on semiconductor devices. I also advise students on the ECE MS and combined BS/MS programs.",
+    "tags": [
+      "semiconductors",
+      "grad school",
+      "vlsi",
+      "combined bs/ms",
+      "circuits"
+    ],
+    "badges": [
+      "PROFESSOR"
+    ],
+    "anonByDefault": false,
+    "reputation": 29
+  },
+  {
+    "id": "bc_member_fac_harris",
+    "name": "Prof. Linda Harris",
+    "email": "lharris@purdue.edu",
+    "role": "FACULTY",
+    "level": "FACULTY",
+    "verified": true,
+    "department": "Economics",
+    "bio": "Professor of Economics specializing in behavioral finance. I study how investor sentiment moves the stock market.",
+    "tags": [
+      "behavioral finance",
+      "stock market",
+      "financial economics",
+      "grad school"
+    ],
+    "badges": [
+      "PROFESSOR"
+    ],
+    "anonByDefault": false,
+    "reputation": 26
+  },
+  {
+    "id": "bc_member_fac_osei",
+    "name": "Dr. Kwame Osei",
+    "email": "kosei@purdue.edu",
+    "role": "FACULTY",
+    "level": "FACULTY",
+    "verified": true,
+    "department": "Chemistry",
+    "bio": "Senior Lecturer in Chemistry who teaches CHM 26100 organic chemistry. I write many graduate-school recommendation letters every year.",
+    "tags": [
+      "organic chemistry",
+      "recommendation letters",
+      "grad school",
+      "teaching"
+    ],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 22
+  },
+  {
+    "id": "bc_member_fac_wilson",
+    "name": "Dr. Rebecca Wilson",
+    "email": "rwilson@purdue.edu",
+    "role": "FACULTY",
+    "level": "FACULTY",
+    "verified": true,
+    "department": "ME",
+    "bio": "Clinical Associate Professor in Mechanical Engineering and faculty co-op advisor. I spent ten years in automotive engineering before joining Purdue.",
+    "tags": [
+      "co-ops",
+      "automotive",
+      "career advice",
+      "engineering design"
+    ],
+    "badges": [],
+    "anonByDefault": false,
+    "reputation": 21
   },
   {
     "id": "bc_member_alum_maya",
@@ -51,23 +599,117 @@
     "department": "Finance",
     "employer": "Goldman Sachs",
     "bio": "Purdue Finance '19, now a quant trader at Goldman Sachs. Happy to talk internships, recruiting, and life on a trading desk.",
-    "tags": ["quant trading", "stock market", "internships", "career advice", "investment banking"],
+    "tags": [
+      "quant trading",
+      "stock market",
+      "internships",
+      "career advice",
+      "markets research"
+    ],
     "badges": [],
     "anonByDefault": false,
     "reputation": 18
   },
   {
-    "id": "bc_member_ta_jordan",
-    "name": "Jordan Lee",
-    "email": "jlee@purdue.edu",
-    "role": "STUDENT",
-    "level": "MS",
+    "id": "bc_member_alum_kevin",
+    "name": "Kevin O'Brien",
+    "email": "kobrien@alumni.purdue.edu",
+    "role": "ALUMNI",
+    "level": "ALUMNI",
     "verified": true,
     "department": "CS",
-    "bio": "MS student in Computer Science and a CS 251 TA. I work on machine learning systems and like helping people debug.",
-    "tags": ["data structures", "machine learning", "python", "teaching"],
-    "badges": ["TA"],
-    "anonByDefault": true,
-    "reputation": 9
+    "employer": "Google",
+    "bio": "Purdue CS '18 and a senior software engineer at Google. I've conducted over 100 SWE interviews and mentor Boilermakers through recruiting.",
+    "tags": [
+      "software engineering",
+      "internships",
+      "interview prep",
+      "career advice",
+      "big tech"
+    ],
+    "badges": [],
+    "anonByDefault": false,
+    "reputation": 20
+  },
+  {
+    "id": "bc_member_alum_sarah",
+    "name": "Sarah Mitchell",
+    "email": "smitchell@alumni.purdue.edu",
+    "role": "ALUMNI",
+    "level": "ALUMNI",
+    "verified": true,
+    "department": "Chemistry",
+    "employer": "Eli Lilly",
+    "bio": "Purdue Chemistry '16, now a research scientist at Eli Lilly in Indianapolis. I work on small-molecule drug discovery.",
+    "tags": [
+      "pharma",
+      "drug discovery",
+      "career advice",
+      "industry research"
+    ],
+    "badges": [],
+    "anonByDefault": false,
+    "reputation": 15
+  },
+  {
+    "id": "bc_member_alum_josh",
+    "name": "Josh Carter",
+    "email": "jcarter@alumni.purdue.edu",
+    "role": "ALUMNI",
+    "level": "ALUMNI",
+    "verified": true,
+    "department": "ME",
+    "employer": "Cummins",
+    "bio": "Purdue ME '17 and an engine systems engineer at Cummins in Columbus, Indiana. I did three Cummins co-op rotations as a student.",
+    "tags": [
+      "co-ops",
+      "diesel engines",
+      "automotive",
+      "career advice",
+      "internships"
+    ],
+    "badges": [],
+    "anonByDefault": false,
+    "reputation": 16
+  },
+  {
+    "id": "bc_member_alum_ana",
+    "name": "Ana Lopez",
+    "email": "alopez@alumni.purdue.edu",
+    "role": "ALUMNI",
+    "level": "ALUMNI",
+    "verified": true,
+    "department": "Agriculture",
+    "employer": "Kanopy Analytics (startup)",
+    "bio": "Purdue Agronomy '20 and co-founder of an ag-tech analytics startup. I help farmers turn field data into planting decisions.",
+    "tags": [
+      "startups",
+      "precision agriculture",
+      "entrepreneurship",
+      "career advice"
+    ],
+    "badges": [],
+    "anonByDefault": false,
+    "reputation": 13
+  },
+  {
+    "id": "bc_member_alum_ryan",
+    "name": "Ryan Okoro",
+    "email": "ryan.okoro92@gmail.com",
+    "role": "ALUMNI",
+    "level": "ALUMNI",
+    "verified": false,
+    "department": "Industrial Engineering",
+    "employer": "JPMorgan",
+    "bio": "Purdue IE '14 who now works in operations at JPMorgan. Still waiting on alumni verification, but happy to chat about corporate careers.",
+    "tags": [
+      "operations",
+      "career advice",
+      "networking",
+      "excel modeling"
+    ],
+    "badges": [],
+    "anonByDefault": false,
+    "reputation": 4
   }
 ]

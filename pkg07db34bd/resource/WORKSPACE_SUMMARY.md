@@ -20,8 +20,10 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
 - JS gotchas: `removeAll({filter}, true)`; `fetch().objs` may be null → guard; use `Filter.intersects('post.id', strArray)`.
 
 ## Data (`data/`)
-- Step 0: 5 members (`bc_member_ug_alex` default persona, `bc_member_phd_priya`, `bc_member_fac_chen` PROFESSOR,
-  `bc_member_alum_maya` Goldman, `bc_member_ta_jordan` TA), 3 posts, 4 ExpertMatch, 3 Reply, 4 Like.
+- A1: 35 members (12 UG/4 MS/5 PhD/8 faculty/6 alumni; ids `bc_member_<level>_<name>`, plus `bc_member_ta_jordan`),
+  12 posts (2 ARTICLE; `bc_post_rec_letters` is EXPERTS_ONLY), 28 ExpertMatch, 21 Reply, 30 Like.
+  Demo personas: `bc_member_ug_alex` (default student), `bc_member_fac_chen` (Finance prof), `bc_member_phd_priya`
+  (FE PhD), `bc_member_alum_maya` (Goldman quant). `bc_member_alum_ryan` = unverified alum; `bc_member_fac_osei` anonByDefault.
 - Load: `App.State.inst().get().withFields({pkgFingerprint:-1, seeded:false}).update(); C3.pkg().upsertAllSeed()`.
 
 ## UI (`ui/react/src/`)
@@ -33,5 +35,10 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
 - `vite.config.mts`: embed config + reference `/api|/remote|/thirdparty|/typesys` proxies (added Step 0).
 - Playwright browser is unauthenticated (API → 401); verify data via runJsOnLiveApp.
 
+## Tests
+- `test/js-rhino/test_ForumApi.js` (22 specs: anonymity, EXPERTS_ONLY, flair, verify). Run in liveapp (dev mode):
+  `TestRunner.make().withTestNameGlob('test_ForumApi.js').run().toYamlString()`. Needs `testtools` dep (added, 8.12).
+- ForumApi re-checks verification via `Verify.check(email, role)` on post/reply.
+
 ## Status
-- Step 0 done: types valid (no Pkg issues), data loaded, ForumApi smoke-tested, `npm run build` green, UI running.
+- Step 0 on main. A1 + A2 on `lane-a-forum`. Step 0: types valid (no Pkg issues), data loaded, ForumApi smoke-tested, `npm run build` green, UI running.

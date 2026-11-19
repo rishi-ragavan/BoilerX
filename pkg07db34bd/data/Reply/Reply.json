@@ -1,26 +1,254 @@
 [
   {
     "id": "bc_reply_labs_chen",
-    "post": { "id": "bc_post_finance_labs" },
-    "author": { "id": "bc_member_fac_chen" },
+    "post": {
+      "id": "bc_post_finance_labs"
+    },
+    "author": {
+      "id": "bc_member_fac_chen"
+    },
     "body": "Several of us in Finance take undergrad RAs each semester. Send a short note with your coursework and one question you find interesting, and attach a résumé.",
     "isAnonymous": true,
     "createdAt": "2026-11-19T10:30:00Z"
   },
   {
     "id": "bc_reply_labs_priya",
-    "post": { "id": "bc_post_finance_labs" },
-    "author": { "id": "bc_member_phd_priya" },
+    "post": {
+      "id": "bc_post_finance_labs"
+    },
+    "author": {
+      "id": "bc_member_phd_priya"
+    },
     "body": "Our lab is looking for someone comfortable with Python and basic statistics. Learning pandas before you reach out is a big plus!",
     "isAnonymous": true,
     "createdAt": "2026-11-19T11:15:00Z"
   },
   {
+    "id": "bc_reply_labs_maya",
+    "post": {
+      "id": "bc_post_finance_labs"
+    },
+    "author": {
+      "id": "bc_member_alum_maya"
+    },
+    "body": "I got my start as an RA pulling CRSP data for a Finance professor sophomore year. It's the single best line on my résumé for quant interviews, so go for it.",
+    "isAnonymous": false,
+    "createdAt": "2026-11-19T12:40:00Z"
+  },
+  {
     "id": "bc_reply_study_alex",
-    "post": { "id": "bc_post_study_spots" },
-    "author": { "id": "bc_member_ug_alex" },
+    "post": {
+      "id": "bc_post_study_spots"
+    },
+    "author": {
+      "id": "bc_member_ug_alex"
+    },
     "body": "Try the third floor of WALC after 9pm, or the Hicks basement. Both are much quieter.",
     "isAnonymous": true,
     "createdAt": "2026-11-18T21:00:00Z"
+  },
+  {
+    "id": "bc_reply_study_spots_tyler",
+    "post": {
+      "id": "bc_post_study_spots"
+    },
+    "author": {
+      "id": "bc_member_ug_tyler"
+    },
+    "body": "The reading room in the Ag Library in Lilly Hall is almost empty at night. Bring a jacket though, it's always cold.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-18T22:10:00Z"
+  },
+  {
+    "id": "bc_reply_ml_lab_okafor",
+    "post": {
+      "id": "bc_post_ml_lab"
+    },
+    "author": {
+      "id": "bc_member_fac_okafor"
+    },
+    "body": "You don't need CS 373 first; a finished PyTorch project matters more to me. Email me a link to your code and which of our recent papers interested you.",
+    "isAnonymous": false,
+    "createdAt": "2026-11-13T16:20:00Z"
+  },
+  {
+    "id": "bc_reply_ml_lab_wei",
+    "post": {
+      "id": "bc_post_ml_lab"
+    },
+    "author": {
+      "id": "bc_member_phd_wei"
+    },
+    "body": "Most of our undergrads start by reproducing one result from a paper over a few weeks. Also check the CS undergraduate research page and the Purdue OUR listings.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-13T19:05:00Z"
+  },
+  {
+    "id": "bc_reply_bio_lab_ramirez",
+    "post": {
+      "id": "bc_post_bio_lab"
+    },
+    "author": {
+      "id": "bc_member_fac_ramirez"
+    },
+    "body": "We take students with zero bench experience every semester since we train everyone on sterile technique ourselves. Reliability and a consistent weekly schedule matter far more than prior skills.",
+    "isAnonymous": false,
+    "createdAt": "2026-11-14T13:00:00Z"
+  },
+  {
+    "id": "bc_reply_bio_lab_olivia",
+    "post": {
+      "id": "bc_post_bio_lab"
+    },
+    "author": {
+      "id": "bc_member_phd_olivia"
+    },
+    "body": "Read two or three recent papers from the lab and show up curious. Taking BIOL 23100 or a lab-based course alongside helps you follow lab meetings.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-14T15:45:00Z"
+  },
+  {
+    "id": "bc_reply_google_swe_kevin",
+    "post": {
+      "id": "bc_post_google_swe"
+    },
+    "author": {
+      "id": "bc_member_alum_kevin"
+    },
+    "body": "Do two LeetCode mediums a day and practice talking out loud while you code. We care about how you communicate trade-offs as much as the final answer.",
+    "isAnonymous": false,
+    "createdAt": "2026-11-15T21:30:00Z"
+  },
+  {
+    "id": "bc_reply_google_swe_lily",
+    "post": {
+      "id": "bc_post_google_swe"
+    },
+    "author": {
+      "id": "bc_member_ug_lily"
+    },
+    "body": "Purdue Hackers runs mock interviews on Thursdays in LWSN, they helped me a lot last year.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-16T08:15:00Z"
+  },
+  {
+    "id": "bc_reply_cummins_coop_josh",
+    "post": {
+      "id": "bc_post_cummins_coop"
+    },
+    "author": {
+      "id": "bc_member_alum_josh"
+    },
+    "body": "Totally worth it for me. Almost every co-op who performs well gets a full-time offer, and you start with real seniority on engine programs.",
+    "isAnonymous": false,
+    "createdAt": "2026-11-16T17:00:00Z"
+  },
+  {
+    "id": "bc_reply_cummins_coop_wilson",
+    "post": {
+      "id": "bc_post_cummins_coop"
+    },
+    "author": {
+      "id": "bc_member_fac_wilson"
+    },
+    "body": "The extra semester usually pays for itself in salary and experience. Talk to the Purdue co-op office about keeping your ME course sequence on track between rotations.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-16T19:20:00Z"
+  },
+  {
+    "id": "bc_reply_psych_phd_shah",
+    "post": {
+      "id": "bc_post_psych_phd"
+    },
+    "author": {
+      "id": "bc_member_fac_shah"
+    },
+    "body": "One year is a good start, but most admitted clinical applicants have two or more years plus an honors thesis or poster. A post-bacc research job is common and is viewed positively.",
+    "isAnonymous": false,
+    "createdAt": "2026-11-12T19:30:00Z"
+  },
+  {
+    "id": "bc_reply_psych_phd_nadia",
+    "post": {
+      "id": "bc_post_psych_phd"
+    },
+    "author": {
+      "id": "bc_member_phd_nadia"
+    },
+    "body": "I did a two-year research coordinator job before getting in and it made my statement much stronger. Present at the Purdue Undergraduate Research Conference if you can.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-13T10:00:00Z"
+  },
+  {
+    "id": "bc_reply_ece_ms_rahul",
+    "post": {
+      "id": "bc_post_ece_ms"
+    },
+    "author": {
+      "id": "bc_member_ms_rahul"
+    },
+    "body": "I did the combined BS/MS and finished a year faster than friends who left and came back. If you already know your specialty, staying is efficient.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-17T12:30:00Z"
+  },
+  {
+    "id": "bc_reply_ece_ms_mueller",
+    "post": {
+      "id": "bc_post_ece_ms"
+    },
+    "author": {
+      "id": "bc_member_fac_mueller"
+    },
+    "body": "Work experience helps you choose a focus but rarely changes funding for MS students. If you want a research MS, start talking to potential advisors this semester.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-17T15:10:00Z"
+  },
+  {
+    "id": "bc_reply_rec_letters_osei",
+    "post": {
+      "id": "bc_post_rec_letters"
+    },
+    "author": {
+      "id": "bc_member_fac_osei"
+    },
+    "body": "Ask anyway, and acknowledge the grade directly when you do. A strong lab performance and evidence of growth often make a more convincing letter than an easy A.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-18T14:45:00Z"
+  },
+  {
+    "id": "bc_reply_startup_vs_corp_ana",
+    "post": {
+      "id": "bc_post_startup_vs_corp"
+    },
+    "author": {
+      "id": "bc_member_alum_ana"
+    },
+    "body": "At a startup you'll own entire projects in your first month, but negotiate equity terms clearly and keep some savings. If the founders have farm customers already, that's a good sign.",
+    "isAnonymous": false,
+    "createdAt": "2026-11-17T08:30:00Z"
+  },
+  {
+    "id": "bc_reply_article_internship_ethan",
+    "post": {
+      "id": "bc_post_article_internship"
+    },
+    "author": {
+      "id": "bc_member_ug_ethan"
+    },
+    "body": "The daily market notebook idea is great, starting one this week for my paper portfolio.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-17T18:20:00Z"
+  },
+  {
+    "id": "bc_reply_article_research_aisha",
+    "post": {
+      "id": "bc_post_article_research"
+    },
+    "author": {
+      "id": "bc_member_ug_aisha"
+    },
+    "body": "This is really helpful. I'll rewrite my email to name a specific paper before sending it.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-15T12:00:00Z"
   }
 ]

@@ -1,34 +1,338 @@
 [
   {
     "id": "bc_match_labs_chen",
-    "post": { "id": "bc_post_finance_labs" },
-    "expert": { "id": "bc_member_fac_chen" },
+    "post": {
+      "id": "bc_post_finance_labs"
+    },
+    "expert": {
+      "id": "bc_member_fac_chen"
+    },
     "rank": 1,
     "score": 94,
     "reason": "Finance professor researching stock market anomalies; runs a lab"
   },
   {
     "id": "bc_match_labs_priya",
-    "post": { "id": "bc_post_finance_labs" },
-    "expert": { "id": "bc_member_phd_priya" },
+    "post": {
+      "id": "bc_post_finance_labs"
+    },
+    "expert": {
+      "id": "bc_member_phd_priya"
+    },
     "rank": 2,
     "score": 88,
     "reason": "Financial engineering PhD who mentors undergrads in research"
   },
   {
     "id": "bc_match_labs_maya",
-    "post": { "id": "bc_post_finance_labs" },
-    "expert": { "id": "bc_member_alum_maya" },
+    "post": {
+      "id": "bc_post_finance_labs"
+    },
+    "expert": {
+      "id": "bc_member_alum_maya"
+    },
     "rank": 3,
     "score": 71,
     "reason": "Quant trader alum who did markets research at Purdue"
   },
   {
+    "id": "bc_match_labs_harris",
+    "post": {
+      "id": "bc_post_finance_labs"
+    },
+    "expert": {
+      "id": "bc_member_fac_harris"
+    },
+    "rank": 4,
+    "score": 58,
+    "reason": "Economics professor studying investor sentiment and the stock market"
+  },
+  {
     "id": "bc_match_study_alex",
-    "post": { "id": "bc_post_study_spots" },
-    "expert": { "id": "bc_member_ug_alex" },
+    "post": {
+      "id": "bc_post_study_spots"
+    },
+    "expert": {
+      "id": "bc_member_ug_alex"
+    },
     "rank": 1,
     "score": 60,
     "reason": "Active undergrad familiar with campus study spaces"
+  },
+  {
+    "id": "bc_match_study_emily",
+    "post": {
+      "id": "bc_post_study_spots"
+    },
+    "expert": {
+      "id": "bc_member_ug_emily"
+    },
+    "rank": 2,
+    "score": 52,
+    "reason": "Campus ambassador who knows quiet spaces across campus"
+  },
+  {
+    "id": "bc_match_ml_lab_okafor",
+    "post": {
+      "id": "bc_post_ml_lab"
+    },
+    "expert": {
+      "id": "bc_member_fac_okafor"
+    },
+    "rank": 1,
+    "score": 92,
+    "reason": "CS professor whose ML lab hires undergrad researchers"
+  },
+  {
+    "id": "bc_match_ml_lab_wei",
+    "post": {
+      "id": "bc_post_ml_lab"
+    },
+    "expert": {
+      "id": "bc_member_phd_wei"
+    },
+    "rank": 2,
+    "score": 86,
+    "reason": "ML PhD student who onboards undergrads in his lab"
+  },
+  {
+    "id": "bc_match_ml_lab_jordan",
+    "post": {
+      "id": "bc_post_ml_lab"
+    },
+    "expert": {
+      "id": "bc_member_ta_jordan"
+    },
+    "rank": 3,
+    "score": 74,
+    "reason": "CS MS student working on machine learning systems"
+  },
+  {
+    "id": "bc_match_bio_lab_ramirez",
+    "post": {
+      "id": "bc_post_bio_lab"
+    },
+    "expert": {
+      "id": "bc_member_fac_ramirez"
+    },
+    "rank": 1,
+    "score": 93,
+    "reason": "Biology professor whose lab takes undergrads without experience"
+  },
+  {
+    "id": "bc_match_bio_lab_olivia",
+    "post": {
+      "id": "bc_post_bio_lab"
+    },
+    "expert": {
+      "id": "bc_member_phd_olivia"
+    },
+    "rank": 2,
+    "score": 87,
+    "reason": "Biology PhD who has trained many undergrads at the bench"
+  },
+  {
+    "id": "bc_match_bio_lab_sarah",
+    "post": {
+      "id": "bc_post_bio_lab"
+    },
+    "expert": {
+      "id": "bc_member_alum_sarah"
+    },
+    "rank": 3,
+    "score": 62,
+    "reason": "Eli Lilly scientist who started in undergrad wet labs"
+  },
+  {
+    "id": "bc_match_google_swe_kevin",
+    "post": {
+      "id": "bc_post_google_swe"
+    },
+    "expert": {
+      "id": "bc_member_alum_kevin"
+    },
+    "rank": 1,
+    "score": 95,
+    "reason": "Google engineer who has run 100+ SWE interviews"
+  },
+  {
+    "id": "bc_match_google_swe_jordan",
+    "post": {
+      "id": "bc_post_google_swe"
+    },
+    "expert": {
+      "id": "bc_member_ta_jordan"
+    },
+    "rank": 2,
+    "score": 70,
+    "reason": "CS 251 TA strong in data structures interview topics"
+  },
+  {
+    "id": "bc_match_google_swe_wei",
+    "post": {
+      "id": "bc_post_google_swe"
+    },
+    "expert": {
+      "id": "bc_member_phd_wei"
+    },
+    "rank": 3,
+    "score": 58,
+    "reason": "CS PhD familiar with technical interview prep"
+  },
+  {
+    "id": "bc_match_cummins_coop_josh",
+    "post": {
+      "id": "bc_post_cummins_coop"
+    },
+    "expert": {
+      "id": "bc_member_alum_josh"
+    },
+    "rank": 1,
+    "score": 94,
+    "reason": "Cummins engineer who completed three co-op rotations"
+  },
+  {
+    "id": "bc_match_cummins_coop_wilson",
+    "post": {
+      "id": "bc_post_cummins_coop"
+    },
+    "expert": {
+      "id": "bc_member_fac_wilson"
+    },
+    "rank": 2,
+    "score": 82,
+    "reason": "ME faculty co-op advisor with automotive industry background"
+  },
+  {
+    "id": "bc_match_cummins_coop_grace",
+    "post": {
+      "id": "bc_post_cummins_coop"
+    },
+    "expert": {
+      "id": "bc_member_ms_grace"
+    },
+    "rank": 3,
+    "score": 71,
+    "reason": "ME grad student who did two co-op rotations"
+  },
+  {
+    "id": "bc_match_psych_phd_shah",
+    "post": {
+      "id": "bc_post_psych_phd"
+    },
+    "expert": {
+      "id": "bc_member_fac_shah"
+    },
+    "rank": 1,
+    "score": 95,
+    "reason": "Serves on the clinical psychology PhD admissions committee"
+  },
+  {
+    "id": "bc_match_psych_phd_nadia",
+    "post": {
+      "id": "bc_post_psych_phd"
+    },
+    "expert": {
+      "id": "bc_member_phd_nadia"
+    },
+    "rank": 2,
+    "score": 89,
+    "reason": "Clinical psychology PhD who recently went through applications"
+  },
+  {
+    "id": "bc_match_ece_ms_mueller",
+    "post": {
+      "id": "bc_post_ece_ms"
+    },
+    "expert": {
+      "id": "bc_member_fac_mueller"
+    },
+    "rank": 1,
+    "score": 91,
+    "reason": "ECE professor advising on MS and combined BS/MS programs"
+  },
+  {
+    "id": "bc_match_ece_ms_rahul",
+    "post": {
+      "id": "bc_post_ece_ms"
+    },
+    "expert": {
+      "id": "bc_member_ms_rahul"
+    },
+    "rank": 2,
+    "score": 85,
+    "reason": "ECE MS student who went straight from undergrad"
+  },
+  {
+    "id": "bc_match_ece_ms_kevin",
+    "post": {
+      "id": "bc_post_ece_ms"
+    },
+    "expert": {
+      "id": "bc_member_alum_kevin"
+    },
+    "rank": 3,
+    "score": 55,
+    "reason": "Alum who weighed grad school against an industry offer"
+  },
+  {
+    "id": "bc_match_rec_letters_osei",
+    "post": {
+      "id": "bc_post_rec_letters"
+    },
+    "expert": {
+      "id": "bc_member_fac_osei"
+    },
+    "rank": 1,
+    "score": 90,
+    "reason": "Organic chemistry lecturer who writes many grad-school letters"
+  },
+  {
+    "id": "bc_match_rec_letters_ramirez",
+    "post": {
+      "id": "bc_post_rec_letters"
+    },
+    "expert": {
+      "id": "bc_member_fac_ramirez"
+    },
+    "rank": 2,
+    "score": 68,
+    "reason": "Science professor experienced writing recommendation letters"
+  },
+  {
+    "id": "bc_match_startup_vs_corp_ana",
+    "post": {
+      "id": "bc_post_startup_vs_corp"
+    },
+    "expert": {
+      "id": "bc_member_alum_ana"
+    },
+    "rank": 1,
+    "score": 93,
+    "reason": "Co-founded an ag-tech analytics startup after Purdue"
+  },
+  {
+    "id": "bc_match_startup_vs_corp_daniel",
+    "post": {
+      "id": "bc_post_startup_vs_corp"
+    },
+    "expert": {
+      "id": "bc_member_ms_daniel"
+    },
+    "rank": 2,
+    "score": 72,
+    "reason": "Works part-time at a local ag-tech startup"
+  },
+  {
+    "id": "bc_match_startup_vs_corp_kevin",
+    "post": {
+      "id": "bc_post_startup_vs_corp"
+    },
+    "expert": {
+      "id": "bc_member_alum_kevin"
+    },
+    "rank": 3,
+    "score": 64,
+    "reason": "Big-tech engineer who can speak to large-company careers"
   }
 ]
