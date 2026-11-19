@@ -3,7 +3,7 @@
  * opens a small menu — Everyone · Experts only · Cold-email experts — each with a one-line muted description.
  */
 import { useCallback, useRef, useState } from 'react';
-import { Check, Globe, Lock, Mail, type LucideIcon } from 'lucide-react';
+import { Check, Eye, Lock, Mail, type LucideIcon } from 'lucide-react';
 import { useShellDismiss } from '@/components/Shell/ShellDismiss';
 
 export type ComposerVisibility = 'PUBLIC' | 'EXPERTS_ONLY' | 'COLD_EMAIL';
@@ -23,7 +23,7 @@ export const VISIBILITY_OPTIONS: Option[] = [
     label: 'Everyone',
     trigger: 'Everyone can see',
     description: 'Shows in the feed for all of Purdue',
-    icon: Globe,
+    icon: Eye,
   },
   {
     id: 'EXPERTS_ONLY',

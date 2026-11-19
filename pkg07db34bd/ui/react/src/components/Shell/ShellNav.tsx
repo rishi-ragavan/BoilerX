@@ -1,9 +1,13 @@
 /*
- * Navigation chrome (Lane C owns Shell*): the X-style left column (wordmark, nav, gold "Ask" pill, persona
- * switcher) and, under 700px, the fixed bottom tab bar + floating gold "Ask" button.
+ * Navigation chrome (Lane C owns Shell*): the left column (wordmark, nav, gold "Ask" pill, persona switcher)
+ * and, under 700px, the fixed bottom tab bar + floating gold "Ask" button.
+ *
+ * Iconography is BoilerConnect's own, not X's: campus/academic glyphs (University, Target = "matched to you",
+ * MessagesSquare, IdCard, CircleQuestionMark for Ask) inside rounded-square tiles; the active item gets a gold
+ * tile + a gold left rail instead of X's filled icon.
  */
 import { Link, useLocation } from 'react-router';
-import { Feather, House, Inbox, Mail, User, type LucideIcon } from 'lucide-react';
+import { CircleQuestionMark, IdCard, MessagesSquare, Target, University, type LucideIcon } from 'lucide-react';
 import { usePersona } from '@/components/Persona/PersonaContext';
 import { canBeTagged } from '@/Interfaces';
 import { PersonaSwitcher } from '@/components/Persona/PersonaSwitcher';
@@ -19,19 +23,19 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  { key: 'home', label: 'Home', icon: House, to: () => '/', isActive: (p) => p === '/' || p.startsWith('/post') },
-  { key: 'inbox', label: 'Questions for you', icon: Inbox, to: () => '/inbox', isActive: (p) => p.startsWith('/inbox') },
+  { key: 'home', label: 'Home', icon: University, to: () => '/', isActive: (p) => p === '/' || p.startsWith('/post') },
+  { key: 'inbox', label: 'Questions for you', icon: Target, to: () => '/inbox', isActive: (p) => p.startsWith('/inbox') },
   {
     key: 'messages',
     label: 'Messages',
-    icon: Mail,
+    icon: MessagesSquare,
     to: () => '/messages',
     isActive: (p) => p.startsWith('/messages'),
   },
   {
     key: 'profile',
     label: 'Profile',
-    icon: User,
+    icon: IdCard,
     to: (id) => (id ? `/profile/${id}` : '/profile'),
     isActive: (p) => p.startsWith('/profile'),
   },
@@ -70,7 +74,9 @@ export function ShellNav() {
               className={`bc-nav__item ${active ? 'bc-nav__item--active' : ''}`}
             >
               <span className="bc-nav__pill">
-                <Icon size={26} aria-hidden className="bc-nav__icon" />
+                <span className="bc-icontile">
+                  <Icon size={22} aria-hidden className="bc-nav__icon" />
+                </span>
                 <span className="bc-nav__label">{label}</span>
               </span>
             </Link>
@@ -79,7 +85,7 @@ export function ShellNav() {
 
         <button type="button" className="bc-ask" onClick={requestCompose} aria-label="Ask a question">
           <span className="bc-ask__label">Ask</span>
-          <Feather size={24} className="bc-ask__icon" aria-hidden />
+          <CircleQuestionMark size={24} className="bc-ask__icon" aria-hidden />
         </button>
 
         <div className="bc-nav__persona">
@@ -98,7 +104,7 @@ export function ShellBottomBar() {
   return (
     <>
       <button type="button" className="bc-fab" onClick={requestCompose} aria-label="Ask a question">
-        <Feather size={24} aria-hidden />
+        <CircleQuestionMark size={26} aria-hidden />
       </button>
       <nav aria-label="Primary (mobile)" className="bc-bottombar">
         {items.map(({ key, label, icon: Icon, href, active }) => (
@@ -109,7 +115,9 @@ export function ShellBottomBar() {
             aria-current={active ? 'page' : undefined}
             className={`bc-bottombar__item ${active ? 'bc-bottombar__item--active' : ''}`}
           >
-            <Icon size={26} aria-hidden />
+            <span className="bc-icontile">
+              <Icon size={22} aria-hidden />
+            </span>
           </Link>
         ))}
         <div className="bc-bottombar__persona">

@@ -4,7 +4,7 @@
  * tagged, so they get no panel. No member lists, reputation, or topic tags (lead rules).
  */
 import { Link } from 'react-router';
-import { Search } from 'lucide-react';
+import { TextSearch } from 'lucide-react';
 import { ForumApi } from '@/api/boilerApi';
 import { canBeTagged } from '@/Interfaces';
 import { useApi } from '@/hooks/useApi';
@@ -51,7 +51,7 @@ export function ShellRightRail() {
     <aside className="bc-rail" aria-label="Discover">
       <div className="bc-rail__inner">
         <div className="bc-search">
-          <Search size={18} aria-hidden className="bc-search__icon" />
+          <TextSearch size={18} aria-hidden className="bc-search__icon" />
           <label htmlFor="bc-search-input" className="bc-visually-hidden">
             Search BoilerConnect
           </label>

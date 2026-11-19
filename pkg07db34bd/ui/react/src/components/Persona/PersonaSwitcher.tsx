@@ -4,7 +4,7 @@
  * gold check on the active persona. `compact` renders the avatar only (collapsed nav and mobile bottom bar).
  */
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { Check, Ellipsis } from 'lucide-react';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import type { MemberView, Role } from '@/Interfaces';
 import { personaSubtitle, usePersona } from '@/components/Persona/PersonaContext';
 import { ShellAvatar } from '@/components/Shell/ShellAvatar';
@@ -92,7 +92,7 @@ export function PersonaSwitcher({ compact = false }: { compact?: boolean }) {
             <span className="bc-persona__name">{actingMember?.name ?? 'Loading…'}</span>
             <span className="bc-persona__sub">{actingMember ? personaSubtitle(actingMember) : ' '}</span>
           </span>
-          <Ellipsis size={18} className="bc-persona__more" aria-hidden />
+          <ChevronsUpDown size={18} className="bc-persona__more" aria-hidden />
         </button>
       )}
     </div>

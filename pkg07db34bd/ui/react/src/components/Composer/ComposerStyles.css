@@ -133,7 +133,7 @@
   height: var(--icon-hit);
   padding: 0;
   border: none;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-icon);
   background: transparent;
   color: var(--gold);
   font-size: var(--fs-meta);
@@ -253,7 +253,7 @@
   justify-content: center;
   width: var(--avatar);
   height: var(--avatar);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-icon);
   background: var(--gold-soft);
   color: var(--gold);
 }
