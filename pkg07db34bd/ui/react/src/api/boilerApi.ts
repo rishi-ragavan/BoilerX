@@ -8,7 +8,6 @@ import type {
   CreatePostResult,
   EmailDraft,
   FeedTab,
-  LikeResult,
   MemberView,
   MessageView,
   NewPostInput,
@@ -32,8 +31,6 @@ export const ForumApi = {
     c3Call<CreatePostResult>('ForumApi', 'createPost', null, [actorId, input]),
   reply: (actorId: string, postId: string, body: string, isAnonymous: boolean) =>
     c3Call<ReplyView>('ForumApi', 'reply', null, [actorId, postId, body, isAnonymous]),
-  toggleLike: (actorId: string, postId: string | null, replyId: string | null) =>
-    c3Call<LikeResult>('ForumApi', 'toggleLike', null, [actorId, postId, replyId]),
 };
 
 export const AiPipeline = {

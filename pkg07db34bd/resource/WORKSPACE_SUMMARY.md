@@ -11,17 +11,26 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
 ## Backend (`src/`) — JS (`js-server`)
 - Entities (`src/model/`): ForumMember{email, role, level, verified, department, employer, bio, tags, badges,
   anonByDefault, reputation; inherited `name`}, Post{author, postType, title, body, visibility, space, department, tags,
-  isAnonymous, createdAt, expertMatches, replies}, ExpertMatch{post, expert, rank, score, reason}, Reply, Like{member,
-  post?, reply?}, Conversation, Message. Enums are nested types (ForumMember.Role, Post.Space, …); values compare as strings.
+  isAnonymous, createdAt, expertMatches, replies}, ExpertMatch{post, expert, rank, score, reason}, Reply, Conversation, Message. Enums are nested types (ForumMember.Role, Post.Space, …); values compare as strings.
 - Views (`src/view/`): see README. APIs (`src/api/`): ForumApi (real impl), Verify, Rank (real), AiPipeline (Step 0:
   deterministic fallback only), DmApi (Step 0: hard-coded stubs + real FACULTY-only check).
-- Anonymity: students → `Boiler #` + FNV-1a(memberId+postId)[0..4]; anon faculty "Verified Faculty · {dept}", anon alum
+- Anonymity: students → `Boiler ` + FNV-1a(memberId+postId)[0..4] (NO `#`, formal tone; tags render without `#` too); anon faculty "Verified Faculty · {dept}", anon alum
   "Verified Alum · {employer}". Flair `🎯 Expert: {post.department || tags[0]}` when replier has ExpertMatch.
 - JS gotchas: `removeAll({filter}, true)`; `fetch().objs` may be null → guard; use `Filter.intersects('post.id', strArray)`.
 
+- Spaces: STUDENT | EXPERTS (formerly Faculty; role stays FACULTY, label "Expert · {dept}") | ALUMNI.
+  Feed tabs students|experts(aliases faculty, professors)|alumni all identical (questions routed there, dept filter on any
+  tab); foryou = all PUBLIC. NO articles (PostType = QUESTION only). Seed: 12 posts (Student 3 / Faculty 6 / Alumni 3).
+- Lead rules (see README "Product rules"): no "verified" wording anywhere; no likes (Like entity/toggleLike
+  removed; hot uses replies; reputation +1 per answer); replies grouped FACULTY→ALUMNI→STUDENT via ReplyView.authorGroup.
+- Lead rules: PostView.experts = ONLY the viewer's own match; everyone sees `expertCount` (tagged list would
+  de-anonymize 🎯 replies). Faculty cannot post at all (createPost rejects); they reply + DM.
+
 ## Data (`data/`)
-- Step 0: 5 members (`bc_member_ug_alex` default persona, `bc_member_phd_priya`, `bc_member_fac_chen` PROFESSOR,
-  `bc_member_alum_maya` Goldman, `bc_member_ta_jordan` TA), 3 posts, 4 ExpertMatch, 3 Reply, 4 Like.
+- A1: 35 members (12 UG/4 MS/5 PhD/8 faculty/6 alumni; ids `bc_member_<level>_<name>`, plus `bc_member_ta_jordan`),
+  12 posts (no articles; `bc_post_rec_letters` is EXPERTS_ONLY), 34 ExpertMatch, 23 Reply (no likes).
+  Demo personas: `bc_member_ug_alex` (default student), `bc_member_fac_chen` (Finance prof), `bc_member_phd_priya`
+  (FE PhD), `bc_member_alum_maya` (Goldman quant). all 35 verified (ryan now @alumni.purdue.edu); `bc_member_fac_osei` anonByDefault.
 - Load: `App.State.inst().get().withFields({pkgFingerprint:-1, seeded:false}).update(); C3.pkg().upsertAllSeed()`.
 
 ## UI (`ui/react/src/`)
@@ -33,5 +42,20 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
 - `vite.config.mts`: embed config + reference `/api|/remote|/thirdparty|/typesys` proxies (added Step 0).
 - Playwright browser is unauthenticated (API → 401); verify data via runJsOnLiveApp.
 
+## Tests
+- `test/js-rhino/test_ForumApi.js` (22 specs: anonymity, EXPERTS_ONLY, flair, verify). Run in liveapp (dev mode):
+  `TestRunner.make().withTestNameGlob('test_ForumApi.js').run().toYamlString()`. Needs `testtools` dep (added, 8.12).
+- `test/js-rhino/test_ForumApi_write.js` (22 specs: createPost unsafe/not saved, ExpertMatch validation ≤5/no author/
+  unknown/dup, invalid space → STUDENT, alumni can ask, reply anon/flair/gate, +1 reputation per answer).
+  Spies `AiPipeline.analyzePost` via `TestApi.spyOn(...).callFake(fn)` — the fake runs WITHOUT closure (pass data via args).
+  API-created rows cleaned with `TestApi.addExternalTeardownFilter(ctx, "startsWith(author.id,'<prefix>')", 'Post', 1000)`.
+- ForumApi re-checks verification via `Verify.check(email, role)` on post/reply.
+
+## Merge 1 TODO (live app still has old rows)
+- BEFORE `main` (new types) reaches the live app, with the old types still loaded: remove `Like` rows, every Post with
+  space FACULTY (+ its replies/matches; enum value renamed to EXPERTS), and the 2 ARTICLE posts + their replies
+  (`bc_post_article_internship`, `bc_post_article_research`) — the Like type and ARTICLE enum value no longer exist.
+- Then run both test suites (test_ForumApi.js, test_ForumApi_write.js); commits 26e6a8e..HEAD were never run live.
+
 ## Status
-- Step 0 done: types valid (no Pkg issues), data loaded, ForumApi smoke-tested, `npm run build` green, UI running.
+- Step 0 on main. A1 + A2 + A3 tests on `lane-a-forum`. Step 0: types valid (no Pkg issues), data loaded, ForumApi smoke-tested, `npm run build` green, UI running.

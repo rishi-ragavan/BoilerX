@@ -9,10 +9,10 @@ type AnalyzeResult {
   /** Why the post was blocked (CAPS pointer for self-harm). */
   safetyReason: string
 
-  /** STUDENT, FACULTY, or ALUMNI. */
+  /** STUDENT, EXPERTS, or ALUMNI (FACULTY is accepted as an alias of EXPERTS). */
   space: string
 
-  /** Department (for FACULTY space). */
+  /** Best-fit department, for any space (null when none fits, e.g. campus life). */
   department: string
 
   /** 3–5 lowercase tags. */

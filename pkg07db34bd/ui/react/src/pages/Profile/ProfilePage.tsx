@@ -20,7 +20,7 @@ export function ProfilePage() {
           <section className="flex flex-col gap-2 p-4">
             <h2 className="text-xl font-bold text-foreground">{m.name}</h2>
             <p className="text-sm text-muted-foreground">
-              {m.roleLabel} · {m.verified ? '✅ Verified' : '⚠️ Unverified'} · ⭐ {m.reputation ?? 0} reputation
+              {m.roleLabel} · ⭐ {m.reputation ?? 0} reputation
             </p>
             {m.badges && m.badges.length > 0 && (
               <div className="flex flex-wrap gap-1">
@@ -34,7 +34,7 @@ export function ProfilePage() {
               <div className="flex flex-wrap gap-1">
                 {m.tags.map((t) => (
                   <span key={t} className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                    #{t}
+                    {t}
                   </span>
                 ))}
               </div>

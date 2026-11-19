@@ -6,12 +6,22 @@
 export type Role = 'STUDENT' | 'FACULTY' | 'ALUMNI';
 export type Level = 'UG' | 'MS' | 'PHD' | 'FACULTY' | 'ALUMNI';
 export type Badge = 'PROFESSOR' | 'TA' | 'CLUB_PRESIDENT' | 'CAMPUS_AMBASSADOR';
-export type PostType = 'QUESTION' | 'ARTICLE';
+/** Only questions exist (articles were removed). */
+export type PostType = 'QUESTION';
 export type Visibility = 'PUBLIC' | 'EXPERTS_ONLY';
-export type Space = 'STUDENT' | 'FACULTY' | 'ALUMNI';
-export type FeedTab = 'foryou' | 'students' | 'faculty' | 'alumni' | 'articles';
+/** Spaces. The role stays FACULTY, but faculty are labeled "Expert" and their space is EXPERTS. */
+export type Space = 'STUDENT' | 'EXPERTS' | 'ALUMNI';
+export const SPACE_LABELS: Record<Space, string> = { STUDENT: 'Student', EXPERTS: 'Experts', ALUMNI: 'Alumni' };
+/** Reply group, in display order. */
+export type ReplyGroup = 'EXPERTS' | 'ALUMNI' | 'STUDENT';
+/**
+ * Feed tabs. The three spaces (`students`, `experts` — aliases `faculty`/`professors`, `alumni`) all work the same: each shows
+ * every PUBLIC question the AI routed there, and every tab accepts the optional `dept` filter.
+ */
+export type FeedTab = 'foryou' | 'students' | 'experts' | 'alumni';
 
 export interface AuthorView {
+  /** Name, or an anonymous handle: "Boiler a3f1" (no #), "Expert · Finance", "Alum · Google". Never "verified". */
   displayName: string;
   roleLabel?: string;
   badges?: string[];
@@ -42,10 +52,15 @@ export interface PostView {
   tags?: string[];
   createdAt?: string;
   author: AuthorView;
+  /**
+   * ONLY the viewer's own match (empty unless the viewer was tagged). The list of tagged experts is never sent:
+   * with anonymous 🎯 replies it would reveal who wrote them. Show `expertCount` instead.
+   */
   experts?: ExpertView[];
-  likeCount?: number;
+  /** Number of experts tagged — the only expert info safe to show everyone. */
+  expertCount?: number;
+  /** Shown as "View N comments" — there are no likes on the platform. */
   replyCount?: number;
-  likedByMe?: boolean;
   isMine?: boolean;
   viewerIsMatchedExpert?: boolean;
 }
@@ -55,8 +70,8 @@ export interface ReplyView {
   body: string;
   createdAt?: string;
   author: AuthorView;
-  likeCount?: number;
-  likedByMe?: boolean;
+  /** Replies arrive grouped EXPERTS → ALUMNI → STUDENT; render a section header when this changes. */
+  authorGroup?: ReplyGroup;
   isMine?: boolean;
 }
 
@@ -76,7 +91,6 @@ export interface MemberView {
   tags?: string[];
   badges?: string[];
   reputation?: number;
-  verified?: boolean;
   anonByDefault?: boolean;
   roleLabel?: string;
 }
@@ -123,11 +137,6 @@ export interface NewPostInput {
   postType?: PostType;
   visibility?: Visibility;
   isAnonymous?: boolean;
-}
-
-export interface LikeResult {
-  liked: boolean;
-  count: number;
 }
 
 export interface RefinedQuestion {

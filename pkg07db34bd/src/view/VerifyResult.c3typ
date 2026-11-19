@@ -3,12 +3,12 @@
  */
 type VerifyResult {
 
-  /** Whether the email is verified for the role. */
+  /** Whether the email is admitted for the role. */
   verified: boolean
 
   /** Effective role (`@alumni.purdue.edu` → ALUMNI). */
   role: string
 
-  /** e.g. "Verified student", "Verified faculty", "Verified alum", "Unverified alum", "Not a Purdue email". */
+  /** e.g. "Purdue student", "Purdue alum", or why the email is not admitted. */
   label: string
 }

@@ -7,11 +7,12 @@ enum type ForumMember.Role {
    */
   STUDENT,
   /**
-   * Purdue faculty. The only role allowed to start a DM (DM_INITIATOR_ROLES).
+   * Purdue faculty, labeled "Expert" in the UI (e.g. "Expert · Finance"). The only role allowed to start a DM
+   * (DM_INITIATOR_ROLES). The role value stays FACULTY; only the label changed.
    */
   FACULTY,
   /**
-   * Purdue alum (verified via `@alumni.purdue.edu`, otherwise "Unverified alum").
+   * Purdue alum (must sign up with an `@alumni.purdue.edu` email).
    */
   ALUMNI
 }
