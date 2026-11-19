@@ -1,0 +1,9 @@
+{
+  "author": "{{author}}",
+  "name": "pkg07db34bd",
+  "description": "Same-cluster Agentix chat embed (zero-BFF AgentixChatEmbed drop-in)",
+  "dependencies": {
+    "mcpServer": "8.10"
+  },
+  "version": "1.0.0"
+}

@@ -1,0 +1,8 @@
+node_modules
+dist
+dist-embed-css
+# Compiled by build:embed-css from embed.source.css + theme.css + the scanned utility
+# classes. A BUILD OUTPUT, never committed: generate-first in every build (host + demo)
+# puts it on disk before vite, and the host postBuild vendors it into the starter-kit tgz.
+src/styles/embed.css
+coverage
