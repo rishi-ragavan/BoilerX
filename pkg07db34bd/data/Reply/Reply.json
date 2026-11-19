@@ -1,0 +1,26 @@
+[
+  {
+    "id": "bc_reply_labs_chen",
+    "post": { "id": "bc_post_finance_labs" },
+    "author": { "id": "bc_member_fac_chen" },
+    "body": "Several of us in Finance take undergrad RAs each semester. Send a short note with your coursework and one question you find interesting, and attach a résumé.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-19T10:30:00Z"
+  },
+  {
+    "id": "bc_reply_labs_priya",
+    "post": { "id": "bc_post_finance_labs" },
+    "author": { "id": "bc_member_phd_priya" },
+    "body": "Our lab is looking for someone comfortable with Python and basic statistics. Learning pandas before you reach out is a big plus!",
+    "isAnonymous": true,
+    "createdAt": "2026-11-19T11:15:00Z"
+  },
+  {
+    "id": "bc_reply_study_alex",
+    "post": { "id": "bc_post_study_spots" },
+    "author": { "id": "bc_member_ug_alex" },
+    "body": "Try the third floor of WALC after 9pm, or the Hicks basement. Both are much quieter.",
+    "isAnonymous": true,
+    "createdAt": "2026-11-18T21:00:00Z"
+  }
+]

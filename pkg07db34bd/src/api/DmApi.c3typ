@@ -1,0 +1,18 @@
+/**
+ * BoilerConnect direct messages (owned by Lane D). Only roles in DM_INITIATOR_ROLES (`FACULTY`) can start a
+ * conversation; the recipient can only reply inside an existing one. Students are shown by anonymous handle.
+ */
+type DmApi {
+
+  /** Conversations the actor participates in, newest first. */
+  listConversations: function(actorId: !string): [ConversationView] js-server
+
+  /** Messages in a conversation the actor participates in, oldest first. */
+  getConversation: function(actorId: !string, conversationId: !string): [MessageView] js-server
+
+  /** Starts a DM with the author of `postId`. Throws unless the actor's role is FACULTY. */
+  startConversation: function(actorId: !string, postId: !string, body: !string): ConversationView js-server
+
+  /** Sends a message in an existing conversation the actor participates in. */
+  sendMessage: function(actorId: !string, conversationId: !string, body: !string): MessageView js-server
+}

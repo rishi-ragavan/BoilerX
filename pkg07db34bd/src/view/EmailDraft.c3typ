@@ -1,0 +1,20 @@
+/**
+ * A cold-email draft from {@link AiPipeline#draftColdEmails}. Never sent automatically.
+ */
+type EmailDraft {
+
+  /** Recipient {@link ForumMember} id. */
+  memberId: string
+
+  /** Recipient name. */
+  name: string
+
+  /** Recipient email. */
+  email: string
+
+  /** Subject line. */
+  subject: string
+
+  /** Email body. */
+  body: string
+}

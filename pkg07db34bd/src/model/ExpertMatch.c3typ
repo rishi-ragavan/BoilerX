@@ -1,0 +1,22 @@
+/**
+ * An expert the AI pipeline tagged on a {@link Post}. Drives the "Questions for you" inbox, EXPERTS_ONLY
+ * visibility, and the 🎯 Expert flair on replies.
+ */
+@db(index=['post', 'expert'])
+entity type ExpertMatch {
+
+  /** The post the expert was matched to. */
+  post: !Post
+
+  /** The matched member. */
+  expert: !ForumMember
+
+  /** 1-based rank in the pipeline's ordering. */
+  rank: int
+
+  /** Match score, 0–100. */
+  score: double
+
+  /** One-line reason (≤ 15 words) shown on the expert chip. */
+  reason: string
+}

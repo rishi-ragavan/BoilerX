@@ -1,0 +1,44 @@
+/**
+ * Public profile of a {@link ForumMember} (persona switcher and profile page). Excludes the email.
+ */
+type MemberView {
+
+  /** Member id (pass as `actorId`). */
+  id: string
+
+  /** Display name. */
+  name: string
+
+  /** STUDENT, FACULTY, or ALUMNI. */
+  role: string
+
+  /** UG, MS, PHD, FACULTY, or ALUMNI. */
+  level: string
+
+  /** Department. */
+  department: string
+
+  /** Employer (alumni). */
+  employer: string
+
+  /** Bio. */
+  bio: string
+
+  /** Expertise tags. */
+  tags: [string]
+
+  /** Badges. */
+  badges: [string]
+
+  /** Reputation. */
+  reputation: int
+
+  /** Whether the member is verified. */
+  verified: boolean
+
+  /** Default for the composer's anonymity toggle (always true for students). */
+  anonByDefault: boolean
+
+  /** e.g. "Faculty · Finance", "Unverified alum". */
+  roleLabel: string
+}

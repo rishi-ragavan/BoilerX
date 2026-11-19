@@ -1,0 +1,13 @@
+/**
+ * Who can see a {@link Post}.
+ */
+enum type Post.Visibility {
+  /**
+   * Shown in the feeds to everyone.
+   */
+  PUBLIC,
+  /**
+   * Visible only to the author and the matched experts (enforced in {@link ForumApi}).
+   */
+  EXPERTS_ONLY
+}

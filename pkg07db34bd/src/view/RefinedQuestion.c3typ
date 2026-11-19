@@ -1,0 +1,11 @@
+/**
+ * A rough question rewritten by {@link AiPipeline#refineQuestion}.
+ */
+type RefinedQuestion {
+
+  /** Refined title. */
+  title: string
+
+  /** Refined body. */
+  body: string
+}

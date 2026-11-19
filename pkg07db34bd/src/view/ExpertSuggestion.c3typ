@@ -1,0 +1,14 @@
+/**
+ * One expert proposed by {@link AiPipeline#analyzePost}.
+ */
+type ExpertSuggestion {
+
+  /** {@link ForumMember} id; must exist in the directory. */
+  memberId: string
+
+  /** Score 0–100. */
+  score: double
+
+  /** Reason, ≤ 15 words. */
+  reason: string
+}

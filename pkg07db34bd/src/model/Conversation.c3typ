@@ -1,0 +1,22 @@
+/**
+ * A private 1:1 DM thread. Only FACULTY can start one (see {@link DmApi#startConversation}); the recipient can
+ * only reply inside an existing conversation.
+ */
+@db(index=['initiator', 'recipient', 'post'])
+entity type Conversation {
+
+  /** The post the conversation was started from, if any. */
+  post: Post
+
+  /** The FACULTY member who started the conversation. */
+  initiator: !ForumMember
+
+  /** The recipient (the post's author). */
+  recipient: !ForumMember
+
+  /** When the conversation was started. */
+  createdAt: datetime
+
+  /** Messages in this conversation. */
+  messages: [Message](conversation)
+}

@@ -1,0 +1,40 @@
+[
+  {
+    "id": "bc_post_finance_labs",
+    "author": { "id": "bc_member_ug_alex" },
+    "postType": "QUESTION",
+    "title": "Which finance research labs take undergrads?",
+    "body": "I'm a sophomore interested in stock market research. Are there faculty or PhD students in Finance who take undergrad research assistants, and how should I reach out?",
+    "visibility": "PUBLIC",
+    "space": "FACULTY",
+    "department": "Finance",
+    "tags": ["research labs", "stock market", "undergrad research"],
+    "isAnonymous": true,
+    "createdAt": "2026-11-19T09:00:00Z"
+  },
+  {
+    "id": "bc_post_study_spots",
+    "author": { "id": "bc_member_ta_jordan" },
+    "postType": "QUESTION",
+    "title": "Best quiet study spots near Lawson during finals?",
+    "body": "Lawson is packed every evening. Where do people go to study late without the crowds?",
+    "visibility": "PUBLIC",
+    "space": "STUDENT",
+    "tags": ["campus life", "study spots", "finals"],
+    "isAnonymous": true,
+    "createdAt": "2026-11-18T20:00:00Z"
+  },
+  {
+    "id": "bc_post_article_internship",
+    "author": { "id": "bc_member_alum_maya" },
+    "postType": "ARTICLE",
+    "title": "What I wish I knew before my first trading internship",
+    "body": "Three lessons from my summer on a trading desk: learn to explain your reasoning fast, own your mistakes immediately, and keep a daily notebook of what moved the market and why.",
+    "visibility": "PUBLIC",
+    "space": "ALUMNI",
+    "department": "Finance",
+    "tags": ["internships", "quant trading", "career advice"],
+    "isAnonymous": false,
+    "createdAt": "2026-11-17T15:00:00Z"
+  }
+]

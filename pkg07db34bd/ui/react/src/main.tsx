@@ -24,7 +24,7 @@ import { initTheme } from '@/lib/theme';
 import './i18n';
 // Client styling entry + this consumer's own Tailwind scan roots:
 import './globals.css';
-import { EmbedRoutes } from './EmbedRoutes';
+import { App } from './App';
 
 initTheme();
 
@@ -40,7 +40,7 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={300}>
         <HashRouter>
-          <EmbedRoutes />
+          <App />
           <Toaster />
         </HashRouter>
       </TooltipProvider>

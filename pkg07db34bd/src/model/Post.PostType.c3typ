@@ -1,0 +1,13 @@
+/**
+ * The kind of a {@link Post}.
+ */
+enum type Post.PostType {
+  /**
+   * A question; gets AI routing and expert matching.
+   */
+  QUESTION,
+  /**
+   * An article by FACULTY or ALUMNI; safety check + tags only, no expert matching.
+   */
+  ARTICLE
+}

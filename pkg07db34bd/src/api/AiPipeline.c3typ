@@ -1,0 +1,19 @@
+/**
+ * BoilerConnect AI pipeline (owned by Lane B). Uses the platform's built-in LLM; every method must fall back to
+ * deterministic logic on LLM error, timeout (> 8 s), or invalid JSON.
+ */
+type AiPipeline {
+
+  /**
+   * One LLM call that returns safety, routing (space + department), 3–5 tags, and up to 5 experts from
+   * `directory` (which already excludes the author). Fallback: safe=true, space STUDENT, title keywords as tags,
+   * experts ranked by `3·tagOverlap + 2·deptMatch + 1·levelProximity + 0.1·reputation`.
+   */
+  analyzePost: function(title: !string, body: string, askerLevel: string, directory: [DirectoryEntry]): AnalyzeResult js-server
+
+  /** Rewrites a rough question into a clear title + body. */
+  refineQuestion: function(text: !string): RefinedQuestion js-server
+
+  /** Drafts one cold email per matched expert on the actor's post. Nothing is sent. */
+  draftColdEmails: function(actorId: !string, postId: !string): [EmailDraft] js-server
+}

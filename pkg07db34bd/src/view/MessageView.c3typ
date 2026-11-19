@@ -1,0 +1,17 @@
+/**
+ * One DM message, returned by {@link DmApi}.
+ */
+type MessageView {
+
+  /** Message id. */
+  id: string
+
+  /** Text. */
+  body: string
+
+  /** Sent time. */
+  createdAt: datetime
+
+  /** Whether the acting member sent it. */
+  isMine: boolean
+}

@@ -1,0 +1,54 @@
+/**
+ * The UI-safe view of a {@link Post}. Returned only by {@link ForumApi}; never contains the author's identity
+ * when the post is anonymous.
+ */
+type PostView {
+
+  /** Post id. */
+  id: string
+
+  /** QUESTION or ARTICLE. */
+  postType: string
+
+  /** Title. */
+  title: string
+
+  /** Body. */
+  body: string
+
+  /** PUBLIC or EXPERTS_ONLY. */
+  visibility: string
+
+  /** STUDENT, FACULTY, or ALUMNI. */
+  space: string
+
+  /** Routed department. */
+  department: string
+
+  /** Topic tags. */
+  tags: [string]
+
+  /** Creation time. */
+  createdAt: datetime
+
+  /** How the author is shown. */
+  author: AuthorView
+
+  /** Matched experts, by rank. */
+  experts: [ExpertView]
+
+  /** Number of likes on the post. */
+  likeCount: int
+
+  /** Number of replies. */
+  replyCount: int
+
+  /** Whether the acting member liked the post. */
+  likedByMe: boolean
+
+  /** Whether the acting member wrote the post. */
+  isMine: boolean
+
+  /** Whether the acting member is one of the matched experts. */
+  viewerIsMatchedExpert: boolean
+}

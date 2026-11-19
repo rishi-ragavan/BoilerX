@@ -1,7 +1,7 @@
 {
   "author": "{{author}}",
   "name": "pkg07db34bd",
-  "description": "Same-cluster Agentix chat embed (zero-BFF AgentixChatEmbed drop-in)",
+  "description": "BoilerConnect \u2014 Purdue-wide Q&A forum that routes questions to student, faculty, and alumni experts",
   "dependencies": {
     "mcpServer": "8.10"
   },

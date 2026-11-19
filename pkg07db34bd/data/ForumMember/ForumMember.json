@@ -1,0 +1,73 @@
+[
+  {
+    "id": "bc_member_ug_alex",
+    "name": "Alex Rivera",
+    "email": "arivera@purdue.edu",
+    "role": "STUDENT",
+    "level": "UG",
+    "verified": true,
+    "department": "Economics",
+    "bio": "Sophomore in Economics who loves markets and data. Treasurer of a student investing club and hunting for a first research role.",
+    "tags": ["investing", "economics", "student clubs", "personal finance"],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 2
+  },
+  {
+    "id": "bc_member_phd_priya",
+    "name": "Priya Natarajan",
+    "email": "pnataraj@purdue.edu",
+    "role": "STUDENT",
+    "level": "PHD",
+    "verified": true,
+    "department": "Industrial Engineering",
+    "bio": "Fourth-year PhD student in financial engineering. I build stochastic models of equity markets and mentor undergrads in our lab.",
+    "tags": ["financial engineering", "stock market", "quantitative finance", "stochastic models", "research labs"],
+    "badges": [],
+    "anonByDefault": true,
+    "reputation": 14
+  },
+  {
+    "id": "bc_member_fac_chen",
+    "name": "Prof. David Chen",
+    "email": "dchen@purdue.edu",
+    "role": "FACULTY",
+    "level": "FACULTY",
+    "verified": true,
+    "department": "Finance",
+    "bio": "Associate Professor of Finance at Daniels School of Business. My research covers empirical asset pricing and stock market anomalies.",
+    "tags": ["stock market", "quantitative finance", "asset pricing", "research labs", "grad school"],
+    "badges": ["PROFESSOR"],
+    "anonByDefault": false,
+    "reputation": 31
+  },
+  {
+    "id": "bc_member_alum_maya",
+    "name": "Maya Thompson",
+    "email": "mthompson@alumni.purdue.edu",
+    "role": "ALUMNI",
+    "level": "ALUMNI",
+    "verified": true,
+    "department": "Finance",
+    "employer": "Goldman Sachs",
+    "bio": "Purdue Finance '19, now a quant trader at Goldman Sachs. Happy to talk internships, recruiting, and life on a trading desk.",
+    "tags": ["quant trading", "stock market", "internships", "career advice", "investment banking"],
+    "badges": [],
+    "anonByDefault": false,
+    "reputation": 18
+  },
+  {
+    "id": "bc_member_ta_jordan",
+    "name": "Jordan Lee",
+    "email": "jlee@purdue.edu",
+    "role": "STUDENT",
+    "level": "MS",
+    "verified": true,
+    "department": "CS",
+    "bio": "MS student in Computer Science and a CS 251 TA. I work on machine learning systems and like helping people debug.",
+    "tags": ["data structures", "machine learning", "python", "teaching"],
+    "badges": ["TA"],
+    "anonByDefault": true,
+    "reputation": 9
+  }
+]

@@ -1,0 +1,24 @@
+/**
+ * How an author appears on a post or reply. For anonymous items this carries NO id, name, or email — only the
+ * handle ("Boiler #a3f1", "Verified Faculty · Finance", "Verified Alum · Google").
+ */
+type AuthorView {
+
+  /** Name, or the anonymous handle. */
+  displayName: string
+
+  /** e.g. "Faculty · Finance", "PhD · ECE", "Alum · Google", "Unverified alum". */
+  roleLabel: string
+
+  /** Badges (empty when anonymous). */
+  badges: [string]
+
+  /** True when the identity is hidden. */
+  isAnonymous: boolean
+
+  /** `🎯 Expert: {department or first tag}` on replies by a matched expert; otherwise null. */
+  flair: string
+
+  /** Member id for linking to the profile — null when anonymous. */
+  memberId: string
+}

@@ -1,0 +1,6 @@
+[
+  { "id": "bc_like_post_labs_jordan", "member": { "id": "bc_member_ta_jordan" }, "post": { "id": "bc_post_finance_labs" } },
+  { "id": "bc_like_post_labs_priya", "member": { "id": "bc_member_phd_priya" }, "post": { "id": "bc_post_finance_labs" } },
+  { "id": "bc_like_reply_chen_alex", "member": { "id": "bc_member_ug_alex" }, "reply": { "id": "bc_reply_labs_chen" } },
+  { "id": "bc_like_article_alex", "member": { "id": "bc_member_ug_alex" }, "post": { "id": "bc_post_article_internship" } }
+]

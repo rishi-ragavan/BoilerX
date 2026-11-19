@@ -1,0 +1,42 @@
+/**
+ * A BoilerConnect member: a Purdue student, faculty member, or alum. Named `ForumMember` because the platform
+ * already ships a (deprecated) `Member` entity type. The inherited `name` field holds the display name.
+ *
+ * Never returned to the UI directly; {@link ForumApi} serializes it into {@link MemberView} / {@link AuthorView}.
+ */
+@db(index=['email'])
+entity type ForumMember {
+
+  /** Purdue email (`@purdue.edu`, `@alumni.purdue.edu`, or external for unverified alumni). */
+  email: !string
+
+  /** Membership role; drives anonymity and permission rules (see {@link ForumMember.Role}). */
+  role: !ForumMember.Role
+
+  /** Academic level, used for level-proximity matching (see {@link ForumMember.Level}). */
+  level: !ForumMember.Level
+
+  /** True when {@link Verify#check} accepted the email for the role. Only verified members can post or reply. */
+  verified: boolean = false
+
+  /** Home department, e.g. `Finance`, `CS`, `ECE`. */
+  department: string
+
+  /** Current employer (alumni) — shown as "Verified Alum · {employer}" when anonymous. */
+  employer: string
+
+  /** Short bio (about two sentences). The first 120 characters feed the AI expert directory. */
+  bio: string
+
+  /** Lowercase expertise tags, e.g. `quantitative finance`, `machine learning`. */
+  tags: [string]
+
+  /** Badges ⊆ PROFESSOR, TA, CLUB_PRESIDENT, CAMPUS_AMBASSADOR. */
+  badges: [string]
+
+  /** Faculty / alumni default for the per-post anonymity toggle. Students are always anonymous. */
+  anonByDefault: boolean = false
+
+  /** Likes received on this member's replies (+5 per "Helpful" in P2). Feeds expert matching. */
+  reputation: int = 0
+}

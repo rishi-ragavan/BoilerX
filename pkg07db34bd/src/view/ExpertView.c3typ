@@ -1,0 +1,26 @@
+/**
+ * A matched expert chip on a {@link PostView}.
+ */
+type ExpertView {
+
+  /** The expert's {@link ForumMember} id. */
+  memberId: string
+
+  /** Display name (experts are tagged by name). */
+  name: string
+
+  /** e.g. "Faculty · Finance". */
+  roleLabel: string
+
+  /** Expert's department. */
+  department: string
+
+  /** One-line reason (≤ 15 words). */
+  reason: string
+
+  /** Match score 0–100. */
+  score: double
+
+  /** Expert's badges. */
+  badges: [string]
+}

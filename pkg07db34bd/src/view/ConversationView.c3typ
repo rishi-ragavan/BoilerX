@@ -1,0 +1,20 @@
+/**
+ * A DM thread summary, returned by {@link DmApi}.
+ */
+type ConversationView {
+
+  /** Conversation id. */
+  id: string
+
+  /** The other participant (a student is shown only by their anonymous handle). */
+  otherParty: AuthorView
+
+  /** Title of the post the DM was started from. */
+  postTitle: string
+
+  /** Preview of the latest message. */
+  lastMessage: string
+
+  /** When the conversation started. */
+  createdAt: datetime
+}

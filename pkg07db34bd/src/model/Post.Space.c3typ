@@ -1,0 +1,17 @@
+/**
+ * The space a {@link Post} is routed to by {@link AiPipeline#analyzePost}.
+ */
+enum type Post.Space {
+  /**
+   * Peer and campus-life questions.
+   */
+  STUDENT,
+  /**
+   * Academic, research, or deep subject questions (with a department).
+   */
+  FACULTY,
+  /**
+   * Career, industry, or job questions.
+   */
+  ALUMNI
+}

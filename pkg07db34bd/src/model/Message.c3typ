@@ -1,0 +1,18 @@
+/**
+ * One message inside a {@link Conversation}.
+ */
+@db(index=['conversation'])
+entity type Message {
+
+  /** The conversation this message belongs to. */
+  conversation: !Conversation
+
+  /** The member who sent the message. */
+  sender: !ForumMember
+
+  /** Message text. */
+  body: !string
+
+  /** When the message was sent. */
+  createdAt: datetime
+}

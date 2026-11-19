@@ -30,10 +30,50 @@ const CLIENT_SRC = path.resolve(__dirname, "../agentix-chat-ui/src");
 const PKG_NM = path.resolve(__dirname, "node_modules");
 const CLIENT_NM = path.resolve(__dirname, "../agentix-chat-ui/node_modules");
 
+// Browsers send a more-specific same-name cookie before its parent-path cookie. Forward only the parent c3auth
+// value so an invalid uiservice cookie cannot shadow the refreshed environment cookie. (Verbatim from reference.)
+function preferParentC3AuthCookie(cookieHeader: string): string {
+  const cookies = cookieHeader.split(";").map((cookie) => cookie.trim());
+  const c3authCookies = cookies.filter((cookie) => cookie.startsWith("c3auth="));
+  if (c3authCookies.length <= 1) {
+    return cookieHeader;
+  }
+  return [
+    ...cookies.filter((cookie) => cookie && !cookie.startsWith("c3auth=")),
+    c3authCookies[c3authCookies.length - 1],
+  ].join("; ");
+}
+
+// Proxy config that forwards per-user auth from the incoming request; falls back to VITE_C3_AUTH_TOKEN.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function createProxyConfig(target: string, fallbackToken?: string): any {
+  return {
+    target,
+    changeOrigin: true,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    configure: (proxy: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      proxy.on("proxyReq", (proxyReq: any, req: any) => {
+        const incomingAuth = req.headers["authorization"];
+        const incomingCookie = req.headers["cookie"];
+        if (incomingAuth) {
+          proxyReq.setHeader("Authorization", incomingAuth);
+        } else if (incomingCookie) {
+          proxyReq.setHeader("Cookie", preferParentC3AuthCookie(incomingCookie));
+        } else if (fallbackToken) {
+          proxyReq.setHeader("Authorization", `c3auth=${fallbackToken}`);
+        }
+      });
+    },
+  };
+}
+
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
   const port = parseInt(env.VITE_DEV_SERVER_PORT || '9000', 10);
   const pkgName = env.VITE_C3_PKG;
+  const authAuth = env.VITE_C3_AUTH_TOKEN;
+  const appUrl = `${env.VITE_C3_BASE_URL}/${env.VITE_C3_ENV}/${env.VITE_C3_APP}/`;
   const base = command === 'serve' ? `/${env.VITE_C3_ENV}/${env.VITE_C3_APP}/uiservice/` : './';
 
   if (!pkgName) {
@@ -61,6 +101,14 @@ export default defineConfig(({ command, mode }) => {
       allowedHosts: true,
       port: port,
       strictPort: true,
+      // BoilerConnect: canonical C3 Code backend proxies (from the c3-frontend reference vite.config.mts) so
+      // `c3Call` reaches the live app when the page has no c3env/c3app cookies (e.g. bare localhost:9000).
+      proxy: {
+        "^/api": createProxyConfig(appUrl, authAuth),
+        "^/remote": createProxyConfig(appUrl, authAuth),
+        "^/thirdparty": createProxyConfig(appUrl, authAuth),
+        "^/typesys": createProxyConfig(appUrl, authAuth),
+      },
     },
     base: base,
     build: {

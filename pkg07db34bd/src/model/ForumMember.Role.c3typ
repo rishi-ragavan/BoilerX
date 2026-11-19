@@ -1,0 +1,17 @@
+/**
+ * The role of a {@link ForumMember}.
+ */
+enum type ForumMember.Role {
+  /**
+   * Current Purdue student. Always anonymous; can never start a DM.
+   */
+  STUDENT,
+  /**
+   * Purdue faculty. The only role allowed to start a DM (DM_INITIATOR_ROLES).
+   */
+  FACULTY,
+  /**
+   * Purdue alum (verified via `@alumni.purdue.edu`, otherwise "Unverified alum").
+   */
+  ALUMNI
+}

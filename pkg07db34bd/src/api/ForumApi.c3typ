@@ -1,0 +1,38 @@
+/**
+ * BoilerConnect forum API (owned by Lane A). The ONLY data surface the UI uses for members, posts, replies, and
+ * likes: every method takes the persona switcher's `actorId` and returns view types with identity stripped from
+ * anonymous items. Entity types are never fetched directly from the UI.
+ */
+type ForumApi {
+
+  /** All members, for the persona switcher (includes badges). */
+  listMembers: function(): [MemberView] js-server
+
+  /** One member's public profile. */
+  getMember: function(id: !string): MemberView js-server
+
+  /**
+   * Ranked feed for a tab: `foryou` | `students` | `faculty` | `alumni` | `articles`. PUBLIC questions only,
+   * except `articles`. `dept` filters the faculty tab. Sorted by
+   * `hot = (likes + 2·expertReplies + 1) / (hoursSincePost + 2)^1.5`.
+   */
+  feed: function(actorId: !string, tab: string, dept: string): [PostView] js-server
+
+  /** "Questions for you": posts where the actor is a matched expert (includes EXPERTS_ONLY). */
+  inbox: function(actorId: !string): [PostView] js-server
+
+  /** A post and its replies. Throws if EXPERTS_ONLY and the actor is neither the author nor a matched expert. */
+  getPost: function(actorId: !string, postId: !string): PostDetailView js-server
+
+  /**
+   * Creates a post: builds the expert directory, calls {@link AiPipeline#analyzePost}, blocks unsafe posts
+   * (nothing saved), then saves the post and its {@link ExpertMatch} rows. ARTICLE requires FACULTY or ALUMNI.
+   */
+  createPost: function(actorId: !string, input: !NewPostInput): CreatePostResult js-server
+
+  /** Adds a reply (verified members only). Students are always anonymous. */
+  reply: function(actorId: !string, postId: !string, body: !string, isAnonymous: boolean): ReplyView js-server
+
+  /** Toggles the actor's like on a post or a reply (pass one). Reply likes change the replier's reputation ±1. */
+  toggleLike: function(actorId: !string, postId: string, replyId: string): LikeResult js-server
+}

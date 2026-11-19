@@ -1,0 +1,21 @@
+/**
+ * A reply on a {@link Post}. Serialized into {@link ReplyView} (identity stripped when anonymous).
+ */
+@db(index=['post', 'author'])
+entity type Reply {
+
+  /** The post being replied to. */
+  post: !Post
+
+  /** The member who replied. Never exposed to the UI for anonymous replies. */
+  author: !ForumMember
+
+  /** Reply text. */
+  body: !string
+
+  /** Whether the reply is anonymous (always true for students). */
+  isAnonymous: boolean = true
+
+  /** When the reply was created. */
+  createdAt: datetime
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "bc_match_labs_chen",
+    "post": { "id": "bc_post_finance_labs" },
+    "expert": { "id": "bc_member_fac_chen" },
+    "rank": 1,
+    "score": 94,
+    "reason": "Finance professor researching stock market anomalies; runs a lab"
+  },
+  {
+    "id": "bc_match_labs_priya",
+    "post": { "id": "bc_post_finance_labs" },
+    "expert": { "id": "bc_member_phd_priya" },
+    "rank": 2,
+    "score": 88,
+    "reason": "Financial engineering PhD who mentors undergrads in research"
+  },
+  {
+    "id": "bc_match_labs_maya",
+    "post": { "id": "bc_post_finance_labs" },
+    "expert": { "id": "bc_member_alum_maya" },
+    "rank": 3,
+    "score": 71,
+    "reason": "Quant trader alum who did markets research at Purdue"
+  },
+  {
+    "id": "bc_match_study_alex",
+    "post": { "id": "bc_post_study_spots" },
+    "expert": { "id": "bc_member_ug_alex" },
+    "rank": 1,
+    "score": 60,
+    "reason": "Active undergrad familiar with campus study spaces"
+  }
+]

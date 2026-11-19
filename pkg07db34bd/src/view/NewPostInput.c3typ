@@ -1,0 +1,20 @@
+/**
+ * Composer input for {@link ForumApi#createPost}.
+ */
+type NewPostInput {
+
+  /** Title. */
+  title: !string
+
+  /** Body. */
+  body: string
+
+  /** QUESTION (default) or ARTICLE. */
+  postType: string
+
+  /** PUBLIC (default) or EXPERTS_ONLY. */
+  visibility: string
+
+  /** Anonymity choice (ignored for students, who are always anonymous). */
+  isAnonymous: boolean
+}

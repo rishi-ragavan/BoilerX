@@ -1,0 +1,23 @@
+/**
+ * Output of {@link AiPipeline#analyzePost}: safety verdict, routing, tags, and ranked experts.
+ */
+type AnalyzeResult {
+
+  /** False when the post must be blocked. */
+  safe: boolean
+
+  /** Why the post was blocked (CAPS pointer for self-harm). */
+  safetyReason: string
+
+  /** STUDENT, FACULTY, or ALUMNI. */
+  space: string
+
+  /** Department (for FACULTY space). */
+  department: string
+
+  /** 3–5 lowercase tags. */
+  tags: [string]
+
+  /** Up to 5 experts, best first; never the author. */
+  experts: [ExpertSuggestion]
+}

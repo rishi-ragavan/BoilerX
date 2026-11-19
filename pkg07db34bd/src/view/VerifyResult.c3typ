@@ -1,0 +1,14 @@
+/**
+ * Result of {@link Verify#check}.
+ */
+type VerifyResult {
+
+  /** Whether the email is verified for the role. */
+  verified: boolean
+
+  /** Effective role (`@alumni.purdue.edu` → ALUMNI). */
+  role: string
+
+  /** e.g. "Verified student", "Verified faculty", "Verified alum", "Unverified alum", "Not a Purdue email". */
+  label: string
+}

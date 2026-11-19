@@ -1,0 +1,11 @@
+/**
+ * A post with its replies, returned by {@link ForumApi#getPost}.
+ */
+type PostDetailView {
+
+  /** The post. */
+  post: PostView
+
+  /** Replies, oldest first. */
+  replies: [ReplyView]
+}

@@ -1,0 +1,43 @@
+/**
+ * A forum thread: a question or an article. Never returned to the UI directly — {@link ForumApi} serializes it
+ * into {@link PostView} with the author identity stripped when anonymous.
+ */
+@db(index=['author', 'space', 'postType'])
+entity type Post {
+
+  /** The member who wrote the post. Never exposed to the UI for anonymous posts. */
+  author: !ForumMember
+
+  /** QUESTION or ARTICLE (named `postType` because `type` is reserved). */
+  postType: !Post.PostType
+
+  /** Post title. */
+  title: !string
+
+  /** Post body (plain text / markdown). */
+  body: string
+
+  /** PUBLIC (feeds) or EXPERTS_ONLY (author + matched experts only). */
+  visibility: Post.Visibility
+
+  /** Space the AI pipeline routed the post to. */
+  space: Post.Space
+
+  /** Department chosen by the AI pipeline (mostly for FACULTY space). */
+  department: string
+
+  /** 3–5 lowercase topic tags from the AI pipeline. */
+  tags: [string]
+
+  /** Whether the author chose to post anonymously (always true for students). */
+  isAnonymous: boolean = true
+
+  /** When the post was created; used by feed ranking. */
+  createdAt: datetime
+
+  /** Experts matched to this post, by {@link ExpertMatch#rank}. */
+  expertMatches: [ExpertMatch](post)
+
+  /** Replies to this post. */
+  replies: [Reply](post)
+}

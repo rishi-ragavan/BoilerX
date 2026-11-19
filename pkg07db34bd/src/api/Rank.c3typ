@@ -1,0 +1,11 @@
+/**
+ * Ranking helpers (owned by Lane A).
+ */
+type Rank {
+
+  /** `hot = (likes + 2·expertReplies + 1) / (hoursSincePost + 2)^1.5`. */
+  hotScore: function(likes: int, expertReplies: int, hoursSincePost: double): double js-server
+
+  /** 1 when levels are adjacent or equal on UG → MS → PHD → FACULTY (ALUMNI ≈ FACULTY), else decays to 0. */
+  levelProximity: function(askerLevel: string, expertLevel: string): double js-server
+}

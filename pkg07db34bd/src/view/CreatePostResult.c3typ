@@ -1,0 +1,14 @@
+/**
+ * Result of {@link ForumApi#createPost}. When `ok` is false, `error` explains why and nothing was saved.
+ */
+type CreatePostResult {
+
+  /** Whether the post was saved. */
+  ok: boolean
+
+  /** Error or safety reason when not saved. */
+  error: string
+
+  /** The saved post, with its experts. */
+  post: PostView
+}
