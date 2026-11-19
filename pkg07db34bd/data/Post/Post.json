@@ -5,163 +5,108 @@
       "id": "bc_member_ug_alex"
     },
     "postType": "QUESTION",
-    "title": "Which finance research labs take undergrads?",
-    "body": "I'm a sophomore interested in stock market research. Are there faculty or PhD students in Finance who take undergrad research assistants, and how should I reach out?",
+    "title": "Which finance research labs take undergraduates?",
+    "body": "I am a sophomore in Economics and interested in stock market research. Do any Finance faculty take undergraduate research assistants, and how should I reach out?",
     "visibility": "PUBLIC",
     "space": "EXPERTS",
-    "department": "Finance",
     "isAnonymous": true,
-    "createdAt": "2026-11-19T09:00:00Z"
+    "createdAt": "2026-11-19T09:00:00Z",
+    "department": "Finance"
   },
   {
-    "id": "bc_post_study_spots",
+    "id": "bc_post_finance_minor",
     "author": {
-      "id": "bc_member_ta_jordan"
+      "id": "bc_member_ug_alex"
     },
     "postType": "QUESTION",
-    "title": "Best quiet study spots near Lawson during finals?",
-    "body": "Lawson is packed every evening. Where do people go to study late without the crowds?",
+    "title": "Is a Finance minor worth it for an Economics major?",
+    "body": "I am considering adding a Finance minor. Would the asset pricing and investments courses meaningfully help if I want to work with market data?",
     "visibility": "PUBLIC",
-    "space": "STUDENT",
+    "space": "EXPERTS",
     "isAnonymous": true,
-    "createdAt": "2026-11-18T20:00:00Z"
+    "createdAt": "2026-11-18T14:00:00Z",
+    "department": "Finance"
   },
   {
     "id": "bc_post_ml_lab",
     "author": {
-      "id": "bc_member_ug_lily"
+      "id": "bc_member_ug_alex"
     },
     "postType": "QUESTION",
-    "title": "How do I join a machine learning research lab in CS as a sophomore?",
-    "body": "I've finished CS 251 and taught myself some PyTorch. How do undergrads usually get into ML labs here, and do I need to have taken CS 373 first?",
+    "title": "How do I join a machine learning research lab as a sophomore?",
+    "body": "I have taken an introductory machine learning course and built two small projects. What do CS labs look for in undergraduate researchers?",
     "visibility": "PUBLIC",
     "space": "EXPERTS",
-    "department": "CS",
     "isAnonymous": true,
-    "createdAt": "2026-11-13T14:00:00Z"
-  },
-  {
-    "id": "bc_post_bio_lab",
-    "author": {
-      "id": "bc_member_ug_emily"
-    },
-    "postType": "QUESTION",
-    "title": "Getting into a biology wet lab with zero bench experience?",
-    "body": "I want to do undergrad research in Biological Sciences but have only done intro lab courses. Will labs in Hansen or Lilly Hall take someone with no experience, and what should I learn first?",
-    "visibility": "PUBLIC",
-    "space": "EXPERTS",
-    "department": "Biology",
-    "isAnonymous": true,
-    "createdAt": "2026-11-14T10:00:00Z"
-  },
-  {
-    "id": "bc_post_google_swe",
-    "author": {
-      "id": "bc_member_ug_sam"
-    },
-    "postType": "QUESTION",
-    "title": "Tips for the Google SWE internship interviews?",
-    "body": "I just got invited to Google's SWE intern technical interviews. Any advice from people who've done them on how to prep in three weeks?",
-    "visibility": "PUBLIC",
-    "space": "ALUMNI",
-    "isAnonymous": true,
-    "createdAt": "2026-11-15T18:00:00Z",
+    "createdAt": "2026-11-18T19:30:00Z",
     "department": "CS"
-  },
-  {
-    "id": "bc_post_cummins_coop",
-    "author": {
-      "id": "bc_member_ug_marcus"
-    },
-    "postType": "QUESTION",
-    "title": "Is the Cummins ME co-op worth delaying graduation?",
-    "body": "I have an offer for a three-rotation Cummins co-op in Columbus, but it pushes my graduation back a semester. Did alumni find it worth it for full-time offers?",
-    "visibility": "PUBLIC",
-    "space": "ALUMNI",
-    "isAnonymous": true,
-    "createdAt": "2026-11-16T13:30:00Z",
-    "department": "ME"
-  },
-  {
-    "id": "bc_post_psych_phd",
-    "author": {
-      "id": "bc_member_ug_sofia"
-    },
-    "postType": "QUESTION",
-    "title": "How much research experience do I need for a Psychology PhD?",
-    "body": "I've been in one cognition lab for a year. Is that enough to be competitive for clinical psychology PhD programs, or should I plan on a post-bacc research job first?",
-    "visibility": "PUBLIC",
-    "space": "EXPERTS",
-    "department": "Psychology",
-    "isAnonymous": true,
-    "createdAt": "2026-11-12T16:00:00Z"
-  },
-  {
-    "id": "bc_post_ece_ms",
-    "author": {
-      "id": "bc_member_ug_aisha"
-    },
-    "postType": "QUESTION",
-    "title": "ECE MS right after undergrad, or work first?",
-    "body": "I'm deciding between Purdue's combined BS/MS in ECE and taking an industry job first. How did others decide, and does work experience help with funding?",
-    "visibility": "PUBLIC",
-    "space": "EXPERTS",
-    "department": "ECE",
-    "isAnonymous": true,
-    "createdAt": "2026-11-17T09:00:00Z"
   },
   {
     "id": "bc_post_rec_letters",
     "author": {
-      "id": "bc_member_ug_hannah"
+      "id": "bc_member_ug_alex"
     },
     "postType": "QUESTION",
-    "title": "How do I ask for a grad-school rec letter after a rough grade?",
-    "body": "I got a C in a professor's organic chemistry class but did well in their lab section. Is it a bad idea to ask them for a recommendation letter, and how should I bring it up?",
+    "title": "How do I ask for a graduate school recommendation letter after a difficult semester?",
+    "body": "I did well in one of the professor's courses but struggled in another semester. How should I approach asking for a letter, and what should I share?",
     "visibility": "EXPERTS_ONLY",
     "space": "EXPERTS",
-    "department": "Chemistry",
     "isAnonymous": true,
-    "createdAt": "2026-11-18T11:00:00Z"
+    "createdAt": "2026-11-17T16:00:00Z",
+    "department": "CS"
   },
   {
-    "id": "bc_post_startup_vs_corp",
+    "id": "bc_post_quant_interviews",
     "author": {
-      "id": "bc_member_ug_tyler"
+      "id": "bc_member_ug_alex"
     },
     "postType": "QUESTION",
-    "title": "Ag-tech startup or a big company after graduation?",
-    "body": "I have offers from a small precision-ag startup and a large equipment manufacturer. For alumni who've done either, how did you weigh stability against learning?",
+    "title": "How do quant trading firms structure their interviews?",
+    "body": "I would like to apply for quantitative trading internships next year. What do the interview rounds usually cover, and how should I prepare?",
+    "visibility": "PUBLIC",
+    "space": "ALUMNI",
+    "isAnonymous": true,
+    "createdAt": "2026-11-19T07:45:00Z",
+    "department": "Finance"
+  },
+  {
+    "id": "bc_post_first_internship",
+    "author": {
+      "id": "bc_member_ug_alex"
+    },
+    "postType": "QUESTION",
+    "title": "How did you land your first finance internship?",
+    "body": "I do not have prior internship experience. Which resources, clubs, or networking approaches helped most when recruiting for finance roles?",
     "visibility": "PUBLIC",
     "space": "ALUMNI",
     "isAnonymous": true,
     "createdAt": "2026-11-16T20:00:00Z",
-    "department": "Agriculture"
+    "department": "Finance"
+  },
+  {
+    "id": "bc_post_study_spots",
+    "author": {
+      "id": "bc_member_ug_alex"
+    },
+    "postType": "QUESTION",
+    "title": "Where are the quietest places to study near Lawson during finals?",
+    "body": "Lawson is crowded every evening during finals week. Where do people go to study late without the noise?",
+    "visibility": "PUBLIC",
+    "space": "STUDENT",
+    "isAnonymous": true,
+    "createdAt": "2026-11-18T21:00:00Z"
   },
   {
     "id": "bc_post_clubs",
     "author": {
-      "id": "bc_member_ug_omar"
+      "id": "bc_member_ug_alex"
     },
     "postType": "QUESTION",
-    "title": "How do I find student organizations that are worth the time commitment?",
-    "body": "I am a first-year in ECE and joined several organizations at the involvement fair. I would like to focus on one or two where I can meet people and build skills. How did others decide?",
+    "title": "How do I choose student organizations that are worth the time commitment?",
+    "body": "I joined several organizations at the involvement fair and would like to focus on one or two. How did others decide?",
     "visibility": "PUBLIC",
     "space": "STUDENT",
     "isAnonymous": true,
-    "createdAt": "2026-11-19T07:30:00Z"
-  },
-  {
-    "id": "bc_post_housing",
-    "author": {
-      "id": "bc_member_ug_noah"
-    },
-    "postType": "QUESTION",
-    "title": "Is it better to live on campus or in an apartment for sophomore year?",
-    "body": "I am deciding between a residence hall and an apartment near Chauncey for next year. I would appreciate perspectives on cost, commute, and community.",
-    "visibility": "PUBLIC",
-    "space": "STUDENT",
-    "isAnonymous": true,
-    "createdAt": "2026-11-18T16:00:00Z"
+    "createdAt": "2026-11-17T12:00:00Z"
   }
 ]

@@ -36,12 +36,16 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
   new conversation. UI: Dm/DmAuthorLine (click student handle → menu → DmStartDialog); DmThread "End conversation".
   PostDmButton ("Message asker privately") removed.
 
-## Data (`data/`)
-- A1: 35 members (12 UG/4 MS/5 PhD/8 faculty/6 alumni; ids `bc_member_<level>_<name>`, plus `bc_member_ta_jordan`),
-  12 posts (no articles, no topic tags; `bc_post_rec_letters` is EXPERTS_ONLY), 16 ExpertMatch (profs + alumni only), 23 Reply.
-  Demo personas: `bc_member_ug_alex` (default student), `bc_member_fac_chen` (Finance prof), `bc_member_phd_priya`
-  (FE PhD), `bc_member_alum_maya` (Goldman quant). all 35 verified (ryan now @alumni.purdue.edu); `bc_member_fac_osei` anonByDefault.
+## Data (`data/`) — 4 demo accounts
+- `bc_member_ug_alex` Alex Rivera (STUDENT, default persona, asks every question) · `bc_member_fac_chen` Prof. David
+  Chen (Expert · Finance: stock market, asset pricing, quantitative finance) · `bc_member_fac_okafor` Prof. Chidi
+  Okafor (Expert · CS: machine learning, deep learning, AI ethics) · `bc_member_alum_maya` Maya Thompson (Alumni ·
+  Quant Trader, Goldman Sachs).
+- Demo of selective tagging: finance questions tag Chen (+ Maya), never Okafor; the ML / rec-letter questions tag
+  Okafor only. 8 posts (Experts 4 incl. `bc_post_rec_letters` EXPERTS_ONLY → Okafor; Alumni 2; Student 2, untagged),
+  8 ExpertMatch, 12 Reply.
 - Load: `App.State.inst().get().withFields({pkgFingerprint:-1, seeded:false}).update(); C3.pkg().upsertAllSeed()`.
+  upsertAllSeed never deletes: rows from older seeds must be removed by hand.
 
 ## UI (`ui/react/src/`)
 - `main.tsx` → HashRouter → `App.tsx` (PersonaProvider + routes: `/`, `/post/:postId`, `/inbox`, `/messages[/:conversationId]`,
