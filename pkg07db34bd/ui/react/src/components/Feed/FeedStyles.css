@@ -190,7 +190,7 @@
   justify-content: center;
   width: var(--icon-hit);
   height: var(--icon-hit);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-icon);
   transition: background-color var(--transition);
 }
 

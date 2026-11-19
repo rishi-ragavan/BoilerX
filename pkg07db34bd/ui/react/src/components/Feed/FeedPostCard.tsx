@@ -7,7 +7,7 @@
  * (plus a gold "You were tagged" marker when the viewer is one of them).
  */
 import { Link } from 'react-router';
-import { Lock, MessageCircle, Target, UsersRound } from 'lucide-react';
+import { Lock, MessageSquareText, Target, UsersRound } from 'lucide-react';
 import type { PostView } from '@/Interfaces';
 import { IdentityAuthorLine } from '@/components/Identity/IdentityAuthorLine';
 import { ShellAvatar } from '@/components/Shell/ShellAvatar';
@@ -77,7 +77,7 @@ export function FeedPostCard({
             aria-label={`View ${replyCount} ${replyCount === 1 ? 'comment' : 'comments'}`}
           >
             <span className="bc-action__icon">
-              <MessageCircle size={18} aria-hidden />
+              <MessageSquareText size={18} aria-hidden />
             </span>
             <span className="bc-action__count">
               {replyCount ? `View ${replyCount} ${replyCount === 1 ? 'comment' : 'comments'}` : 'Reply'}

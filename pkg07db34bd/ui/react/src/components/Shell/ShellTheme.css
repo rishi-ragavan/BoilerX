@@ -75,7 +75,9 @@
   --icon-sm: 16px;
   --logo: 30px; /* Purdue P mark in the nav wordmark */
   --icon-stroke: 1.75;
-  --icon-hit: 34px; /* circular hover halo behind action icons */
+  --icon-hit: 34px; /* rounded-square hover halo behind action icons */
+  --icon-tile: 40px; /* nav icon tile */
+  --nav-rail: 4px; /* gold active-item rail */
   --ask-height: 52px;
   --nav-item-height: 50px;
   --tab-height: 53px;
@@ -94,6 +96,8 @@
   --radius-pill: 9999px; /* buttons, pills, chips */
   --radius-card: 16px; /* cards, menus, modals */
   --radius-input: 4px;
+  --radius-icon: 10px; /* rounded-square icon tiles + hover halos (BoilerConnect's look, not X's circles) */
+  --radius-nav: 14px; /* nav rows */
 
   /* ---- Motion / focus -------------------------------------------------------------------------------------- */
   --transition: 150ms ease;
