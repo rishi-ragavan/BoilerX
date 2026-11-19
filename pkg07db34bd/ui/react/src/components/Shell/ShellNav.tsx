@@ -3,16 +3,17 @@
  * and, under 700px, the fixed bottom tab bar + floating gold "Ask" button.
  *
  * Iconography is BoilerConnect's own, not X's: campus/academic glyphs (University, Target = "matched to you",
- * MessagesSquare, IdCard, CircleQuestionMark for Ask) inside rounded-square tiles; the active item gets a gold
+ * MessagesSquare, IdCard, hammer-over-anvil for Ask) inside rounded-square tiles; the active item gets a gold
  * tile + a gold left rail instead of X's filled icon.
  */
 import { Link, useLocation } from 'react-router';
-import { CircleQuestionMark, IdCard, MessagesSquare, Target, University, type LucideIcon } from 'lucide-react';
+import { IdCard, MessagesSquare, Target, University, type LucideIcon } from 'lucide-react';
 import { usePersona } from '@/components/Persona/PersonaContext';
 import { canBeTagged } from '@/Interfaces';
 import { PersonaSwitcher } from '@/components/Persona/PersonaSwitcher';
 import { useShell } from '@/components/Shell/ShellContext';
 import { ShellPurdueP } from '@/components/Shell/ShellLogo';
+import { ShellAskIcon } from '@/components/Shell/ShellAskIcon';
 
 interface NavItem {
   key: string;
@@ -85,7 +86,7 @@ export function ShellNav() {
 
         <button type="button" className="bc-ask" onClick={requestCompose} aria-label="Ask a question">
           <span className="bc-ask__label">Ask</span>
-          <CircleQuestionMark size={24} className="bc-ask__icon" aria-hidden />
+          <ShellAskIcon size={26} className="bc-ask__icon" />
         </button>
 
         <div className="bc-nav__persona">
@@ -104,7 +105,7 @@ export function ShellBottomBar() {
   return (
     <>
       <button type="button" className="bc-fab" onClick={requestCompose} aria-label="Ask a question">
-        <CircleQuestionMark size={26} aria-hidden />
+        <ShellAskIcon size={28} />
       </button>
       <nav aria-label="Primary (mobile)" className="bc-bottombar">
         {items.map(({ key, label, icon: Icon, href, active }) => (
