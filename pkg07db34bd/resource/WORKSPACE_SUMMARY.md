@@ -51,11 +51,15 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
   API-created rows cleaned with `TestApi.addExternalTeardownFilter(ctx, "startsWith(author.id,'<prefix>')", 'Post', 1000)`.
 - ForumApi re-checks verification via `Verify.check(email, role)` on post/reply.
 
-## Merge 1 TODO (live app still has old rows)
-- BEFORE `main` (new types) reaches the live app, with the old types still loaded: remove `Like` rows, every Post with
-  space FACULTY (+ its replies/matches; enum value renamed to EXPERTS), and the 2 ARTICLE posts + their replies
-  (`bc_post_article_internship`, `bc_post_article_research`) — the Like type and ARTICLE enum value no longer exist.
-- Then run both test suites (test_ForumApi.js, test_ForumApi_write.js); commits 26e6a8e..HEAD were never run live.
+## Merge 1 (done, main @ 89509d4)
+- Order B → A → D → C. Conflicts (PostDetailPage, ProfilePage → D; FeedPostCard, ShellLayout, HomePage → C) kept the owner.
+- Integration commit aligned C + D UI with lead rules (no likes/articles/verified, Experts space, count-only experts,
+  grouped replies). Deleted PostLikeButton; replySort.ts now = insertReply + group labels.
+- Live DB cleaned (30 Like, 8 FACULTY/ARTICLE posts + replies/matches), seed upserted. Tests: ForumApi 38 + write 18 +
+  AiPipeline 20 = 76 pass. Real LLM: demo Q → EXPERTS/Finance, 4 experts (chen, priya, maya, harris), ~2.5 s;
+  "CS 251 exam answers" blocked.
+- Repo was shallow-fetched by another session (broke merges with "unrelated histories"): fix `git fetch --unshallow origin`.
+- `/usr/workspace` is now on `main` (the live app + preview run from it). Other lanes: C has worktree /home/c3/lane-c-feed-wt.
 
 ## Status
-- Step 0 on main. A1 + A2 + A3 tests on `lane-a-forum`. Step 0: types valid (no Pkg issues), data loaded, ForumApi smoke-tested, `npm run build` green, UI running.
+- Merge 1 on main. Step 0: types valid (no Pkg issues), data loaded, ForumApi smoke-tested, `npm run build` green, UI running.
