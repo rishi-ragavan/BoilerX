@@ -1,0 +1,32 @@
+/**
+ * Outcome of researching one {@link ExpertLead} in {@link ExpertHarvest#harvest}.
+ */
+type ExpertHarvest.LeadResult {
+
+  /** The lead id. */
+  leadId: string
+
+  /** The lead's name. */
+  name: string
+
+  /** {@link ForumMember} id the profile row creates. */
+  memberId: string
+
+  /** True when a profile row was written. */
+  ok: boolean
+
+  /** What happened (sources read, or the error). */
+  note: string
+
+  /** Account email chosen. */
+  email: string
+
+  /** Where the email came from. */
+  emailSource: string
+
+  /** Expertise tags the LLM extracted. */
+  tags: [string]
+
+  /** Evidence rows written for this lead. */
+  experienceCount: int
+}

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "bc_lead_paleja",
+    "name": "Rohan Paleja",
+    "displayName": "Prof. Rohan Paleja",
+    "role": "FACULTY",
+    "department": "Computer Science",
+    "seedUrls": [
+      "https://www.cs.purdue.edu/people/faculty/rpaleja.html",
+      "https://www.cs.purdue.edu/news/articles/2026/paleja-earns-2026-darpa-young-faculty-award.html"
+    ],
+    "openAlexId": "A5005412601",
+    "status": "PENDING"
+  },
+  {
+    "id": "bc_lead_woody",
+    "name": "Lucas Woody",
+    "displayName": "Lucas Woody",
+    "role": "FACULTY",
+    "department": "Entrepreneurship",
+    "seedUrls": [
+      "https://www.purdue.edu/entr/welcome-to-our-new-instructors/",
+      "https://nextbetter.com/about"
+    ],
+    "status": "PENDING"
+  },
+  {
+    "id": "bc_lead_bertino",
+    "name": "Elisa Bertino",
+    "displayName": "Prof. Elisa Bertino",
+    "role": "FACULTY",
+    "department": "Computer Science",
+    "seedUrls": ["https://www.cs.purdue.edu/people/faculty/bertino.html"],
+    "openAlexId": "A5061694501",
+    "status": "PENDING"
+  },
+  {
+    "id": "bc_lead_ye",
+    "name": "Peide Ye",
+    "displayName": "Prof. Peide Ye",
+    "role": "FACULTY",
+    "department": "Electrical and Computer Engineering",
+    "seedUrls": [
+      "https://engineering.purdue.edu/~yep/",
+      "https://birck.research.purdue.edu/directory/peide-ye/"
+    ],
+    "status": "PENDING"
+  },
+  {
+    "id": "bc_lead_mcconnell",
+    "name": "John J. McConnell",
+    "displayName": "Prof. John McConnell",
+    "role": "FACULTY",
+    "department": "Finance",
+    "seedUrls": ["https://business.purdue.edu/faculty/mcconnell/"],
+    "openAlexId": "A5113544753",
+    "status": "PENDING"
+  },
+  {
+    "id": "bc_lead_feustel",
+    "name": "Drew Feustel",
+    "displayName": "Drew Feustel",
+    "role": "ALUMNI",
+    "department": "Earth, Atmospheric, and Planetary Sciences",
+    "employer": "NASA (retired astronaut)",
+    "seedUrls": [
+      "https://www.purdue.edu/space/astronaut/drew-feustel/",
+      "https://www.purdue.edu/science/Alumni/recognition/2010-distinguished-science-alumni/andrew-feustel.html"
+    ],
+    "status": "PENDING"
+  }
+]

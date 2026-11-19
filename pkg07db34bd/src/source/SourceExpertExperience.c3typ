@@ -1,0 +1,35 @@
+/**
+ * One row of `expert_experience_*.csv` in the `ExpertExperienceFeed` Data Fusion collection (Lane E): a paper,
+ * position, award, venture, course, or degree on an {@link ExpertProfile}. Loaded by
+ * `SourceExpertExperience-ExpertExperience`.
+ */
+type SourceExpertExperience mixes Source {
+
+  /** {@link ExpertExperience} id, e.g. `bc_expert_paleja_03`. */
+  @ser(name="experience_id")
+  experienceId: string
+
+  /** Owning {@link ExpertProfile} id. */
+  @ser(name="profile_id")
+  profileId: string
+
+  /** {@link ExpertExperience.Kind} value, e.g. PUBLICATION. */
+  @ser(name="experience_kind")
+  experienceKind: string
+
+  /** Title. */
+  title: string
+
+  /** Venue, employer, or institution. */
+  organization: string
+
+  /** Year. */
+  year: int
+
+  /** Evidence link. */
+  url: string
+
+  /** Display order. */
+  @ser(name="display_rank")
+  displayRank: int
+}

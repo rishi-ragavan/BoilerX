@@ -19,6 +19,9 @@ type DirectoryEntry {
   /** Research interests (professors) or broad career role (alumni). */
   tags: [string]
 
-  /** First 120 characters of the bio. */
+  /**
+   * Bio followed by `Evidence: …` (the member's {@link ExpertProfile} headline and top {@link ExpertExperience} items,
+   * when they have one), first 420 characters.
+   */
   bio: string
 }

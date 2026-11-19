@@ -1,0 +1,36 @@
+/**
+ * The public-record evidence behind an expert {@link ForumMember} (Lane E). Built by {@link ExpertHarvest} from the
+ * person's official pages and OpenAlex, then loaded through Data Fusion (`ExpertProfileFeed` →
+ * `SourceExpertProfile-ExpertProfile`). {@link ForumApi#createPost} adds the evidence to the AI expert directory, so
+ * match reasons can cite real work.
+ */
+@db(index=['member'])
+entity type ExpertProfile {
+
+  /** The BoilerConnect account this evidence describes. */
+  member: !ForumMember
+
+  /** The lead that was researched. */
+  lead: ExpertLead
+
+  /** One-line summary, e.g. `Assistant Professor of CS; directs the SCALE Robotics Lab`. */
+  headline: string
+
+  /** Pages the profile was built from (official page first, then OpenAlex). */
+  sourceUrls: [string]
+
+  /** OpenAlex author id used for publications, when found. */
+  openAlexId: string
+
+  /** Where the account email came from, e.g. `Published on cs.purdue.edu` or `Placeholder: no public email`. */
+  emailSource: string
+
+  /** Demo account built from public records: the person has not signed up themselves. */
+  isDemoAccount: boolean
+
+  /** When the harvest read the sources. */
+  harvestedAt: datetime
+
+  /** Publications, positions, awards, ventures, and degrees, in {@link ExpertExperience#rank} order. */
+  experiences: [ExpertExperience](profile)
+}

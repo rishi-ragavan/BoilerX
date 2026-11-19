@@ -1,0 +1,28 @@
+/**
+ * One piece of evidence on an {@link ExpertProfile}: a paper, position, award, venture, course taught, or degree,
+ * each taken from a public source. Loaded through Data Fusion (`ExpertExperienceFeed`).
+ */
+@db(index=['profile'])
+entity type ExpertExperience {
+
+  /** The profile this item belongs to. */
+  profile: !ExpertProfile
+
+  /** What kind of evidence this is. */
+  kind: !ExpertExperience.Kind
+
+  /** Title, e.g. a paper title or `Assistant Professor of Computer Science`. */
+  title: !string
+
+  /** Venue, employer, or institution, e.g. `RSS 2022`, `MIT Lincoln Laboratory`. */
+  organization: string
+
+  /** Year it happened or was published. */
+  year: int
+
+  /** Link to the evidence (DOI, OpenAlex, or official page), when there is one. */
+  url: string
+
+  /** 1-based display order (most relevant first). */
+  rank: int
+}

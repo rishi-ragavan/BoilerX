@@ -289,6 +289,46 @@ function toViewArray(items) {
   return b.build();
 }
 
+/** Bio + evidence characters per directory entry sent to the AI pipeline. */
+var DIRECTORY_BIO_CHARS = 420;
+
+/**
+ * Lane E: top evidence items per member from {@link ExpertProfile} / {@link ExpertExperience} →
+ * { memberId: "Directs ...; RSS 2022 paper: ..." }. Members without a profile are absent.
+ */
+function expertEvidence(memberIds) {
+  var out = {};
+  if (!memberIds.length) return out;
+  var memberByProfile = {};
+  var profileIds = [];
+  each(
+    ExpertProfile.fetch({ filter: Filter.intersects('member.id', strArray(memberIds)), include: 'id, headline, member.id', limit: 500 }).objs,
+    function (p) {
+      memberByProfile[p.id] = p.member.id;
+      profileIds.push(p.id);
+      if (p.headline) out[p.member.id] = [String(p.headline)];
+    }
+  );
+  if (!profileIds.length) return out;
+  each(
+    ExpertExperience.fetch({
+      filter: Filter.intersects('profile.id', strArray(profileIds)),
+      include: 'title, organization, year, kind, rank, profile.id',
+      order: 'rank',
+      limit: 2000,
+    }).objs,
+    function (x) {
+      var mid = memberByProfile[x.profile.id];
+      var items = (out[mid] = out[mid] || []);
+      if (items.length >= 5) return;
+      var where = [x.organization, x.year].filter(function (v) { return v; }).join(' ');
+      items.push(String(x.kind).toLowerCase() + ' "' + x.title + '"' + (where ? ' (' + where + ')' : ''));
+    }
+  );
+  Object.keys(out).forEach(function (k) { out[k] = out[k].join('; '); });
+  return out;
+}
+
 function loadPost(postId) {
   var res = Post.fetch({ filter: Filter.eq('id', postId), include: POST_INCLUDE, limit: 1 });
   return res.objs && res.objs.length ? res.objs[0] : null;
@@ -412,26 +452,32 @@ function createPost(actorId, input) {
   // 1. Expert directory: only professors and alumni can be tagged (never the author, never students).
   var dir = DirectoryEntry.arrayBuilder();
   var known = {};
+  var members = [];
   each(
     ForumMember.fetch({
       filter: Filter.ne('id', actorId).and().intersects('role', strArray(TAGGABLE_ROLES)),
       include: MEMBER_FIELDS,
       limit: 500,
     }).objs,
-    function (m) {
-      known[m.id] = true;
-      dir.add(
-        DirectoryEntry.make({
-          memberId: m.id,
-          role: str(m.role),
-          department: m.department,
-          employer: m.employer,
-          tags: m.tags || [],
-          bio: m.bio ? String(m.bio).substring(0, 120) : null,
-        })
-      );
-    }
+    function (m) { members.push(m); }
   );
+  // Lane E: public-record evidence (papers, positions, ventures) so match reasons can cite real work.
+  var evidence = expertEvidence(members.map(function (m) { return m.id; }));
+  members.forEach(function (m) {
+    known[m.id] = true;
+    var bio = m.bio ? String(m.bio) : '';
+    if (evidence[m.id]) bio = (bio ? bio + ' ' : '') + 'Evidence: ' + evidence[m.id];
+    dir.add(
+      DirectoryEntry.make({
+        memberId: m.id,
+        role: str(m.role),
+        department: m.department,
+        employer: m.employer,
+        tags: m.tags || [],
+        bio: bio ? bio.substring(0, DIRECTORY_BIO_CHARS) : null,
+      })
+    );
+  });
 
   // 2. AI pipeline (Lane B owns the body). The 3rd argument is the asker's role (STUDENT or ALUMNI).
   var result = AiPipeline.analyzePost(input.title, input.body || '', role, dir.build());

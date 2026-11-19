@@ -1,0 +1,29 @@
+/**
+ * Kind of {@link ExpertExperience}.
+ */
+enum type ExpertExperience.Kind {
+  /**
+   * A paper or article.
+   */
+  PUBLICATION,
+  /**
+   * A job, appointment, or lab leadership role.
+   */
+  POSITION,
+  /**
+   * An award, fellowship, or honor.
+   */
+  AWARD,
+  /**
+   * A company or venture the person founded or advised.
+   */
+  VENTURE,
+  /**
+   * A course or program the person teaches.
+   */
+  TEACHING,
+  /**
+   * A degree.
+   */
+  EDUCATION
+}

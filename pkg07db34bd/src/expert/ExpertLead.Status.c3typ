@@ -1,0 +1,17 @@
+/**
+ * Harvest state of an {@link ExpertLead}.
+ */
+enum type ExpertLead.Status {
+  /**
+   * Not researched yet.
+   */
+  PENDING,
+  /**
+   * Profile CSV rows were written to the Data Fusion landing feeds.
+   */
+  HARVESTED,
+  /**
+   * The harvest could not build a profile (see {@link ExpertLead#harvestNote}).
+   */
+  FAILED
+}

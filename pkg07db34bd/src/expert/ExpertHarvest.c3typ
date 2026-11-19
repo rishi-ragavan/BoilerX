@@ -1,0 +1,36 @@
+/**
+ * Expert harvester (Lane E): researches each {@link ExpertLead} from public sources (the person's official pages
+ * and OpenAlex), has the built-in LLM write a profile using only facts from those sources, and lands the result as
+ * CSV files in the Data Fusion landing feeds. Loading the feeds ({@link #loadFeeds}, or "Process" in Data Fusion)
+ * creates the {@link ForumMember} accounts plus their {@link ExpertProfile} and {@link ExpertExperience} rows.
+ *
+ * Emails are taken only from the official pages, never guessed; when none is published the account gets a
+ * `.demo` placeholder and {@link ExpertProfile#emailSource} says so.
+ */
+type ExpertHarvest {
+
+  /** Feed (FileSourceCollection) that receives `expert_profiles_*.csv`. */
+  PROFILE_FEED: const string = "ExpertProfileFeed"
+
+  /** Feed (FileSourceCollection) that receives `expert_experience_*.csv`. */
+  EXPERIENCE_FEED: const string = "ExpertExperienceFeed"
+
+  /**
+   * Researches leads and writes one profile CSV and one experience CSV into the feeds' inboxes. Nothing is loaded
+   * into the app until the feeds are processed.
+   *
+   * @param leadIds
+   *          {@link ExpertLead} ids to research; empty or null researches every PENDING lead.
+   * @return the files written and the outcome per lead
+   */
+  harvest: function(leadIds: [string]): ExpertHarvest.Result js-server
+
+  /**
+   * Processes both landing feeds (profiles first, then experience), exactly as "Process" does in Data Fusion, and
+   * returns their latest file statuses. Processing is asynchronous: call {@link #feedStatus} to watch it finish.
+   */
+  loadFeeds: function(): [ExpertHarvest.FeedStatus] js-server
+
+  /** Latest file statuses of both landing feeds (newest first). */
+  feedStatus: function(): [ExpertHarvest.FeedStatus] js-server
+}

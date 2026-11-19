@@ -105,7 +105,7 @@ function directoryToNative(directory) {
       department: str(d.department),
       employer: str(d.employer),
       tags: tags,
-      bio: d.bio ? String(d.bio).substring(0, 120) : null,
+      bio: d.bio ? String(d.bio).substring(0, 420) : null, // bio + Lane E public-record evidence
     });
   });
   return out;

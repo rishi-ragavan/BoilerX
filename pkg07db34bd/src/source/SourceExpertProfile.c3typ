@@ -1,0 +1,61 @@
+/**
+ * One row of `expert_profiles_*.csv` in the `ExpertProfileFeed` Data Fusion collection (Lane E): an expert account
+ * researched by {@link ExpertHarvest#harvest}. Two transforms load each row: `SourceExpertProfile-ForumMember` (the
+ * account) and `SourceExpertProfile-ExpertProfile` (its evidence record).
+ */
+type SourceExpertProfile mixes Source {
+
+  /** {@link ForumMember} id to create, e.g. `bc_member_fac_paleja`. */
+  @ser(name="member_id")
+  memberId: string
+
+  /** {@link ExpertProfile} id, e.g. `bc_expert_paleja`. */
+  @ser(name="profile_id")
+  profileId: string
+
+  /** {@link ExpertLead} id the row was researched from. */
+  @ser(name="lead_id")
+  leadId: string
+
+  /** Display name. */
+  @ser(name="display_name")
+  displayName: string
+
+  /** Account email (published one, or a `.demo` placeholder). */
+  email: string
+
+  /** Where the email came from. */
+  @ser(name="email_source")
+  emailSource: string
+
+  /** FACULTY or ALUMNI. */
+  @ser(name="member_role")
+  memberRole: string
+
+  /** Department or program. */
+  department: string
+
+  /** Employer (alumni). */
+  employer: string
+
+  /** Profile bio written from the sources. */
+  bio: string
+
+  /** Expertise tags separated by `;`. */
+  tags: string
+
+  /** One-line summary. */
+  headline: string
+
+  /** Source page URLs separated by spaces. */
+  @ser(name="source_urls")
+  sourceUrls: string
+
+  /** OpenAlex author id. */
+  @ser(name="open_alex_id")
+  openAlexId: string
+
+  /** ISO time the sources were read. */
+  @ser(name="harvested_at")
+  harvestedAt: string
+}

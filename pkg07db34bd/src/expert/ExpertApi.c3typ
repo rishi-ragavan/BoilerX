@@ -1,0 +1,15 @@
+/**
+ * Expert evidence API the UI calls (Lane E). Read-only: profiles are created only by loading the Data Fusion
+ * landing feeds (see {@link ExpertHarvest}).
+ */
+type ExpertApi {
+
+  /**
+   * The public-record evidence behind a member's account, for the profile page.
+   *
+   * @param memberId
+   *          {@link ForumMember} id.
+   * @return the evidence, or null when the member has no {@link ExpertProfile}
+   */
+  profile: function(memberId: !string): ExpertProfileView js-server
+}

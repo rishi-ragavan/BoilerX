@@ -1,0 +1,26 @@
+/**
+ * Processing status of one file in an expert landing feed (from the platform's {@link SourceStatus}).
+ */
+type ExpertHarvest.FeedStatus {
+
+  /** Feed (collection) name. */
+  feed: string
+
+  /** File status id (`<feed>_<file name>`). */
+  fileStatusId: string
+
+  /** Processing state, e.g. `completed`. */
+  state: string
+
+  /** Rows read. */
+  count: int
+
+  /** Rows loaded. */
+  successful: int
+
+  /** Rows that failed. */
+  failed: int
+
+  /** First error, when any row failed. */
+  firstError: string
+}

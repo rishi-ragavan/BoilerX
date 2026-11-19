@@ -1,0 +1,20 @@
+/**
+ * One evidence item on an {@link ExpertProfileView}.
+ */
+type ExpertExperienceView {
+
+  /** {@link ExpertExperience.Kind} value, e.g. `PUBLICATION`. */
+  kind: string
+
+  /** Title. */
+  title: string
+
+  /** Venue, employer, or institution. */
+  organization: string
+
+  /** Year. */
+  year: int
+
+  /** Evidence link. */
+  url: string
+}

@@ -1,0 +1,26 @@
+/**
+ * The evidence behind an expert account, as shown on the profile page ({@link ExpertApi#profile}).
+ */
+type ExpertProfileView {
+
+  /** {@link ForumMember} id. */
+  memberId: string
+
+  /** One-line summary. */
+  headline: string
+
+  /** Pages the profile was built from. */
+  sourceUrls: [string]
+
+  /** Where the account email came from. */
+  emailSource: string
+
+  /** True for accounts built from public records (the person has not signed up). */
+  isDemoAccount: boolean
+
+  /** When the sources were read. */
+  harvestedAt: datetime
+
+  /** Evidence items, most relevant first. */
+  experiences: [ExpertExperienceView]
+}

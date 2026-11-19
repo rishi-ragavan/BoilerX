@@ -1,0 +1,20 @@
+/**
+ * Result of {@link ExpertHarvest#harvest}: the CSV files written to the Data Fusion landing feeds.
+ */
+type ExpertHarvest.Result {
+
+  /** URL of the profile CSV in `ExpertProfileFeed`'s inbox (null when no lead succeeded). */
+  profileFileUrl: string
+
+  /** URL of the experience CSV in `ExpertExperienceFeed`'s inbox. */
+  experienceFileUrl: string
+
+  /** Profile rows written. */
+  profileRows: int
+
+  /** Experience rows written. */
+  experienceRows: int
+
+  /** Outcome per researched lead. */
+  leads: [ExpertHarvest.LeadResult]
+}

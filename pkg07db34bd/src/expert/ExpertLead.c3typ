@@ -1,0 +1,36 @@
+/**
+ * A real Purdue person BoilerConnect researches to build an expert account (Lane E). {@link ExpertHarvest#harvest}
+ * reads the public pages in {@link #seedUrls} and the person's OpenAlex record, then writes the profile as CSV rows
+ * into the Data Fusion landing feeds (`ExpertProfileFeed`, `ExpertExperienceFeed`). Loading those feeds creates the
+ * {@link ForumMember} account and its {@link ExpertProfile}.
+ */
+@db(index=['status'])
+entity type ExpertLead {
+
+  /** Full name as published on the person's official page, e.g. `Rohan Paleja`. */
+  name: !string
+
+  /** Account role to create: FACULTY (professors and instructors) or ALUMNI. */
+  role: !ForumMember.Role
+
+  /** Purdue department or program, e.g. `Computer Science`, `Entrepreneurship`. */
+  department: string
+
+  /** Current employer (alumni only), e.g. `NASA (former astronaut)`. */
+  employer: string
+
+  /** Official or public pages to read (Purdue faculty page, lab page, NASA bio). The first one is the primary source. */
+  seedUrls: [string]
+
+  /** OpenAlex author id (`A5005412601`) when known; otherwise the harvest searches OpenAlex for the name at Purdue. */
+  openAlexId: string
+
+  /** Display name for the account, e.g. `Prof. Rohan Paleja`. Defaults to {@link #name}. */
+  displayName: string
+
+  /** Where the harvest is: PENDING until researched, then HARVESTED or FAILED. */
+  status: ExpertLead.Status
+
+  /** Outcome of the last harvest (counts on success, the error on failure). */
+  harvestNote: string
+}
