@@ -38,30 +38,25 @@ pkg07db34bd/
 
 ## Product rules (lead decisions, override the lane doc)
 
-- **Formal tone — no `#` anywhere.** Topic tags render as plain chips (`stock market`, not `#stock market`);
-  student handles are **`Boiler a3f1`** (not `Boiler #a3f1`).
-- **Tagged experts are never listed.** `PostView.experts` contains only the *viewer's own* match (for "why you were
-  tagged"); everyone else sees only `PostView.expertCount` ("5 experts tagged"). A public list + anonymous 🎯 replies
-  would de-anonymize the repliers. `createPost` therefore returns only the count, not names.
-- **Never say "verified".** Everyone on the platform passed the Purdue email gate (`Verify.check` at signup), so
-  no badge/label says Verified/Unverified. Anonymous handles: `Boiler a3f1`, `Faculty · Finance`, `Alum · Google`.
-  `MemberView.verified` was removed; `listMembers` returns only gate-passed members.
-- **No likes.** `Like`, `LikeResult`, `toggleLike`, `likeCount`, `likedByMe` are gone. A post card offers only
-  "View N comments" (`PostView.replyCount`). Feed `hot = (replies + 2·expertReplies + 1) / (hours + 2)^1.5`;
-  reputation = +1 per answer given.
-- **Anyone can answer; professors' answers come first.** `getPost` returns replies grouped FACULTY → ALUMNI →
-  STUDENT (oldest first within a group); each `ReplyView.authorGroup` says which, so the UI renders a header
-  ("Professors", "Alumni", "Students") whenever it changes. Do not re-sort replies in the UI.
-- **Three spaces, identical behavior: Student, Experts, Alumni.** The AI routes every new post
-  into one space so no space gets crowded. Each space feed shows all PUBLIC questions routed
-  there; `dept` filters any space; For You shows all spaces. Anyone can read and reply in any space (only
-  EXPERTS_ONLY posts are restricted). The keyword fallback must route too — never dump everything into Student.
-- **No articles.** Every post is a question (`postType` is always QUESTION; there is no Articles tab).
-- **Faculty are "Experts" in the UI.** The Faculty space is the **Experts** space (`Post.Space.EXPERTS`, feed tab
-  `experts`; `faculty`/`professors` still accepted as aliases, and a pipeline `FACULTY` space is stored as EXPERTS).
-  People: `Expert · Finance` (named or anonymous). Reply groups: `EXPERTS` → `ALUMNI` → `STUDENT`. The member role
-  value stays `FACULTY` (signup, DM permission). Note the 🎯 `Expert:` flair is separate: it marks anyone tagged.
-- **Faculty cannot post.** `createPost` rejects FACULTY; faculty answer (and start DMs). Students and alumni ask.
+- **Three categories only: Professor, Alumni, Student.** Role values `FACULTY` / `ALUMNI` / `STUDENT`. No levels
+  (UG/MS/PhD), no badges, no reputation, no likes, no "verified" wording (everyone passed the Purdue email gate).
+- **Tags: "Expert" (professors) and "Alumni" (alumni) only.** Students have no tag. There is no 🎯 expert flair and
+  no topic tags on posts.
+- **Flair:** professors show department + research interests (`Finance · stock market, asset pricing`); alumni show
+  a broad career role (`SWE`, `Product Manager`, `Quant Trader`…), plus their employer only when they post under
+  their name. Students have no flair and no listed expertise (`tags` is always empty for students).
+- **Only professors and alumni are tagged on questions**, so only they have **Questions for you** (left nav + a right-rail
+  panel). `ForumApi.inbox` returns nothing for students; the expert directory sent to the AI excludes students.
+- **Three spaces, identical behavior: Student, Experts, Alumni.** The AI routes every question into one space.
+  Anyone can read and reply in any space (only EXPERTS_ONLY posts are restricted).
+- **Replies are grouped by category, and the post's own space's category comes first:** Experts space → professors
+  first, Alumni space → alumni first, Student space → students first; the other categories follow, each grouped.
+  `ReplyView.authorGroup` = `EXPERTS` | `ALUMNI` | `STUDENT`; render a header when it changes; don't re-sort.
+- **Anonymity:** students are always `Boiler a3f1` (new handle per thread). Anonymous professors/alumni show as
+  `Purdue professor` / `Purdue alum` with their tag + flair. The UI never renders real names. Tagged experts are
+  never listed (only `expertCount`).
+- **Questions only; faculty don't post.** No articles. Faculty answer (and start DMs); students and alumni ask.
+- **Formal tone:** no `#` anywhere.
 
 ## UI rules
 

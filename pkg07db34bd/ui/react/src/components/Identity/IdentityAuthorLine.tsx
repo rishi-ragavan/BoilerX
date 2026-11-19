@@ -1,16 +1,17 @@
 /*
- * Author line for posts, replies, and DMs: anonymous avatar · handle · role · 🎯 flair · time.
+ * Author line for posts, replies, and DMs: anonymous avatar · handle · Expert/Alumni tag · flair · time.
  * Lane D owns Identity*; Lane C imports it. Props are frozen: IdentityAuthorLine({ author, createdAt? }).
  *
  * Product rule: the frontend NEVER shows a real name. Names exist only on the backend for Purdue identity checks.
- *  - Anonymous authors show their handle ("Boiler a3f1", "Expert · Finance", "Alum · Google").
- *  - If the API ever sends a named author (isAnonymous=false), the name is NOT rendered: we fall back to the
- *    role label ("Expert · Finance"), so a server regression can't leak a name.
- *  - No profile links and no badges (a "Professor" badge next to a department narrows who it is).
+ *  - Anonymous authors show their handle ("Boiler a3f1", "Purdue professor", "Purdue alum").
+ *  - If the API sends a named author (isAnonymous=false), the name is NOT rendered: we show the generic handle.
+ *  - Tags: only "Expert" (professors) and "Alumni" (alumni); students have none. Flair = department + research
+ *    interests (professors) or career role (alumni). No profile links.
  */
 import { ShieldCheck } from 'lucide-react';
 import type { AuthorView } from '@/Interfaces';
 import { IdentityFlair } from '@/components/Identity/IdentityFlair';
+import { IdentityTag } from '@/components/Identity/IdentityBadge';
 
 /** Compact relative time like X: "now", "5m", "3h", "2d", then "Mar 4". */
 // eslint-disable-next-line react-refresh/only-export-components
@@ -43,12 +44,13 @@ export function fullTimestamp(iso?: string): string {
  */
 // eslint-disable-next-line react-refresh/only-export-components
 export function anonymousHandle(author: AuthorView): { handle: string; role: string | null } {
-  if (author.isAnonymous) return { handle: author.displayName, role: author.roleLabel ?? null };
-  return { handle: author.roleLabel || 'Purdue member', role: null };
+  if (author.isAnonymous) return { handle: author.displayName, role: null };
+  const handle = author.tag === 'Expert' ? 'Purdue professor' : author.tag === 'Alumni' ? 'Purdue alum' : 'Purdue member';
+  return { handle, role: null };
 }
 
 export function IdentityAuthorLine({ author, createdAt }: { author: AuthorView; createdAt?: string }) {
-  const { handle, role } = anonymousHandle(author);
+  const { handle } = anonymousHandle(author);
 
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-sm">
@@ -62,7 +64,7 @@ export function IdentityAuthorLine({ author, createdAt }: { author: AuthorView; 
         {handle}
         <ShieldCheck className="size-3.5 shrink-0 text-primary" aria-label="Anonymous Purdue member" />
       </span>
-      {role && <span className="text-muted-foreground">· {role}</span>}
+      <IdentityTag tag={author.tag} />
       <IdentityFlair flair={author.flair} />
       {createdAt && (
         <time dateTime={createdAt} title={fullTimestamp(createdAt)} className="text-muted-foreground">

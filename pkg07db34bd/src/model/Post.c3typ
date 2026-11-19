@@ -26,8 +26,6 @@ entity type Post {
   /** Best-fit department chosen by the AI pipeline, in any space (optional). */
   department: string
 
-  /** 3–5 lowercase topic tags from the AI pipeline. */
-  tags: [string]
 
   /** Whether the author chose to post anonymously (always true for students). */
   isAnonymous: boolean = true

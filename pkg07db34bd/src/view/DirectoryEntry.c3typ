@@ -1,29 +1,24 @@
 /**
- * One row of the compact expert directory {@link ForumApi#createPost} passes to {@link AiPipeline#analyzePost}.
+ * One row of the expert directory {@link ForumApi#createPost} passes to {@link AiPipeline#analyzePost}. Only
+ * professors (role FACULTY) and alumni are ever in it: students are never tagged.
  */
 type DirectoryEntry {
 
   /** {@link ForumMember} id. */
   memberId: string
 
-  /** STUDENT, FACULTY, or ALUMNI. */
+  /** FACULTY (professor) or ALUMNI. */
   role: string
-
-  /** UG, MS, PHD, FACULTY, or ALUMNI. */
-  level: string
 
   /** Department. */
   department: string
 
-  /** Expertise tags. */
-  tags: [string]
+  /** Employer (alumni). */
+  employer: string
 
-  /** Badges. */
-  badges: [string]
+  /** Research interests (professors) or broad career role (alumni). */
+  tags: [string]
 
   /** First 120 characters of the bio. */
   bio: string
-
-  /** Reputation. */
-  reputation: int
 }

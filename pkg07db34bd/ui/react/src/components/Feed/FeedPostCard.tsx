@@ -3,7 +3,7 @@
  * IdentityAuthorLine (+ relative time), space label, title, 3-line body, topic chips, and the action row.
  * The whole row opens the post (stretched title link); buttons and links inside sit above it.
  *
- * Lead rules: no likes; tags render without '#'; tagged experts are never listed — only `expertCount`
+ * Lead rules: no likes; no topic tags; tagged experts are never listed — only `expertCount`
  * (plus a gold "You were tagged" marker when the viewer is one of them).
  */
 import { Link } from 'react-router';
@@ -31,14 +31,11 @@ export function spaceLabel(post: Pick<PostView, 'space' | 'department'>): string
 export function FeedPostCard({
   post,
   highlight = false,
-  onTagClick,
 }: {
   post: PostView;
   /** Brief gold left-border flash for a post the user just created. */
   highlight?: boolean;
-  onTagClick?: (tag: string) => void;
 }) {
-  const tags = post.tags ?? [];
   const space = spaceLabel(post);
   const replyCount = post.replyCount ?? 0;
   const expertCount = post.expertCount ?? 0;
@@ -65,26 +62,11 @@ export function FeedPostCard({
         </h2>
         {post.body && <p className="bc-post__body">{post.body}</p>}
 
-        {tags.length > 0 && (
-          <p className="bc-post__tags">
-            {tags.map((t) => (
-              <button
-                key={t}
-                type="button"
-                className="bc-post__tag"
-                onClick={() => onTagClick?.(t)}
-                aria-label={`Show posts about ${t}`}
-              >
-                {t}
-              </button>
-            ))}
-          </p>
-        )}
 
         {post.viewerIsMatchedExpert && (
           <p className="bc-post__tagged">
             <Target size={14} aria-hidden />
-            You were tagged as an expert
+            Question for you
           </p>
         )}
 

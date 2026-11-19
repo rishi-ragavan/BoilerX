@@ -4,8 +4,6 @@
  */
 
 export type Role = 'STUDENT' | 'FACULTY' | 'ALUMNI';
-export type Level = 'UG' | 'MS' | 'PHD' | 'FACULTY' | 'ALUMNI';
-export type Badge = 'PROFESSOR' | 'TA' | 'CLUB_PRESIDENT' | 'CAMPUS_AMBASSADOR';
 /** Only questions exist (articles were removed). */
 export type PostType = 'QUESTION';
 export type Visibility = 'PUBLIC' | 'EXPERTS_ONLY';
@@ -21,24 +19,25 @@ export type ReplyGroup = 'EXPERTS' | 'ALUMNI' | 'STUDENT';
 export type FeedTab = 'foryou' | 'students' | 'experts' | 'alumni';
 
 export interface AuthorView {
-  /** Name, or an anonymous handle: "Boiler a3f1" (no #), "Expert · Finance", "Alum · Google". Never "verified". */
+  /** Real name only when posting under their name; else "Boiler a3f1" / "Purdue professor" / "Purdue alum". */
   displayName: string;
-  roleLabel?: string;
-  badges?: string[];
-  isAnonymous: boolean;
+  /** "Expert" (professors), "Alumni" (alumni), or null (students). The only tags on the platform. */
+  tag?: 'Expert' | 'Alumni' | null;
+  /** Professors: "Finance · stock market, asset pricing"; alumni: "SWE" (+ " · Google" when named); students: null. */
   flair?: string | null;
+  isAnonymous: boolean;
   /** null when anonymous */
   memberId?: string | null;
 }
 
+/** The viewer's own match ("why you were tagged"). Other tagged people are never sent. */
 export interface ExpertView {
   memberId: string;
   name: string;
-  roleLabel?: string;
+  tag?: 'Expert' | 'Alumni' | null;
   department?: string;
   reason?: string;
   score?: number;
-  badges?: string[];
 }
 
 export interface PostView {
@@ -49,7 +48,6 @@ export interface PostView {
   visibility: Visibility;
   space?: Space;
   department?: string | null;
-  tags?: string[];
   createdAt?: string;
   author: AuthorView;
   /**
@@ -80,20 +78,26 @@ export interface PostDetailView {
   replies?: ReplyView[];
 }
 
+/** Members are only professors (role FACULTY, tag "Expert"), alumni ("Alumni"), or students (no tag). */
 export interface MemberView {
   id: string;
   name: string;
   role: Role;
-  level: Level;
   department?: string;
   employer?: string;
   bio?: string;
+  /** Research interests (professors) or career role (alumni). Always empty for students. */
   tags?: string[];
-  badges?: string[];
-  reputation?: number;
   anonByDefault?: boolean;
+  tag?: 'Expert' | 'Alumni' | null;
+  flair?: string | null;
+  /** "Expert · Finance", "Alumni · Google", "Student". */
   roleLabel?: string;
 }
+
+/** Only professors and alumni are tagged on questions, so only they have "Questions for you". */
+export const canBeTagged = (m: Pick<MemberView, 'role'> | null | undefined): boolean =>
+  m?.role === 'FACULTY' || m?.role === 'ALUMNI';
 
 export interface ConversationView {
   id: string;

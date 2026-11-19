@@ -15,7 +15,10 @@ type ReplyView {
   /** How the replier is shown, including the 🎯 flair. */
   author: AuthorView
 
-  /** EXPERTS, ALUMNI, or STUDENT — replies arrive grouped in that order; render a header per group. */
+  /**
+   * EXPERTS, ALUMNI, or STUDENT. Replies arrive grouped by this value, with the post's own space's group FIRST
+   * (Experts space → EXPERTS first, Alumni → ALUMNI first, Student → STUDENT first). Render a header per group.
+   */
   authorGroup: string
 
 

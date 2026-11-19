@@ -1,5 +1,5 @@
 /**
- * Public profile of a {@link ForumMember} (persona switcher and profile page). Excludes the email.
+ * A {@link ForumMember} as the persona switcher and the member's own profile see it. Excludes the email.
  */
 type MemberView {
 
@@ -9,11 +9,8 @@ type MemberView {
   /** Display name. */
   name: string
 
-  /** STUDENT, FACULTY, or ALUMNI. */
+  /** STUDENT, FACULTY (professor), or ALUMNI. */
   role: string
-
-  /** UG, MS, PHD, FACULTY, or ALUMNI. */
-  level: string
 
   /** Department. */
   department: string
@@ -24,18 +21,18 @@ type MemberView {
   /** Bio. */
   bio: string
 
-  /** Expertise tags. */
+  /** Flair tags: research interests (professors) or career role (alumni); always empty for students. */
   tags: [string]
 
-  /** Badges. */
-  badges: [string]
-
-  /** Reputation. */
-  reputation: int
-
-  /** Default for the composer's anonymity toggle (always true for students). */
+  /** Default for the composer/reply anonymity toggle (always true for students). */
   anonByDefault: boolean
 
-  /** e.g. "Expert · Finance", "Alum · Google". */
+  /** "Expert", "Alumni", or null (students). */
+  tag: string
+
+  /** The member's flair as it appears when they post under their name (null for students). */
+  flair: string
+
+  /** Summary for the persona switcher: "Expert · Finance", "Alumni · Google", "Student". */
   roleLabel: string
 }

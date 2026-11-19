@@ -5,6 +5,7 @@
 import { Link, useLocation } from 'react-router';
 import { Feather, House, Inbox, Mail, User, type LucideIcon } from 'lucide-react';
 import { usePersona } from '@/components/Persona/PersonaContext';
+import { canBeTagged } from '@/Interfaces';
 import { PersonaSwitcher } from '@/components/Persona/PersonaSwitcher';
 import { useShell } from '@/components/Shell/ShellContext';
 import { ShellPurdueP } from '@/components/Shell/ShellLogo';
@@ -38,8 +39,13 @@ const NAV: NavItem[] = [
 
 function useNavState() {
   const { pathname } = useLocation();
-  const { actingMemberId } = usePersona();
-  return NAV.map((item) => ({ ...item, href: item.to(actingMemberId), active: item.isActive(pathname) }));
+  const { actingMemberId, actingMember } = usePersona();
+  // Students are never tagged on questions, so they have no "Questions for you".
+  return NAV.filter((item) => item.key !== 'inbox' || canBeTagged(actingMember)).map((item) => ({
+    ...item,
+    href: item.to(actingMemberId),
+    active: item.isActive(pathname),
+  }));
 }
 
 export function ShellNav() {

@@ -1,23 +1,22 @@
 /**
- * How an author appears on a post or reply. For anonymous items this carries NO id, name, or email — only the
- * handle ("Boiler a3f1", "Expert · Finance", "Alum · Google"). Never says "verified": everyone on the platform is.
+ * How a person appears on a post, reply, or DM. Anonymous items carry NO id, name, or email.
  */
 type AuthorView {
 
-  /** Name, or the anonymous handle. */
+  /** Real name when posting under their name; otherwise "Boiler a3f1" (student), "Purdue professor", "Purdue alum". */
   displayName: string
 
-  /** e.g. "Expert · Finance", "PhD · ECE", "Alum · Google"; "Student" for student handles; null for anonymous experts/alumni. */
-  roleLabel: string
+  /** "Expert" for professors, "Alumni" for alumni, null for students. */
+  tag: string
 
-  /** Badges (empty when anonymous). */
-  badges: [string]
+  /**
+   * Professors: "{department} · {research interests}" (e.g. "Finance · stock market, asset pricing").
+   * Alumni: their broad career role (e.g. "SWE"), plus " · {employer}" only when named. Students: null.
+   */
+  flair: string
 
   /** True when the identity is hidden. */
   isAnonymous: boolean
-
-  /** `🎯 Expert: {department or first tag}` on replies by a matched expert; otherwise null. */
-  flair: string
 
   /** Member id for linking to the profile — null when anonymous. */
   memberId: string

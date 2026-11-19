@@ -25,8 +25,6 @@ type PostView {
   /** Routed department. */
   department: string
 
-  /** Topic tags. */
-  tags: [string]
 
   /** Creation time. */
   createdAt: datetime

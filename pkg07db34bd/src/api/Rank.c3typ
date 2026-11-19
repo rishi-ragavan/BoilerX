@@ -5,7 +5,4 @@ type Rank {
 
   /** `hot = (replies + 2·expertReplies + 1) / (hoursSincePost + 2)^1.5` (no likes on the platform). */
   hotScore: function(replies: int, expertReplies: int, hoursSincePost: double): double js-server
-
-  /** 1 when levels are adjacent or equal on UG → MS → PHD → FACULTY (ALUMNI ≈ FACULTY), else decays to 0. */
-  levelProximity: function(askerLevel: string, expertLevel: string): double js-server
 }

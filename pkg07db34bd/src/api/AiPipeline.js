@@ -99,17 +99,13 @@ function directoryToNative(directory) {
     if (!d || !d.memberId) return;
     var tags = [];
     forEachItem(d.tags, function (t) { tags.push(String(t)); });
-    var badges = [];
-    forEachItem(d.badges, function (b) { badges.push(String(b)); });
     out.push({
       id: String(d.memberId),
       role: str(d.role),
-      level: str(d.level),
       department: str(d.department),
+      employer: str(d.employer),
       tags: tags,
-      badges: badges,
       bio: d.bio ? String(d.bio).substring(0, 120) : null,
-      reputation: d.reputation || 0,
     });
   });
   return out;
@@ -140,8 +136,8 @@ function heuristicSafety(text) {
 // ---------------------------------------------------------------------------------------------------------------
 
 var ANALYZE_SYSTEM_PROMPT =
-  'You are the routing brain of BoilerConnect, a Purdue Q&A forum. Given a post, the asker\'s level, and a ' +
-  'directory of Purdue members, return ONLY JSON:\n' +
+  'You are the routing brain of BoilerConnect, a Purdue Q&A forum. Given a post, the asker\'s role, and a ' +
+  'directory of Purdue professors (role FACULTY) and alumni, return ONLY JSON:\n' +
   '{"safe": bool, "safety_reason": string|null, "space": "STUDENT"|"FACULTY"|"ALUMNI", "department": string|null, ' +
   '"tags": [3-5 lowercase strings], "experts": [{"member_id": string, "score": 0-100, "reason": string ≤12 words}] ' +
   '(max 5, best first)}.\n' +
@@ -157,10 +153,10 @@ var ANALYZE_SYSTEM_PROMPT =
   'recruiting, interviews, and industry careers. Examples: "how do I get into stock market research" → FACULTY, ' +
   'Finance; "any ML labs taking undergrads" → FACULTY, Computer Science; "how do quant firms interview" → ALUMNI; ' +
   '"best dorm for freshmen" → STUDENT.\n' +
-  'MATCHING: only use member_ids from the directory. Rank by (1) domain fit between the question and the member\'s ' +
-  'tags/bio/department, (2) level proximity: for an undergraduate asking about research or grad school include at ' +
-  'least one PhD or MS student alongside faculty; for career questions prefer alumni, (3) reputation as a ' +
-  'tie-breaker. Each reason (at most 12 words, no trailing period) must say concretely why this person fits, e.g. ' +
+  'MATCHING: only use member_ids from the directory (students are never tagged). Professors\' tags are research ' +
+  'interests; alumni tags are their career role (e.g. SWE, Product Manager). Rank by domain fit between the ' +
+  'question and the member\'s tags/bio/department/employer; prefer professors for academic and research ' +
+  'questions and alumni for career questions. Each reason (at most 12 words, no trailing period) must say concretely why this person fits, e.g. ' +
   '"Finance professor who studies stock market anomalies and advises undergrads". Only include members with a real domain ' +
   'fit; fewer than 5 is fine.\n' +
   'Output the JSON object only, minified on ONE line: no markdown, no commentary.';
@@ -173,24 +169,23 @@ function analyzeUserPrompt(title, body, askerLevel, dir, aliases) {
   var lines = dir.map(function (d, i) {
     var alias = 'm' + (i + 1);
     aliases[alias] = d.id;
-    var row = { id: alias, role: d.role, level: d.level };
+    var row = { id: alias, role: d.role };
     if (d.department) row.department = d.department;
+    if (d.employer) row.employer = d.employer;
     if (d.tags.length) row.tags = d.tags;
-    if (d.badges.length) row.badges = d.badges;
     if (d.bio) row.bio = d.bio;
-    if (d.reputation) row.reputation = d.reputation;
     return JSON.stringify(row);
   });
   return 'TITLE: ' + String(title || '') + '\n' +
     'BODY: ' + String(body || '') + '\n' +
-    'ASKER_LEVEL: ' + String(askerLevel || 'UG') + '\n' +
+    'ASKER_ROLE: ' + String(askerLevel || 'STUDENT') + '\n' +
     'DIRECTORY (one JSON object per line):\n' + lines.join('\n');
 }
 
 /**
  * Deterministic fallback for {@link AiPipeline#analyzePost}: safe=true (unless an obvious safety keyword matches),
- * space STUDENT, title keywords as tags, experts ranked by 3·tagOverlap + 2·deptMatch + 1·levelProximity +
- * 0.1·reputation.
+ * keyword routing (career → ALUMNI, research/academic → FACULTY, else STUDENT), title keywords as tags, experts
+ * ranked by 3·tagOverlap + 2·deptMatch.
  */
 function fallbackAnalyze(title, body, askerLevel, directory) {
   var text = (String(title || '') + ' ' + String(body || '')).toLowerCase();
@@ -201,18 +196,18 @@ function fallbackAnalyze(title, body, askerLevel, directory) {
   if (kw.length < 3) kw = keywords(text, 5);
   var dir = directoryToNative(directory);
   var experts = fallbackExperts(text, kw, askerLevel, dir, 5);
-  experts = ensureGradStudent(experts, text, kw, askerLevel, dir);
+  var space = CAREER_RE.test(text) ? 'ALUMNI' : RESEARCH_RE.test(text) ? 'FACULTY' : 'STUDENT';
   return AnalyzeResult.make({
     safe: true,
     safetyReason: null,
-    space: 'STUDENT',
+    space: space,
     department: null,
     tags: kw.length ? kw : ['general'],
     experts: experts,
   });
 }
 
-/** Ranks directory members by 3·tagOverlap + 2·deptMatch + 1·levelProximity + 0.1·reputation. */
+/** Ranks directory members (professors + alumni) by 3·tagOverlap + 2·deptMatch. */
 function fallbackExperts(text, kw, askerLevel, dir, max) {
   var kwSet = {};
   kw.forEach(function (k) { kwSet[k] = true; });
@@ -236,8 +231,7 @@ function fallbackExperts(text, kw, askerLevel, dir, max) {
     });
     var deptMatch = d.department && text.indexOf(String(d.department).toLowerCase()) >= 0 ? 1 : 0;
     if (!matched.length && !deptMatch) return;
-    var prox = Rank.levelProximity(askerLevel, d.level);
-    var raw = 3 * overlap + 2 * deptMatch + 1 * prox + 0.1 * (d.reputation || 0);
+    var raw = 3 * overlap + 2 * deptMatch;
     var reason = matched.length ? 'Matched on: ' + matched.slice(0, 3).join(', ') : 'Matched on: ' + d.department;
     scored.push({ memberId: d.id, raw: raw, reason: reason });
   });
@@ -293,7 +287,7 @@ function validateAnalysis(parsed, title, body, askerLevel, dir, aliases) {
   if (guard) return unsafeResult(guard);
 
   var space = String(parsed.space || '').toUpperCase().trim().replace(/S$/, '');
-  if (space === 'STUDENTS') space = 'STUDENT';
+  if (space === 'EXPERT') space = 'FACULTY'; // the Experts space (ForumApi stores FACULTY as EXPERTS)
   if (SPACES.indexOf(space) < 0) return null;
 
   var department = parsed.department ? String(parsed.department).trim() : null;
@@ -328,7 +322,6 @@ function validateAnalysis(parsed, title, body, askerLevel, dir, aliases) {
   });
   // A safe question with no usable experts still gets the deterministic ranking.
   if (!experts.length) experts = fallbackExperts(text, tags.concat(keywords(title, 5)), askerLevel, dir, 5);
-  experts = ensureGradStudent(experts, text, tags, askerLevel, dir);
 
   return AnalyzeResult.make({
     safe: true,
@@ -340,29 +333,8 @@ function validateAnalysis(parsed, title, body, askerLevel, dir, aliases) {
   });
 }
 
-var RESEARCH_RE = /\b(research|lab|labs|phd|grad school|graduate school|thesis|publish)/i;
-
-/**
- * Level proximity guarantee: an undergraduate research / grad-school question gets at least one PhD or MS student
- * when one in the directory has a real tag or department fit (deterministic ranking), replacing the lowest expert.
- */
-function ensureGradStudent(experts, text, tags, askerLevel, dir) {
-  if (String(askerLevel || '').toUpperCase() !== 'UG' || !RESEARCH_RE.test(text)) return experts;
-  var levelById = {};
-  dir.forEach(function (d) { levelById[d.id] = String(d.level || '').toUpperCase(); });
-  var isGrad = function (id) { return levelById[id] === 'PHD' || levelById[id] === 'MS'; };
-  if (experts.some(function (e) { return isGrad(e.memberId); })) return experts;
-  var grads = dir.filter(function (d) { return isGrad(d.id); });
-  var candidates = fallbackExperts(text, tags, askerLevel, grads, 1);
-  if (!candidates.length) return experts;
-  var c = candidates[0];
-  var add = ExpertSuggestion.make({
-    memberId: c.memberId,
-    score: Math.min(c.score, experts.length ? experts[experts.length - 1].score : c.score),
-    reason: truncateWords(c.reason, 10) + ' · grad student near your level',
-  });
-  return experts.length >= 5 ? experts.slice(0, 4).concat([add]) : experts.concat([add]);
-}
+var RESEARCH_RE = /\b(research|lab|labs|phd|grad school|graduate school|thesis|publish|professor|course|class)/i;
+var CAREER_RE = /\b(intern|internship|job|jobs|career|recruit|recruiting|interview|offer|salary|industry|company|co-op|coop|full-time)/i;
 
 function analyzePost(title, body, askerLevel, directory) {
   var dir = directoryToNative(directory);
@@ -437,12 +409,10 @@ function lastName(name) {
 
 function actorDescription(actor) {
   var role = String(actor.role || '');
-  var level = String(actor.level || '');
   var dept = actor.department ? ' in ' + actor.department : '';
   if (role === 'FACULTY') return 'a Purdue faculty member' + dept;
   if (role === 'ALUMNI') return 'a Purdue alum' + (actor.employer ? ' now at ' + actor.employer : '');
-  var lvl = level === 'UG' ? 'an undergraduate' : level === 'MS' ? 'a master\'s student' : level === 'PHD' ? 'a PhD student' : 'a student';
-  return lvl + ' at Purdue' + dept;
+  return 'a student at Purdue' + dept;
 }
 
 function draftColdEmails(actorId, postId) {
@@ -452,7 +422,7 @@ function draftColdEmails(actorId, postId) {
   if (!post.author || post.author.id !== actorId) throw new Error('Only the author can draft cold emails for this post.');
   var actors = ForumMember.fetch({
     filter: Filter.eq('id', actorId),
-    include: 'id, name, email, role, level, department, employer',
+    include: 'id, name, email, role, department, employer',
     limit: 1,
   }).objs;
   if (!actors || !actors.length) throw new Error('Member not found');
@@ -462,7 +432,7 @@ function draftColdEmails(actorId, postId) {
   forEachItem(
     ExpertMatch.fetch({
       filter: Filter.eq('post.id', postId),
-      include: 'id, rank, reason, expert.id, expert.name, expert.email, expert.role, expert.level, ' +
+      include: 'id, rank, reason, expert.id, expert.name, expert.email, expert.role, ' +
         'expert.department, expert.employer, expert.bio, expert.tags',
       order: 'rank',
       limit: 5,
@@ -478,7 +448,6 @@ function draftColdEmails(actorId, postId) {
       member_id: m.expert.id,
       name: m.expert.name,
       role: str(m.expert.role),
-      level: str(m.expert.level),
       department: m.expert.department || null,
       employer: m.expert.employer || null,
       tags: tags,

@@ -15,9 +15,9 @@ type AnalyzeResult {
   /** Best-fit department, for any space (null when none fits, e.g. campus life). */
   department: string
 
-  /** 3–5 lowercase tags. */
+  /** Topic tags the pipeline may return. Not stored or shown (posts carry no topic tags). */
   tags: [string]
 
-  /** Up to 5 experts, best first; never the author. */
+  /** Up to 5 professors/alumni from the directory, best first; never the author, never students. */
   experts: [ExpertSuggestion]
 }

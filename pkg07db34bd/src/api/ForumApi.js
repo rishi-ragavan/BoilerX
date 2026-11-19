@@ -2,13 +2,18 @@
  * ForumApi — BoilerConnect forum data surface (Lane A).
  *
  * Every method returns VIEW types only. Anonymous items never carry the author's id, name, or email.
- * Everyone on the platform is a verified Purdue member, so no view says "verified". There are no likes.
+ * Product rules (lead):
+ *  - Members are only Professor (role FACULTY, tag "Expert"), Alumni (tag "Alumni"), or Student (no tag).
+ *    No levels, badges, reputation, or likes. Students have no expertise.
+ *  - Flair: professors show department + research interests; alumni show a broad career role (SWE, Product Manager…).
+ *  - Only professors and alumni are tagged on questions, so only they have "Questions for you".
+ *  - Posts carry no topic tags. Replies are grouped by category, and the post's own space's category comes first.
  */
 
-var MEMBER_FIELDS = 'id, name, email, role, level, verified, department, employer, bio, tags, badges, anonByDefault, reputation';
-var AUTHOR_INCLUDE = ['name', 'role', 'level', 'verified', 'department', 'employer', 'badges'];
+var MEMBER_FIELDS = 'id, name, email, role, verified, department, employer, bio, tags, anonByDefault';
+var AUTHOR_INCLUDE = ['name', 'role', 'verified', 'department', 'employer', 'tags'];
 var POST_INCLUDE =
-  'id, postType, title, body, visibility, space, department, tags, isAnonymous, createdAt, author.id, ' +
+  'id, postType, title, body, visibility, space, department, isAnonymous, createdAt, author.id, ' +
   AUTHOR_INCLUDE.map(function (f) { return 'author.' + f; }).join(', ');
 var FEED_LIMIT = 200;
 /** Feed tab → space. `faculty` / `professors` are kept as aliases of the Experts space. */
@@ -17,11 +22,14 @@ var SPACE_TABS = {
   experts: 'EXPERTS', faculty: 'EXPERTS', professors: 'EXPERTS',
   alumni: 'ALUMNI',
 };
-/** Reply grouping: Experts (faculty) above, then alumni, then students. Values match ReplyView#authorGroup. */
-var GROUP_ORDER = { EXPERTS: 0, ALUMNI: 1, STUDENT: 2 };
+/** Reply groups (ReplyView#authorGroup) in their default order; the post's own space's group is moved first. */
+var GROUPS = ['EXPERTS', 'ALUMNI', 'STUDENT'];
 var ROLE_GROUP = { FACULTY: 'EXPERTS', ALUMNI: 'ALUMNI', STUDENT: 'STUDENT' };
+var SPACE_GROUP = { EXPERTS: 'EXPERTS', ALUMNI: 'ALUMNI', STUDENT: 'STUDENT' };
 /** Pipeline space → stored space. Accepts the old `FACULTY` value as an alias of EXPERTS. */
 var SPACE_ALIASES = { STUDENT: 'STUDENT', EXPERTS: 'EXPERTS', EXPERT: 'EXPERTS', FACULTY: 'EXPERTS', ALUMNI: 'ALUMNI' };
+/** Only these roles can be tagged on a question (and so have "Questions for you"). */
+var TAGGABLE_ROLES = ['FACULTY', 'ALUMNI'];
 
 // ---------------------------------------------------------------------------------------------------------------
 // Helpers
@@ -29,6 +37,12 @@ var SPACE_ALIASES = { STUDENT: 'STUDENT', EXPERTS: 'EXPERTS', EXPERT: 'EXPERTS',
 
 function str(v) {
   return v === null || v === undefined ? null : String(v);
+}
+
+function list(c3arr) {
+  var out = [];
+  if (c3arr) c3arr.each(function (x) { if (x !== null && x !== undefined && String(x)) out.push(String(x)); });
+  return out;
 }
 
 /** 32-bit FNV-1a → hex. Deterministic per (member, post); not linkable across posts. */
@@ -45,66 +59,78 @@ function anonStudentHandle(memberId, postId) {
   return 'Boiler ' + shortHash(String(memberId) + String(postId)).substring(0, 4);
 }
 
-function levelLabel(level) {
-  var l = str(level);
-  return l === 'PHD' ? 'PhD' : l === 'UG' ? 'Undergrad' : l === 'MS' ? 'MS' : l;
+/** "Expert" for professors, "Alumni" for alumni, null for students. */
+function tagOf(m) {
+  var role = str(m.role);
+  return role === 'FACULTY' ? 'Expert' : role === 'ALUMNI' ? 'Alumni' : null;
 }
 
+/**
+ * Professors: "Finance · stock market, asset pricing" (department + research interests).
+ * Alumni: "Quant Trader" (broad career role), plus " · {employer}" only when they post under their name.
+ * Students: none (students have no expertise).
+ */
+function flairOf(m, anon) {
+  var role = str(m.role);
+  var tags = list(m.tags);
+  if (role === 'FACULTY') {
+    var parts = [];
+    if (m.department) parts.push(m.department);
+    if (tags.length) parts.push(tags.join(', '));
+    return parts.length ? parts.join(' · ') : null;
+  }
+  if (role === 'ALUMNI') {
+    var p = [];
+    if (tags.length) p.push(tags.join(', '));
+    if (!anon && m.employer) p.push(m.employer);
+    return p.length ? p.join(' · ') : null;
+  }
+  return null;
+}
+
+/** Summary used by the persona switcher / own profile: "Expert · Finance", "Alumni · Google", "Student". */
 function roleLabelOf(m) {
   var role = str(m.role);
   if (role === 'FACULTY') return 'Expert' + (m.department ? ' · ' + m.department : '');
-  if (role === 'ALUMNI') {
-    return 'Alum' + (m.employer ? ' · ' + m.employer : m.department ? ' · ' + m.department : '');
-  }
-  return levelLabel(m.level) + (m.department ? ' · ' + m.department : '');
+  if (role === 'ALUMNI') return 'Alumni' + (m.employer ? ' · ' + m.employer : '');
+  return 'Student';
 }
 
-/** Students are always anonymous; faculty/alumni follow the item's flag. */
+/** Students are always anonymous; professors/alumni follow the item's flag. */
 function effectiveAnon(member, isAnonymous) {
   return str(member.role) === 'STUDENT' ? true : !!isAnonymous;
 }
 
-function authorView(member, postId, isAnonymous, flair) {
+function authorView(member, postId, isAnonymous) {
   var anon = effectiveAnon(member, isAnonymous);
-  if (anon) {
-    var role = str(member.role);
-    var display;
-    if (role === 'FACULTY') display = 'Expert' + (member.department ? ' · ' + member.department : '');
-    else if (role === 'ALUMNI') display = 'Alum' + (member.employer ? ' · ' + member.employer : '');
-    else display = anonStudentHandle(member.id, postId);
-    return AuthorView.make({
-      displayName: display,
-      // The handle already says Expert/Alum; only the student handle needs a role label.
-      roleLabel: role === 'STUDENT' ? 'Student' : null,
-      badges: [],
-      isAnonymous: true,
-      flair: flair || null,
-      memberId: null,
-    });
-  }
+  var role = str(member.role);
+  var display;
+  if (!anon) display = member.name;
+  else if (role === 'FACULTY') display = 'Purdue professor';
+  else if (role === 'ALUMNI') display = 'Purdue alum';
+  else display = anonStudentHandle(member.id, postId);
   return AuthorView.make({
-    displayName: member.name,
-    roleLabel: roleLabelOf(member),
-    badges: member.badges || [],
-    isAnonymous: false,
-    flair: flair || null,
-    memberId: member.id,
+    displayName: display,
+    tag: tagOf(member),
+    flair: flairOf(member, anon),
+    isAnonymous: anon,
+    memberId: anon ? null : member.id,
   });
 }
 
 function memberView(m) {
+  var role = str(m.role);
   return MemberView.make({
     id: m.id,
     name: m.name,
-    role: str(m.role),
-    level: str(m.level),
+    role: role,
     department: m.department,
     employer: m.employer,
     bio: m.bio,
-    tags: m.tags || [],
-    badges: m.badges || [],
-    reputation: m.reputation || 0,
-    anonByDefault: str(m.role) === 'STUDENT' ? true : !!m.anonByDefault,
+    tags: role === 'STUDENT' ? [] : m.tags || [],
+    anonByDefault: role === 'STUDENT' ? true : !!m.anonByDefault,
+    tag: tagOf(m),
+    flair: flairOf(m, false),
     roleLabel: roleLabelOf(m),
   });
 }
@@ -186,21 +212,28 @@ function hoursSince(dt) {
   return DateTime.deltaSeconds(dt, DateTime.now()) / 3600;
 }
 
-/** Serializes loaded posts → [{view, hot}] with all counts and viewer flags. */
+/** Group → sort index for a post: its own space's category first, then the rest in GROUPS order. */
+function groupRankFor(space) {
+  var first = SPACE_GROUP[str(space)] || 'EXPERTS';
+  var order = [first].concat(GROUPS.filter(function (g) { return g !== first; }));
+  var rank = {};
+  order.forEach(function (g, i) { rank[g] = i; });
+  return rank;
+}
+
+/** Serializes loaded posts → [{view, hot}] with counts and viewer flags. */
 function buildPostViews(posts, actorId) {
   var ids = posts.map(function (p) { return p.id; });
   var matches = matchesByPost(ids);
   var replies = repliesByPost(ids);
 
   return posts.map(function (p) {
-    var pm = matches[p.id] || [];
-    var experts = pm;
+    var experts = matches[p.id] || [];
     var expertSet = expertIdSet(experts);
     var replyAuthors = replies[p.id] || [];
     var expertReplies = replyAuthors.filter(function (a) { return expertSet[a]; }).length;
 
-    // Anonymity: never publish WHO was tagged (it would de-anonymize anonymous expert replies). Everyone gets the
-    // count; a matched expert additionally gets their own entry ("why you were tagged").
+    // Anonymity: never publish WHO was tagged. Everyone gets the count; a tagged viewer also gets their own entry.
     var expertViews = ExpertView.arrayBuilder();
     experts.forEach(function (m) {
       if (m.expert.id !== actorId) return;
@@ -208,11 +241,10 @@ function buildPostViews(posts, actorId) {
         ExpertView.make({
           memberId: m.expert.id,
           name: m.expert.name,
-          roleLabel: roleLabelOf(m.expert),
+          tag: tagOf(m.expert),
           department: m.expert.department,
           reason: m.reason,
           score: m.score,
-          badges: m.expert.badges || [],
         })
       );
     });
@@ -225,9 +257,8 @@ function buildPostViews(posts, actorId) {
       visibility: str(p.visibility) || 'PUBLIC',
       space: str(p.space),
       department: p.department,
-      tags: p.tags || [],
       createdAt: p.createdAt,
-      author: authorView(p.author, p.id, p.isAnonymous, null),
+      author: authorView(p.author, p.id, p.isAnonymous),
       experts: expertViews.build(),
       expertCount: experts.length,
       replyCount: replyAuthors.length,
@@ -291,6 +322,9 @@ function feed(actorId, tab, dept) {
 }
 
 function inbox(actorId) {
+  var actor = requireMember(actorId);
+  // Students are never tagged, so they have no "Questions for you".
+  if (TAGGABLE_ROLES.indexOf(str(actor.role)) < 0) return PostView.arrayBuilder().build();
   var ids = [];
   each(
     ExpertMatch.fetch({ filter: Filter.eq('expert.id', actorId), include: 'id, post.id', limit: 500 }).objs,
@@ -315,8 +349,6 @@ function getPost(actorId, postId) {
   if (!canView(post, actorId, matches)) throw new Error('This post is only visible to its author and matched experts.');
 
   var postView = buildPostViews([post], actorId)[0].view;
-  var expertSet = expertIdSet(matches);
-  var flairLabel = post.department || (post.tags && post.tags.length ? post.tags[0] : 'this topic');
 
   var replies = [];
   each(
@@ -330,21 +362,22 @@ function getPost(actorId, postId) {
     }).objs,
     function (r) { replies.push(r); }
   );
-  // Experts' (faculty) answers first, then alumni, then students; oldest first within each group.
+  // The post's own category answers first (Experts space → professors first, Alumni space → alumni first,
+  // Student space → students first); the other categories follow, each grouped; oldest first within a group.
+  var groupRank = groupRankFor(post.space);
   replies = replies
-    .map(function (r, i) { return { r: r, g: GROUP_ORDER[ROLE_GROUP[str(r.author.role)]], i: i }; })
+    .map(function (r, i) { return { r: r, g: groupRank[ROLE_GROUP[str(r.author.role)]], i: i }; })
     .sort(function (a, b) { return a.g - b.g || a.i - b.i; }) // explicit tie-break keeps chronological order
     .map(function (x) { return x.r; });
 
   var rb = ReplyView.arrayBuilder();
   replies.forEach(function (r) {
-    var flair = expertSet[r.author.id] ? '🎯 Expert: ' + flairLabel : null;
     rb.add(
       ReplyView.make({
         id: r.id,
         body: r.body,
         createdAt: r.createdAt,
-        author: authorView(r.author, post.id, r.isAnonymous, flair),
+        author: authorView(r.author, post.id, r.isAnonymous),
         authorGroup: ROLE_GROUP[str(r.author.role)],
         isMine: r.author.id === actorId,
       })
@@ -361,34 +394,38 @@ function createPost(actorId, input) {
   if (input.postType && String(input.postType).toUpperCase() !== 'QUESTION') {
     return CreatePostResult.make({ ok: false, error: 'Only questions can be posted.' });
   }
-  var postType = 'QUESTION';
   if (role === 'FACULTY') {
     return CreatePostResult.make({ ok: false, error: 'Experts answer questions but cannot post them.' });
   }
   var visibility = String(input.visibility || 'PUBLIC').toUpperCase() === 'EXPERTS_ONLY' ? 'EXPERTS_ONLY' : 'PUBLIC';
   if (!input.title || !String(input.title).trim()) return CreatePostResult.make({ ok: false, error: 'Title is required.' });
 
-  // 1. Expert directory: everyone except the author.
+  // 1. Expert directory: only professors and alumni can be tagged (never the author, never students).
   var dir = DirectoryEntry.arrayBuilder();
   var known = {};
-  each(ForumMember.fetch({ filter: Filter.ne('id', actorId), include: MEMBER_FIELDS, limit: 500 }).objs, function (m) {
-    known[m.id] = true;
-    dir.add(
-      DirectoryEntry.make({
-        memberId: m.id,
-        role: str(m.role),
-        level: str(m.level),
-        department: m.department,
-        tags: m.tags || [],
-        badges: m.badges || [],
-        bio: m.bio ? String(m.bio).substring(0, 120) : null,
-        reputation: m.reputation || 0,
-      })
-    );
-  });
+  each(
+    ForumMember.fetch({
+      filter: Filter.ne('id', actorId).and().intersects('role', strArray(TAGGABLE_ROLES)),
+      include: MEMBER_FIELDS,
+      limit: 500,
+    }).objs,
+    function (m) {
+      known[m.id] = true;
+      dir.add(
+        DirectoryEntry.make({
+          memberId: m.id,
+          role: str(m.role),
+          department: m.department,
+          employer: m.employer,
+          tags: m.tags || [],
+          bio: m.bio ? String(m.bio).substring(0, 120) : null,
+        })
+      );
+    }
+  );
 
-  // 2. AI pipeline (Lane B owns the body; signature is frozen).
-  var result = AiPipeline.analyzePost(input.title, input.body || '', str(actor.level), dir.build());
+  // 2. AI pipeline (Lane B owns the body). The 3rd argument is the asker's role (STUDENT or ALUMNI).
+  var result = AiPipeline.analyzePost(input.title, input.body || '', role, dir.build());
   if (!result || result.safe === false) {
     return CreatePostResult.make({
       ok: false,
@@ -399,41 +436,38 @@ function createPost(actorId, input) {
   var space = SPACE_ALIASES[String(result.space || '').toUpperCase()] || 'STUDENT';
   var isAnon = role === 'STUDENT' ? true : input.isAnonymous === null || input.isAnonymous === undefined ? !!actor.anonByDefault : !!input.isAnonymous;
 
-  // 3. Save the post.
+  // 3. Save the post (no topic tags).
   var saved = Post.make({
     author: { id: actorId },
-    postType: postType,
+    postType: 'QUESTION',
     title: String(input.title).trim(),
     body: input.body || '',
     visibility: visibility,
     space: space,
     department: result.department || null,
-    tags: result.tags || [],
     isAnonymous: isAnon,
     createdAt: DateTime.now(),
   }).create();
 
-  // 4. ExpertMatch rows (validated: known member, not the author, max 5, no duplicates).
-  {
-    var seen = {};
-    var rows = ExpertMatch.arrayBuilder();
-    var rank = 0;
-    each(result.experts, function (e) {
-      if (rank >= 5 || !e || !known[e.memberId] || e.memberId === actorId || seen[e.memberId]) return;
-      seen[e.memberId] = true;
-      rank++;
-      rows.add(
-        ExpertMatch.make({
-          post: { id: saved.id },
-          expert: { id: e.memberId },
-          rank: rank,
-          score: Math.max(0, Math.min(100, e.score || 0)),
-          reason: e.reason,
-        })
-      );
-    });
-    if (rank > 0) ExpertMatch.createBatch(rows.build());
-  }
+  // 4. ExpertMatch rows (validated: a known professor/alum, not the author, max 5, no duplicates).
+  var seen = {};
+  var rows = ExpertMatch.arrayBuilder();
+  var rank = 0;
+  each(result.experts, function (e) {
+    if (rank >= 5 || !e || !known[e.memberId] || e.memberId === actorId || seen[e.memberId]) return;
+    seen[e.memberId] = true;
+    rank++;
+    rows.add(
+      ExpertMatch.make({
+        post: { id: saved.id },
+        expert: { id: e.memberId },
+        rank: rank,
+        score: Math.max(0, Math.min(100, e.score || 0)),
+        reason: e.reason,
+      })
+    );
+  });
+  if (rank > 0) ExpertMatch.createBatch(rows.build());
 
   return CreatePostResult.make({ ok: true, post: buildPostViews([loadPost(saved.id)], actorId)[0].view });
 }
@@ -460,15 +494,12 @@ function reply(actorId, postId, body, isAnonymous) {
     isAnonymous: anon,
     createdAt: DateTime.now(),
   }).create();
-  ForumMember.make({ id: actorId, reputation: (actor.reputation || 0) + 1 }).merge();
 
-  var isExpert = !!expertIdSet(matches)[actorId];
-  var flairLabel = post.department || (post.tags && post.tags.length ? post.tags[0] : 'this topic');
   return ReplyView.make({
     id: r.id,
     body: String(body).trim(),
     createdAt: DateTime.now(),
-    author: authorView(actor, post.id, anon, isExpert ? '🎯 Expert: ' + flairLabel : null),
+    author: authorView(actor, post.id, anon),
     authorGroup: ROLE_GROUP[str(actor.role)],
     isMine: true,
   });

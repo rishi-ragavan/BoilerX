@@ -1,6 +1,6 @@
 /*
  * DmApi tests (Lane D): only FACULTY start DMs (and only on posts they were tagged on), participants-only access,
- * conversation reuse, and anonymity on both sides (no names, no memberIds, no badges in any DM view).
+ * conversation reuse, and anonymity on both sides (no names, no memberIds in any DM view).
  * Creates its own uniquely-named rows (never depends on data/ seed) and tears them down.
  */
 var filename = 'test_DmApi.js';
@@ -30,25 +30,22 @@ describe(filename, function () {
     });
     var now = DateTime.now();
     TestApi.createBatchEntity(this.ctx, 'ForumMember', [
-      { id: ids.student, name: 'Zelda Uniquestudent', email: 'zelda@purdue.edu', role: 'STUDENT', level: 'UG',
-        verified: true, department: 'Economics', tags: ['investing'], badges: ['CLUB_PRESIDENT'], anonByDefault: true },
-      { id: ids.outsider, name: 'Otto Outsider', email: 'otto2@purdue.edu', role: 'STUDENT', level: 'UG',
-        verified: true, department: 'Biology', tags: [], badges: [], anonByDefault: true },
+      { id: ids.student, name: 'Zelda Uniquestudent', email: 'zelda@purdue.edu', role: 'STUDENT', verified: true, department: 'Economics', tags: [], anonByDefault: true },
+      { id: ids.outsider, name: 'Otto Outsider', email: 'otto2@purdue.edu', role: 'STUDENT', verified: true, department: 'Biology', tags: [], anonByDefault: true },
       { id: ids.faculty, name: 'Prof. Quentin Uniqueprof', email: 'quniq@purdue.edu', role: 'FACULTY',
-        level: 'FACULTY', verified: true, department: 'Finance', tags: ['stock market'], badges: ['PROFESSOR'],
+        verified: true, department: 'Finance', tags: ['stock market'],
         anonByDefault: false },
       { id: ids.otherFaculty, name: 'Prof. Untagged', email: 'untagged@purdue.edu', role: 'FACULTY',
-        level: 'FACULTY', verified: true, department: 'Physics', tags: [], badges: ['PROFESSOR'] },
-      { id: ids.alum, name: 'Ava Uniquealum', email: 'ava@alumni.purdue.edu', role: 'ALUMNI', level: 'ALUMNI',
-        verified: true, department: 'Finance', employer: 'Google', tags: [], badges: [] },
+        verified: true, department: 'Physics', tags: [] },
+      { id: ids.alum, name: 'Ava Uniquealum', email: 'ava@alumni.purdue.edu', role: 'ALUMNI', verified: true, department: 'Finance', employer: 'Google', tags: [] },
     ]);
     TestApi.createBatchEntity(this.ctx, 'Post', [
       { id: ids.post, author: { id: ids.student }, postType: 'QUESTION', title: 'DM test question', body: 'b',
-        visibility: 'PUBLIC', space: 'EXPERTS', department: 'Finance', tags: ['stock market'], isAnonymous: true,
+        visibility: 'PUBLIC', space: 'EXPERTS', department: 'Finance', isAnonymous: true,
         createdAt: now },
       // Posted NON-anonymously on purpose: DMs must still never show the alum's name.
       { id: ids.alumPost, author: { id: ids.alum }, postType: 'QUESTION', title: 'Alum named question', body: 'b',
-        visibility: 'PUBLIC', space: 'ALUMNI', tags: ['internships'], isAnonymous: false, createdAt: now },
+        visibility: 'PUBLIC', space: 'ALUMNI', isAnonymous: false, createdAt: now },
     ]);
     TestApi.createBatchEntity(this.ctx, 'ExpertMatch', [
       { id: P + 'm1', post: { id: ids.post }, expert: { id: ids.faculty }, rank: 1, score: 90, reason: 'r' },
@@ -141,14 +138,14 @@ describe(filename, function () {
     expect(mine.otherParty.displayName).toBe(detail.post.author.displayName);
   });
 
-  it("never shows the professor's name to the student (always 'Expert · dept')", function () {
+  it("never shows the professor's name to the student (always 'Purdue professor', Expert tag)", function () {
     var list = DmApi.listConversations(this.ids.student);
     var json = JSON.stringify(list.map(function (c) { return c.toJson(); }));
     expect(json).not.toContain('Quentin');
     expect(json).not.toContain('Uniqueprof');
     expect(json).not.toContain(this.ids.faculty);
     expect(json).not.toContain('PROFESSOR');
-    expect(list[0].otherParty.displayName).toBe('Expert · Finance');
+    expect(list[0].otherParty.displayName + '|' + list[0].otherParty.tag + '|' + list[0].otherParty.flair).toBe('Purdue professor|Expert|Finance');
     expect(list[0].otherParty.isAnonymous).toBe(true);
   });
 
@@ -159,11 +156,11 @@ describe(filename, function () {
     expect(json).not.toContain(this.ids.student);
   });
 
-  it('shows an alum asker as "Alum · employer" even if they posted under their name', function () {
+  it('shows an alum asker as "Purdue alum" (Alumni tag) even if they posted under their name', function () {
     var conv = DmApi.startConversation(this.ids.faculty, this.ids.alumPost, 'Hi alum');
     var json = JSON.stringify(conv.toJson());
     expect(json).not.toContain('Ava');
-    expect(conv.otherParty.displayName).toBe('Alum · Google');
+    expect(conv.otherParty.displayName + '|' + conv.otherParty.tag).toBe('Purdue alum|Alumni');
     expect(conv.otherParty.memberId).toBeFalsy();
   });
 });

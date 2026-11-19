@@ -1,6 +1,6 @@
 /*
- * Shell-wide UI state (Lane C owns Shell*): toasts, the "Ask" -> composer focus request, the feed tag filter,
- * and a counter bumped whenever a post is created (the right rail re-reads trending tags from it).
+ * Shell-wide UI state (Lane C owns Shell*): toasts, the "Ask" -> composer focus request, and a counter bumped
+ * whenever a post is created (the right rail's "Questions for you" re-reads from it).
  * Provided by ShellLayout, so every routed page (all lanes) can call `useShell()`.
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
@@ -18,9 +18,6 @@ interface ShellState {
   /** Incremented after every successful post; read by widgets that summarise the feed. */
   postsVersion: number;
   notifyPostCreated: () => void;
-  /** Client-side `#tag` filter on the Home feed (set from post tags or the Trending card). */
-  tagFilter: string | null;
-  setTagFilter: (tag: string | null) => void;
 }
 
 const ShellContext = createContext<ShellState | null>(null);
@@ -34,7 +31,6 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const [toastKey, setToastKey] = useState(0);
   const [composePending, setComposePending] = useState(false);
   const [postsVersion, setPostsVersion] = useState(0);
-  const [tagFilter, setTagFilter] = useState<string | null>(null);
   const timer = useRef<number | null>(null);
 
   // Lane D's Identity* pills use Tailwind `dark:` variants keyed on data-theme; the app is always "Lights out".
@@ -73,10 +69,8 @@ export function ShellProvider({ children }: { children: ReactNode }) {
       consumeCompose,
       postsVersion,
       notifyPostCreated,
-      tagFilter,
-      setTagFilter,
     }),
-    [toast, requestCompose, composePending, consumeCompose, postsVersion, notifyPostCreated, tagFilter]
+    [toast, requestCompose, composePending, consumeCompose, postsVersion, notifyPostCreated]
   );
 
   return (

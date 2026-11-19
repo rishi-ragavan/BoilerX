@@ -5,11 +5,11 @@
 type AiPipeline {
 
   /**
-   * One LLM call that returns safety, routing (space + department), 3–5 tags, and up to 5 experts from
-   * `directory` (which already excludes the author). Fallback: safe=true, space STUDENT, title keywords as tags,
-   * experts ranked by `3·tagOverlap + 2·deptMatch + 1·levelProximity + 0.1·reputation`.
+   * One LLM call that returns safety, routing (space + department), and up to 5 experts from `directory`, which
+   * holds only professors and alumni (never students, never the author). `askerRole` is STUDENT or ALUMNI.
+   * Fallback: keyword routing, experts ranked by `3·tagOverlap + 2·deptMatch`.
    */
-  analyzePost: function(title: !string, body: string, askerLevel: string, directory: [DirectoryEntry]): AnalyzeResult js-server
+  analyzePost: function(title: !string, body: string, askerRole: string, directory: [DirectoryEntry]): AnalyzeResult js-server
 
   /** Rewrites a rough question into a clear title + body. */
   refineQuestion: function(text: !string): RefinedQuestion js-server

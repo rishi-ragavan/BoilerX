@@ -10,11 +10,6 @@
     "visibility": "PUBLIC",
     "space": "EXPERTS",
     "department": "Finance",
-    "tags": [
-      "research labs",
-      "stock market",
-      "undergrad research"
-    ],
     "isAnonymous": true,
     "createdAt": "2026-11-19T09:00:00Z"
   },
@@ -28,11 +23,6 @@
     "body": "Lawson is packed every evening. Where do people go to study late without the crowds?",
     "visibility": "PUBLIC",
     "space": "STUDENT",
-    "tags": [
-      "campus life",
-      "study spots",
-      "finals"
-    ],
     "isAnonymous": true,
     "createdAt": "2026-11-18T20:00:00Z"
   },
@@ -47,12 +37,6 @@
     "visibility": "PUBLIC",
     "space": "EXPERTS",
     "department": "CS",
-    "tags": [
-      "machine learning",
-      "undergrad research",
-      "research labs",
-      "deep learning"
-    ],
     "isAnonymous": true,
     "createdAt": "2026-11-13T14:00:00Z"
   },
@@ -67,12 +51,6 @@
     "visibility": "PUBLIC",
     "space": "EXPERTS",
     "department": "Biology",
-    "tags": [
-      "undergrad research",
-      "wet lab",
-      "biology",
-      "pre-med"
-    ],
     "isAnonymous": true,
     "createdAt": "2026-11-14T10:00:00Z"
   },
@@ -86,12 +64,6 @@
     "body": "I just got invited to Google's SWE intern technical interviews. Any advice from people who've done them on how to prep in three weeks?",
     "visibility": "PUBLIC",
     "space": "ALUMNI",
-    "tags": [
-      "internships",
-      "software engineering",
-      "interview prep",
-      "big tech"
-    ],
     "isAnonymous": true,
     "createdAt": "2026-11-15T18:00:00Z",
     "department": "CS"
@@ -106,12 +78,6 @@
     "body": "I have an offer for a three-rotation Cummins co-op in Columbus, but it pushes my graduation back a semester. Did alumni find it worth it for full-time offers?",
     "visibility": "PUBLIC",
     "space": "ALUMNI",
-    "tags": [
-      "co-ops",
-      "internships",
-      "automotive",
-      "career advice"
-    ],
     "isAnonymous": true,
     "createdAt": "2026-11-16T13:30:00Z",
     "department": "ME"
@@ -127,12 +93,6 @@
     "visibility": "PUBLIC",
     "space": "EXPERTS",
     "department": "Psychology",
-    "tags": [
-      "grad school",
-      "clinical psychology",
-      "phd applications",
-      "undergrad research"
-    ],
     "isAnonymous": true,
     "createdAt": "2026-11-12T16:00:00Z"
   },
@@ -147,12 +107,6 @@
     "visibility": "PUBLIC",
     "space": "EXPERTS",
     "department": "ECE",
-    "tags": [
-      "grad school",
-      "combined bs/ms",
-      "semiconductors",
-      "career advice"
-    ],
     "isAnonymous": true,
     "createdAt": "2026-11-17T09:00:00Z"
   },
@@ -167,11 +121,6 @@
     "visibility": "EXPERTS_ONLY",
     "space": "EXPERTS",
     "department": "Chemistry",
-    "tags": [
-      "recommendation letters",
-      "grad school",
-      "organic chemistry"
-    ],
     "isAnonymous": true,
     "createdAt": "2026-11-18T11:00:00Z"
   },
@@ -185,12 +134,6 @@
     "body": "I have offers from a small precision-ag startup and a large equipment manufacturer. For alumni who've done either, how did you weigh stability against learning?",
     "visibility": "PUBLIC",
     "space": "ALUMNI",
-    "tags": [
-      "startups",
-      "precision agriculture",
-      "career advice",
-      "job offers"
-    ],
     "isAnonymous": true,
     "createdAt": "2026-11-16T20:00:00Z",
     "department": "Agriculture"
@@ -205,11 +148,6 @@
     "body": "I am a first-year in ECE and joined several organizations at the involvement fair. I would like to focus on one or two where I can meet people and build skills. How did others decide?",
     "visibility": "PUBLIC",
     "space": "STUDENT",
-    "tags": [
-      "student clubs",
-      "campus life",
-      "time management"
-    ],
     "isAnonymous": true,
     "createdAt": "2026-11-19T07:30:00Z"
   },
@@ -223,11 +161,6 @@
     "body": "I am deciding between a residence hall and an apartment near Chauncey for next year. I would appreciate perspectives on cost, commute, and community.",
     "visibility": "PUBLIC",
     "space": "STUDENT",
-    "tags": [
-      "housing",
-      "campus life",
-      "budgeting"
-    ],
     "isAnonymous": true,
     "createdAt": "2026-11-18T16:00:00Z"
   }

@@ -41,12 +41,10 @@ function storeId(id: string) {
   }
 }
 
-/** First UG student, else first student, else first member. */
+/** The demo student (Alex), else the first student, else the first member. */
 function defaultPersona(members: MemberView[]): MemberView | undefined {
   return (
-    members.find((m) => m.role === 'STUDENT' && m.level === 'UG') ??
-    members.find((m) => m.role === 'STUDENT') ??
-    members[0]
+    members.find((m) => m.id === 'bc_member_ug_alex') ?? members.find((m) => m.role === 'STUDENT') ?? members[0]
   );
 }
 

@@ -1,5 +1,5 @@
 /*
- * The post in X's "focused tweet" style (Lane D): author line, space pill, large title + full body, tags,
+ * The post in X's "focused tweet" style (Lane D): author line, space pill, large title + full body,
  * full timestamp, comment count, and the "N experts tagged" summary (no likes; tagged experts never listed).
  */
 import { Lock, MessageCircle } from 'lucide-react';
@@ -35,15 +35,6 @@ export function PostFocused({ post, replyCount }: PostFocusedProps) {
       <h2 className="text-2xl leading-snug font-bold text-foreground">{post.title}</h2>
       {post.body && <p className="text-[17px] leading-relaxed whitespace-pre-wrap text-foreground">{post.body}</p>}
 
-      {post.tags && post.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {post.tags.map((t) => (
-            <span key={t} className="rounded-full bg-muted px-2.5 py-0.5 text-sm text-primary">
-              {t}
-            </span>
-          ))}
-        </div>
-      )}
 
       {post.createdAt && (
         <time dateTime={post.createdAt} className="text-sm text-muted-foreground">

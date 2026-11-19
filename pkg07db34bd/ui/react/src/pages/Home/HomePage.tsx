@@ -4,8 +4,7 @@
  * Calls ForumApi.feed(actingMemberId, tab, dept); re-fetches when the tab, department, or persona changes.
  * A broken call surfaces as an inline error (no mock fallback).
  */
-import { useEffect, useMemo, useState } from 'react';
-import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { ForumApi } from '@/api/boilerApi';
 import type { FeedTab, PostView, Space } from '@/Interfaces';
 import { ComposerBox } from '@/components/Composer/ComposerBox';
@@ -38,7 +37,7 @@ function belongsInTab(post: PostView, tab: FeedTab, dept: string | null): boolea
 
 export function HomePage() {
   const { actingMemberId } = usePersona();
-  const { tagFilter, setTagFilter, requestCompose } = useShell();
+  const { requestCompose } = useShell();
   const [tab, setTab] = useState<FeedTab>('foryou');
   const [dept, setDept] = useState<string | null>(null);
   const [departments, setDepartments] = useState<string[]>([]);
@@ -94,26 +93,13 @@ export function HomePage() {
     setNewPostId(post.id);
   };
 
-  const visible = useMemo(
-    () => (tagFilter ? posts.filter((p) => (p.tags ?? []).includes(tagFilter)) : posts),
-    [posts, tagFilter]
-  );
+  const visible = posts;
 
   return (
     <div className="bc-home">
       <ShellPageHeader title="Home">
         <FeedTabs value={tab} onChange={changeTab} />
         {SPACE_OF_TAB[tab] && <FeedDeptChips departments={departments} value={dept} onChange={setDept} />}
-        {tagFilter && (
-          <div className="bc-filterbar">
-            <span>
-              Showing posts about <strong className="bc-filterbar__tag">{tagFilter}</strong>
-            </span>
-            <button type="button" className="bc-iconbtn" aria-label="Clear tag filter" onClick={() => setTagFilter(null)}>
-              <X size={18} aria-hidden />
-            </button>
-          </div>
-        )}
       </ShellPageHeader>
 
       <ComposerBox onPosted={onPosted} />
@@ -133,13 +119,13 @@ export function HomePage() {
         ) : visible.length === 0 ? (
           <ShellEmptyState
             heading="Nothing here yet"
-            text={tagFilter ? `No posts about ${tagFilter} in this tab.` : EMPTY_TEXT[tab]}
+            text={EMPTY_TEXT[tab]}
             actionLabel="Ask a question"
             onAction={requestCompose}
           />
         ) : (
           visible.map((p) => (
-            <FeedPostCard key={p.id} post={p} highlight={p.id === newPostId} onTagClick={setTagFilter} />
+            <FeedPostCard key={p.id} post={p} highlight={p.id === newPostId} />
           ))
         )}
       </div>

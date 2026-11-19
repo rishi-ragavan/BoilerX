@@ -29,8 +29,8 @@ const STUDENT_ANON_REASON = 'Students are always anonymous';
 function postingAsLabel(member: MemberView | null, anonymous: boolean): string {
   if (!member) return '';
   if (!anonymous) return member.name;
-  if (member.role === 'FACULTY') return `Expert${member.department ? ` · ${member.department}` : ''}`;
-  if (member.role === 'ALUMNI') return `Alum${member.employer ? ` · ${member.employer}` : ''}`;
+  if (member.role === 'FACULTY') return 'Purdue professor (Expert)';
+  if (member.role === 'ALUMNI') return 'Purdue alum (Alumni)';
   return 'Boiler ····';
 }
 

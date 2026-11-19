@@ -1,5 +1,5 @@
 /*
- * ForumApi write-path tests (Lane A): createPost → AiPipeline → save, reply (+ reputation).
+ * ForumApi write-path tests (Lane A): createPost → AiPipeline → save (only professors/alumni tagged), reply.
  * AiPipeline.analyzePost is spied so results are deterministic and independent of Lane B's LLM code.
  * Rows created by the API under test are untracked, so external teardown filters remove them.
  */
@@ -24,6 +24,7 @@ describe(filename, function () {
     this.ctx = TestApi.createContext(filename);
     var ids = (this.ids = {
       student: P + 'student',
+      peer: P + 'peer',
       alum: P + 'alum',
       fakeAlum: P + 'fakealum',
       e1: P + 'e1', e2: P + 'e2', e3: P + 'e3', e4: P + 'e4', e5: P + 'e5', e6: P + 'e6',
@@ -32,16 +33,18 @@ describe(filename, function () {
     });
 
     var members = [
-      { id: ids.student, name: 'Wren Student', email: 'wren@purdue.edu', role: 'STUDENT', level: 'UG',
-        verified: true, department: 'Economics', tags: [], badges: [] },
-      { id: ids.alum, name: 'Abe Alum', email: 'abe@alumni.purdue.edu', role: 'ALUMNI', level: 'ALUMNI',
-        verified: true, department: 'Finance', employer: 'Google', tags: [], badges: [], anonByDefault: false },
-      { id: ids.fakeAlum, name: 'Fran Fake', email: 'fran@gmail.com', role: 'ALUMNI', level: 'ALUMNI',
-        verified: false, employer: 'Startup', tags: [], badges: [] },
+      { id: ids.student, name: 'Wren Student', email: 'wren@purdue.edu', role: 'STUDENT',
+        verified: true, department: 'Economics', tags: [] },
+      { id: ids.peer, name: 'Pat Peer', email: 'pat@purdue.edu', role: 'STUDENT',
+        verified: true, department: 'Finance', tags: [] },
+      { id: ids.alum, name: 'Abe Alum', email: 'abe@alumni.purdue.edu', role: 'ALUMNI',
+        verified: true, department: 'Finance', employer: 'Google', tags: ['SWE'], anonByDefault: false },
+      { id: ids.fakeAlum, name: 'Fran Fake', email: 'fran@gmail.com', role: 'ALUMNI',
+        verified: false, employer: 'Startup', tags: [] },
     ];
     ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'].forEach(function (k) {
-      members.push({ id: ids[k], name: 'Expert ' + k, email: k + P + '@purdue.edu', role: 'FACULTY', level: 'FACULTY',
-        verified: true, department: 'Finance', tags: ['stock market'], badges: ['PROFESSOR'], reputation: 10 });
+      members.push({ id: ids[k], name: 'Expert ' + k, email: k + P + '@purdue.edu', role: 'FACULTY',
+        verified: true, department: 'Finance', tags: ['stock market'] });
     });
     TestApi.createBatchEntity(this.ctx, 'ForumMember', members);
     TestApi.createBatchEntity(this.ctx, 'Post', [
@@ -78,6 +81,7 @@ describe(filename, function () {
           experts: [
             s(pre + 'student', 99), // the author: must be dropped
             s(pre + 'nobody', 98), // unknown member: must be dropped
+            s(pre + 'peer', 97), // a student: students are never tagged
             s(pre + 'e1', 95),
             s(pre + 'e1', 94), // duplicate: must be dropped
             s(pre + 'e2', 90),
@@ -114,7 +118,6 @@ describe(filename, function () {
       this.unverifiedReplyError = String(e.message || e);
     }
 
-    this.e1Reputation = ForumMember.forId(ids.e1).reputation; // started at 10, answered once
   });
 
   afterAll(function () {
@@ -147,7 +150,7 @@ describe(filename, function () {
       expect(this.safe.post.author.displayName).toMatch(/^Boiler [0-9a-f]{4}$/);
     });
 
-    it('saves at most 5 ExpertMatch rows, ranked in order, without author/unknown/duplicates', function () {
+    it('saves at most 5 ExpertMatch rows, ranked in order, never the author, a student, an unknown id, or a duplicate', function () {
       var ids = this.ids;
       expect(this.safeMatches).toEqual([
         { rank: 1, expertId: ids.e1 },
@@ -188,12 +191,12 @@ describe(filename, function () {
       expect(this.studentReply.isMine).toBeTrue();
     });
 
-    it('gives a matched expert the 🎯 flair', function () {
-      expect(this.expertReply.author.flair).toBe('🎯 Expert: Finance');
+    it('gives a professor the Expert tag (no 🎯 flair)', function () {
+      expect(this.expertReply.author.tag + '|' + this.expertReply.author.flair).toBe('Expert|Finance · stock market');
     });
 
-    it('shows a non-anonymous expert by name', function () {
-      expect(this.expertReply.author.displayName).toBe('Expert e1');
+    it('puts a professor reply in the EXPERTS group', function () {
+      expect(this.expertReply.authorGroup).toBe('EXPERTS');
     });
 
     it('refuses replies from members who never passed the gate', function () {
@@ -201,9 +204,4 @@ describe(filename, function () {
     });
   });
 
-  describe('reputation', function () {
-    it('adds +1 reputation per answer given', function () {
-      expect(this.e1Reputation).toBe(11);
-    });
-  });
 });

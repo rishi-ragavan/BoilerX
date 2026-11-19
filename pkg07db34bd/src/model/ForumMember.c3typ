@@ -1,20 +1,20 @@
 /**
- * A BoilerConnect member: a Purdue student, faculty member, or alum. Named `ForumMember` because the platform
- * already ships a (deprecated) `Member` entity type. The inherited `name` field holds the display name.
+ * A BoilerConnect member: a Purdue student, professor, or alum. Named `ForumMember` because the platform already
+ * ships a (deprecated) `Member` entity type. The inherited `name` field holds the real name, which is used on the
+ * backend only (identity checks) and never for anonymous items.
  *
- * Never returned to the UI directly; {@link ForumApi} serializes it into {@link MemberView} / {@link AuthorView}.
+ * Members are categorized ONLY as professor (role FACULTY, shown with the "Expert" tag), alum ("Alumni" tag), or
+ * student (no tag). There are no levels, badges, or reputation. Never returned to the UI directly; {@link ForumApi}
+ * serializes it into {@link MemberView} / {@link AuthorView}.
  */
 @db(index=['email'])
 entity type ForumMember {
 
-  /** Purdue email (`@purdue.edu`, `@alumni.purdue.edu`, or external for unverified alumni). */
+  /** Purdue email (`@purdue.edu`, or `@alumni.purdue.edu` for alumni). */
   email: !string
 
-  /** Membership role; drives anonymity and permission rules (see {@link ForumMember.Role}). */
+  /** Category: STUDENT, FACULTY (professor, labeled "Expert"), or ALUMNI (see {@link ForumMember.Role}). */
   role: !ForumMember.Role
-
-  /** Academic level, used for level-proximity matching (see {@link ForumMember.Level}). */
-  level: !ForumMember.Level
 
   /**
    * Set when {@link Verify#check} accepted the email at signup. Only verified Purdue members are on the platform, so
@@ -22,24 +22,21 @@ entity type ForumMember {
    */
   verified: boolean = false
 
-  /** Home department, e.g. `Finance`, `CS`, `ECE`. */
+  /** Department. Part of a professor's flair (e.g. `Finance`). */
   department: string
 
-  /** Current employer (alumni) — shown as "Alum · {employer}" when anonymous. */
+  /** Current employer (alumni). Shown in an alum's flair only when they post under their name. */
   employer: string
 
-  /** Short bio (about two sentences). The first 120 characters feed the AI expert directory. */
+  /** Short bio. The first 120 characters feed the AI expert directory. */
   bio: string
 
-  /** Lowercase expertise tags, e.g. `quantitative finance`, `machine learning`. */
+  /**
+   * Flair tags. Professors: research interests (e.g. `asset pricing`). Alumni: a broad career role (e.g. `SWE`,
+   * `Product Manager`). Students: always empty (students have no listed expertise).
+   */
   tags: [string]
 
-  /** Badges ⊆ PROFESSOR, TA, CLUB_PRESIDENT, CAMPUS_AMBASSADOR. */
-  badges: [string]
-
-  /** Faculty / alumni default for the per-post anonymity toggle. Students are always anonymous. */
+  /** Professor / alumni default for the per-post anonymity toggle. Students are always anonymous. */
   anonByDefault: boolean = false
-
-  /** +1 per answer given (+5 per "Helpful" in P2). Feeds expert matching. There are no likes. */
-  reputation: int = 0
 }

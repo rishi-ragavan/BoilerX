@@ -8,8 +8,8 @@
  *  - Anonymity — product rule: no real names ever reach the frontend. BOTH sides are anonymous in every view:
  *      · a student asker is "Boiler xxxx" (FNV-1a(memberId + postId), the same handle ForumApi shows on that
  *        thread); an alum asker is "Alum · {employer}";
- *      · the professor is always "Expert · {department}", so they can help without reputation pressure.
- *    AuthorView.memberId is null and badges are empty for every anonymous party. MessageView carries no sender.
+ *      · the professor is always "Purdue professor" (Expert tag + department), never their name.
+ *    AuthorView.memberId is null for every anonymous party. MessageView carries no sender.
  */
 
 var DM_INITIATOR_ROLES = ['FACULTY'];
@@ -46,28 +46,27 @@ function anonStudentHandle(memberId, scopeId) {
   return 'Boiler ' + shortHash(String(memberId) + String(scopeId)).substring(0, 4);
 }
 
-function anonymousParty(displayName, roleLabel) {
+function anonymousParty(displayName, tag, flair) {
   return AuthorView.make({
     displayName: displayName,
-    roleLabel: roleLabel,
-    badges: [],
+    tag: tag || null,
+    flair: flair || null,
     isAnonymous: true,
-    flair: null,
     memberId: null,
   });
 }
 
-/** The professor (initiator) as the asker sees them: always "Expert · {department}". */
+/** The professor (initiator) as the asker sees them: "Purdue professor" with the Expert tag and their department. */
 function expertParty(member) {
-  return anonymousParty('Expert' + (member.department ? ' · ' + member.department : ''), null);
+  return anonymousParty('Purdue professor', 'Expert', member.department || null);
 }
 
 /** The asker (recipient) as the professor sees them: always anonymous, matching their handle on the post. */
 function askerParty(member, conv) {
   var role = str(member.role);
   var postId = conv.post && conv.post.id ? conv.post.id : conv.id;
-  if (role === 'STUDENT') return anonymousParty(anonStudentHandle(member.id, postId), 'Student');
-  if (role === 'ALUMNI') return anonymousParty('Alum' + (member.employer ? ' · ' + member.employer : ''), null);
+  if (role === 'STUDENT') return anonymousParty(anonStudentHandle(member.id, postId), null, null);
+  if (role === 'ALUMNI') return anonymousParty('Purdue alum', 'Alumni', null);
   return expertParty(member);
 }
 

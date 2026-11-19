@@ -1,6 +1,5 @@
 /*
- * One reply on the post detail page (Lane D): author line (with 🎯 IdentityFlair when the replier is a matched
- * expert), body, and relative time. Expert replies get a subtle gold left rule. No likes.
+ * One reply on the post detail page (Lane D): author line (Expert/Alumni tag + flair), body, and relative time.
  */
 import type { ReplyView } from '@/Interfaces';
 import { IdentityAuthorLine } from '@/components/Identity/IdentityAuthorLine';
@@ -10,11 +9,8 @@ interface ReplyCardProps {
 }
 
 export function ReplyCard({ reply }: ReplyCardProps) {
-  const isExpert = !!reply.author.flair;
   return (
-    <article
-      className={`border-b border-border px-4 py-3 ${isExpert ? 'border-l-4 border-l-amber-400 bg-amber-50/40 dark:bg-amber-950/20' : ''}`}
-    >
+    <article className="border-b border-border px-4 py-3">
       <div className="flex items-start justify-between gap-2">
         <IdentityAuthorLine author={reply.author} createdAt={reply.createdAt} />
         {reply.isMine && (

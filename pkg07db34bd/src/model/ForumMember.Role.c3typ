@@ -3,16 +3,17 @@
  */
 enum type ForumMember.Role {
   /**
-   * Current Purdue student. Always anonymous; can never start a DM.
+   * Current Purdue student. Always anonymous, no tag, no flair, never tagged on questions, can never start a DM.
    */
   STUDENT,
   /**
    * Purdue faculty, labeled "Expert" in the UI (e.g. "Expert · Finance"). The only role allowed to start a DM
-   * (DM_INITIATOR_ROLES). The role value stays FACULTY; only the label changed.
+   * (DM_INITIATOR_ROLES). The role value stays FACULTY; only the label changed. Can be tagged on questions.
    */
   FACULTY,
   /**
-   * Purdue alum (must sign up with an `@alumni.purdue.edu` email).
+   * Purdue alum (must sign up with an `@alumni.purdue.edu` email). Shown with the "Alumni" tag and a career-role
+   * flair; can be tagged on questions.
    */
   ALUMNI
 }

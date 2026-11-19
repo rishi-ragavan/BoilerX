@@ -9,8 +9,8 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
   bg-muted, bg-primary/text-primary-foreground, text-destructive). Keep it; the chat embed route was removed.
 
 ## Backend (`src/`) — JS (`js-server`)
-- Entities (`src/model/`): ForumMember{email, role, level, verified, department, employer, bio, tags, badges,
-  anonByDefault, reputation; inherited `name`}, Post{author, postType, title, body, visibility, space, department, tags,
+- Entities (`src/model/`): ForumMember{email, role, verified, department, employer, bio, tags (prof research interests
+  / alum career role / [] for students), anonByDefault; inherited `name`} — NO level/badges/reputation, Post{author, postType, title, body, visibility, space, department (no tags),
   isAnonymous, createdAt, expertMatches, replies}, ExpertMatch{post, expert, rank, score, reason}, Reply, Conversation, Message. Enums are nested types (ForumMember.Role, Post.Space, …); values compare as strings.
 - Views (`src/view/`): see README. APIs (`src/api/`): ForumApi (real impl), Verify, Rank (real), AiPipeline (Step 0:
   deterministic fallback only), DmApi (Step 0: hard-coded stubs + real FACULTY-only check).
@@ -26,9 +26,13 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
 - Lead rules: PostView.experts = ONLY the viewer's own match; everyone sees `expertCount` (tagged list would
   de-anonymize 🎯 replies). Faculty cannot post at all (createPost rejects); they reply + DM.
 
+- Roles rules (latest): tags "Expert"/"Alumni" only (AuthorView.tag) + flair (AuthorView.flair); no 🎯; only FACULTY+
+  ALUMNI in the AI directory and inbox; replies grouped with the post space's category first (groupRankFor).
+  Anonymous prof/alum display "Purdue professor"/"Purdue alum". AiPipeline.analyzePost 3rd arg = asker ROLE.
+
 ## Data (`data/`)
 - A1: 35 members (12 UG/4 MS/5 PhD/8 faculty/6 alumni; ids `bc_member_<level>_<name>`, plus `bc_member_ta_jordan`),
-  12 posts (no articles; `bc_post_rec_letters` is EXPERTS_ONLY), 34 ExpertMatch, 23 Reply (no likes).
+  12 posts (no articles, no topic tags; `bc_post_rec_letters` is EXPERTS_ONLY), 16 ExpertMatch (profs + alumni only), 23 Reply.
   Demo personas: `bc_member_ug_alex` (default student), `bc_member_fac_chen` (Finance prof), `bc_member_phd_priya`
   (FE PhD), `bc_member_alum_maya` (Goldman quant). all 35 verified (ryan now @alumni.purdue.edu); `bc_member_fac_osei` anonByDefault.
 - Load: `App.State.inst().get().withFields({pkgFingerprint:-1, seeded:false}).update(); C3.pkg().upsertAllSeed()`.

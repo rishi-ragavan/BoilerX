@@ -1,16 +1,16 @@
 /**
- * A matched expert chip on a {@link PostView}.
+ * The viewer's own match on a {@link PostView} ("why you were tagged"). Never lists other tagged people.
  */
 type ExpertView {
 
-  /** The expert's {@link ForumMember} id. */
+  /** The expert's {@link ForumMember} id (always the viewer). */
   memberId: string
 
-  /** Display name (experts are tagged by name). */
+  /** Display name (the viewer's own). */
   name: string
 
-  /** e.g. "Expert · Finance". */
-  roleLabel: string
+  /** "Expert" or "Alumni". */
+  tag: string
 
   /** Expert's department. */
   department: string
@@ -20,7 +20,4 @@ type ExpertView {
 
   /** Match score 0–100. */
   score: double
-
-  /** Expert's badges. */
-  badges: [string]
 }
