@@ -38,7 +38,11 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
 ## Tests
 - `test/js-rhino/test_ForumApi.js` (22 specs: anonymity, EXPERTS_ONLY, flair, verify). Run in liveapp (dev mode):
   `TestRunner.make().withTestNameGlob('test_ForumApi.js').run().toYamlString()`. Needs `testtools` dep (added, 8.12).
+- `test/js-rhino/test_ForumApi_write.js` (22 specs: createPost unsafe/not saved, ExpertMatch validation ≤5/no author/
+  unknown/dup, invalid space → STUDENT, articles no matches, reply anon/flair/unverified, toggleLike ±1 reputation).
+  Spies `AiPipeline.analyzePost` via `TestApi.spyOn(...).callFake(fn)` — the fake runs WITHOUT closure (pass data via args).
+  API-created rows cleaned with `TestApi.addExternalTeardownFilter(ctx, "startsWith(author.id,'<prefix>')", 'Post', 1000)`.
 - ForumApi re-checks verification via `Verify.check(email, role)` on post/reply.
 
 ## Status
-- Step 0 on main. A1 + A2 on `lane-a-forum`. Step 0: types valid (no Pkg issues), data loaded, ForumApi smoke-tested, `npm run build` green, UI running.
+- Step 0 on main. A1 + A2 + A3 tests on `lane-a-forum`. Step 0: types valid (no Pkg issues), data loaded, ForumApi smoke-tested, `npm run build` green, UI running.
