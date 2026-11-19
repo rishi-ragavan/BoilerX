@@ -39,7 +39,7 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
 ## Data (`data/`) — 4 demo accounts
 - `bc_member_ug_alex` Alex Rivera (STUDENT, default persona, asks every question) · `bc_member_fac_chen` Prof. David
   Chen (Expert · Finance: stock market, asset pricing, quantitative finance) · `bc_member_fac_okafor` Prof. Chidi
-  Okafor (Expert · CS: machine learning, deep learning, AI ethics) · `bc_member_alum_maya` Maya Thompson (Alumni ·
+  Okafor (Expert · Computer Science: machine learning, deep learning, AI ethics) · `bc_member_alum_maya` Maya Thompson (Alumni ·
   Quant Trader, Goldman Sachs).
 - Demo of selective tagging: finance questions tag Chen (+ Maya), never Okafor; the ML / rec-letter questions tag
   Okafor only. 8 posts (Experts 4 incl. `bc_post_rec_letters` EXPERTS_ONLY → Okafor; Alumni 2; Student 2, untagged),
