@@ -3,7 +3,7 @@
  * whenever a post is created (the right rail's "Questions for you" re-reads from it).
  * Provided by ShellLayout, so every routed page (all lanes) can call `useShell()`.
  */
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type Context, type ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
 interface ShellState {
@@ -20,7 +20,11 @@ interface ShellState {
   notifyPostCreated: () => void;
 }
 
-const ShellContext = createContext<ShellState | null>(null);
+/** Same object across Vite hot reloads (see PersonaContext): otherwise useShell() can lose its provider after HMR. */
+const SHELL_CONTEXT_KEY = '__boilerconnect_shell_context__';
+const shellRegistry = globalThis as unknown as Record<string, Context<ShellState | null> | undefined>;
+const ShellContext: Context<ShellState | null> =
+  shellRegistry[SHELL_CONTEXT_KEY] ?? (shellRegistry[SHELL_CONTEXT_KEY] = createContext<ShellState | null>(null));
 
 const TOAST_MS = 3000;
 

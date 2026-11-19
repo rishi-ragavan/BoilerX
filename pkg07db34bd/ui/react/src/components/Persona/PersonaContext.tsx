@@ -5,7 +5,7 @@
  *
  * Lane D: read it with `const { actingMemberId, actingMember } = usePersona();`.
  */
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type Context, type ReactNode } from 'react';
 import { ForumApi } from '@/api/boilerApi';
 import type { MemberView } from '@/Interfaces';
 
@@ -23,7 +23,16 @@ interface PersonaState {
   reloadMembers: () => void;
 }
 
-const PersonaContext = createContext<PersonaState | null>(null);
+/**
+ * One context object for the whole page, even across Vite hot reloads. When this file (or a module it imports, such
+ * as boilerApi.ts / Interfaces.tsx) hot-reloads, the module re-runs; a plain `createContext` would then hand new
+ * `usePersona()` callers a NEW context while the mounted <PersonaProvider> still provides the OLD one, and
+ * usePersona would throw "must be used inside <PersonaProvider>". Keeping it on globalThis keeps them the same.
+ */
+const PERSONA_CONTEXT_KEY = '__boilerconnect_persona_context__';
+const contextRegistry = globalThis as unknown as Record<string, Context<PersonaState | null> | undefined>;
+const PersonaContext: Context<PersonaState | null> =
+  contextRegistry[PERSONA_CONTEXT_KEY] ?? (contextRegistry[PERSONA_CONTEXT_KEY] = createContext<PersonaState | null>(null));
 
 function readStoredId(): string {
   try {
