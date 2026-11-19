@@ -1,0 +1,24 @@
+/**
+ * Built-in LLM wrapper used by {@link AiPipeline} (Lane B). Kept as its own type so tests can spy on
+ * {@link AiPipeline.Llm#completeJson} to force failures or malformed output.
+ */
+type AiPipeline.Llm {
+
+  /**
+   * One call to the platform's built-in LLM ({@link GenaiCore.Llm.Completion.Client}) that must return JSON.
+   * Removes ``` code fences and surrounding prose and returns the outermost JSON object or array as text, after
+   * checking that it parses. Returning text (not `json`) keeps the value a plain string across the method boundary;
+   * {@link AiPipeline} parses it.
+   *
+   * @param systemPrompt
+   *          System instructions.
+   * @param userPrompt
+   *          User message.
+   * @param timeoutMs
+   *          Maximum time for the call; a slower response counts as a failure.
+   * @param maxTokens
+   *          Maximum output tokens.
+   * @return the JSON text, or null on any error, timeout, or unparseable output (never throws)
+   */
+  completeJson: function(systemPrompt: !string, userPrompt: !string, timeoutMs: int, maxTokens: int): string js-server
+}
