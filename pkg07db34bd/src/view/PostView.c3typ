@@ -19,7 +19,7 @@ type PostView {
   /** PUBLIC or EXPERTS_ONLY. */
   visibility: string
 
-  /** STUDENT, FACULTY, or ALUMNI. */
+  /** Space: STUDENT, EXPERTS, or ALUMNI. */
   space: string
 
   /** Routed department. */

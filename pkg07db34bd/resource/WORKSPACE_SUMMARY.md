@@ -18,7 +18,8 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
   "Verified Alum · {employer}". Flair `🎯 Expert: {post.department || tags[0]}` when replier has ExpertMatch.
 - JS gotchas: `removeAll({filter}, true)`; `fetch().objs` may be null → guard; use `Filter.intersects('post.id', strArray)`.
 
-- Spaces: feed tabs students|faculty(professors)|alumni all identical (questions routed there, dept filter on any
+- Spaces: STUDENT | EXPERTS (formerly Faculty; role stays FACULTY, label "Expert · {dept}") | ALUMNI.
+  Feed tabs students|experts(aliases faculty, professors)|alumni all identical (questions routed there, dept filter on any
   tab); foryou = all PUBLIC. NO articles (PostType = QUESTION only). Seed: 12 posts (Student 3 / Faculty 6 / Alumni 3).
 - Lead rules (see README "Product rules"): no "verified" wording anywhere; no likes (Like entity/toggleLike
   removed; hot uses replies; reputation +1 per answer); replies grouped FACULTY→ALUMNI→STUDENT via ReplyView.authorGroup.
@@ -51,7 +52,8 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
 - ForumApi re-checks verification via `Verify.check(email, role)` on post/reply.
 
 ## Merge 1 TODO (live app still has old rows)
-- Before upsertAllSeed: remove `Like` rows and the 2 ARTICLE posts + their replies
+- BEFORE `main` (new types) reaches the live app, with the old types still loaded: remove `Like` rows, every Post with
+  space FACULTY (+ its replies/matches; enum value renamed to EXPERTS), and the 2 ARTICLE posts + their replies
   (`bc_post_article_internship`, `bc_post_article_research`) — the Like type and ARTICLE enum value no longer exist.
 - Then run both test suites (test_ForumApi.js, test_ForumApi_write.js); commits 26e6a8e..HEAD were never run live.
 

@@ -52,11 +52,15 @@ pkg07db34bd/
 - **Anyone can answer; professors' answers come first.** `getPost` returns replies grouped FACULTY → ALUMNI →
   STUDENT (oldest first within a group); each `ReplyView.authorGroup` says which, so the UI renders a header
   ("Professors", "Alumni", "Students") whenever it changes. Do not re-sort replies in the UI.
-- **Three spaces, identical behavior: Student, Professors (`faculty`), Alumni.** The AI routes every new post
+- **Three spaces, identical behavior: Student, Experts, Alumni.** The AI routes every new post
   into one space so no space gets crowded. Each space feed shows all PUBLIC questions routed
   there; `dept` filters any space; For You shows all spaces. Anyone can read and reply in any space (only
   EXPERTS_ONLY posts are restricted). The keyword fallback must route too — never dump everything into Student.
 - **No articles.** Every post is a question (`postType` is always QUESTION; there is no Articles tab).
+- **Faculty are "Experts" in the UI.** The Faculty space is the **Experts** space (`Post.Space.EXPERTS`, feed tab
+  `experts`; `faculty`/`professors` still accepted as aliases, and a pipeline `FACULTY` space is stored as EXPERTS).
+  People: `Expert · Finance` (named or anonymous). Reply groups: `EXPERTS` → `ALUMNI` → `STUDENT`. The member role
+  value stays `FACULTY` (signup, DM permission). Note the 🎯 `Expert:` flair is separate: it marks anyone tagged.
 - **Faculty cannot post.** `createPost` rejects FACULTY; faculty answer (and start DMs). Students and alumni ask.
 
 ## UI rules

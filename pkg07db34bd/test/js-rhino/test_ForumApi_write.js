@@ -139,8 +139,8 @@ describe(filename, function () {
       expect(this.safe.ok).toBeTrue();
     });
 
-    it('stores the routed space and department', function () {
-      expect(this.safe.post.space + '/' + this.safe.post.department).toBe('FACULTY/Finance');
+    it("stores the routed space (the pipeline's FACULTY maps to EXPERTS) and department", function () {
+      expect(this.safe.post.space + '/' + this.safe.post.department).toBe('EXPERTS/Finance');
     });
 
     it('keeps students anonymous even when they ask not to be', function () {

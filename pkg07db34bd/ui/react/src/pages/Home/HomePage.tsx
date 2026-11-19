@@ -9,8 +9,8 @@ import { ShellPageHeader, ShellStatus } from '@/components/Shell/ShellStatus';
 
 const TABS: { id: FeedTab; label: string }[] = [
   { id: 'foryou', label: 'For You' },
-  { id: 'students', label: 'Students' },
-  { id: 'faculty', label: 'Faculty' },
+  { id: 'students', label: 'Student' },
+  { id: 'experts', label: 'Experts' },
   { id: 'alumni', label: 'Alumni' },
 ];
 

@@ -8,7 +8,7 @@
     "title": "Which finance research labs take undergrads?",
     "body": "I'm a sophomore interested in stock market research. Are there faculty or PhD students in Finance who take undergrad research assistants, and how should I reach out?",
     "visibility": "PUBLIC",
-    "space": "FACULTY",
+    "space": "EXPERTS",
     "department": "Finance",
     "tags": [
       "research labs",
@@ -45,7 +45,7 @@
     "title": "How do I join a machine learning research lab in CS as a sophomore?",
     "body": "I've finished CS 251 and taught myself some PyTorch. How do undergrads usually get into ML labs here, and do I need to have taken CS 373 first?",
     "visibility": "PUBLIC",
-    "space": "FACULTY",
+    "space": "EXPERTS",
     "department": "CS",
     "tags": [
       "machine learning",
@@ -65,7 +65,7 @@
     "title": "Getting into a biology wet lab with zero bench experience?",
     "body": "I want to do undergrad research in Biological Sciences but have only done intro lab courses. Will labs in Hansen or Lilly Hall take someone with no experience, and what should I learn first?",
     "visibility": "PUBLIC",
-    "space": "FACULTY",
+    "space": "EXPERTS",
     "department": "Biology",
     "tags": [
       "undergrad research",
@@ -125,7 +125,7 @@
     "title": "How much research experience do I need for a Psychology PhD?",
     "body": "I've been in one cognition lab for a year. Is that enough to be competitive for clinical psychology PhD programs, or should I plan on a post-bacc research job first?",
     "visibility": "PUBLIC",
-    "space": "FACULTY",
+    "space": "EXPERTS",
     "department": "Psychology",
     "tags": [
       "grad school",
@@ -145,7 +145,7 @@
     "title": "ECE MS right after undergrad, or work first?",
     "body": "I'm deciding between Purdue's combined BS/MS in ECE and taking an industry job first. How did others decide, and does work experience help with funding?",
     "visibility": "PUBLIC",
-    "space": "FACULTY",
+    "space": "EXPERTS",
     "department": "ECE",
     "tags": [
       "grad school",
@@ -165,7 +165,7 @@
     "title": "How do I ask for a grad-school rec letter after a rough grade?",
     "body": "I got a C in a professor's organic chemistry class but did well in their lab section. Is it a bad idea to ask them for a recommendation letter, and how should I bring it up?",
     "visibility": "EXPERTS_ONLY",
-    "space": "FACULTY",
+    "space": "EXPERTS",
     "department": "Chemistry",
     "tags": [
       "recommendation letters",

@@ -9,7 +9,7 @@ type ExpertView {
   /** Display name (experts are tagged by name). */
   name: string
 
-  /** e.g. "Faculty · Finance". */
+  /** e.g. "Expert · Finance". */
   roleLabel: string
 
   /** Expert's department. */

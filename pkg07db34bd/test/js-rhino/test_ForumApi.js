@@ -40,12 +40,12 @@ describe(filename, function () {
     ]);
     TestApi.createBatchEntity(this.ctx, 'Post', [
       { id: ids.publicPost, author: { id: ids.student }, postType: 'QUESTION', title: 'Public finance question',
-        body: 'b', visibility: 'PUBLIC', space: 'FACULTY', department: 'Finance', tags: ['stock market'],
+        body: 'b', visibility: 'PUBLIC', space: 'EXPERTS', department: 'Finance', tags: ['stock market'],
         isAnonymous: true, createdAt: now },
       { id: ids.otherPost, author: { id: ids.student }, postType: 'QUESTION', title: 'Another thread',
         body: 'b', visibility: 'PUBLIC', space: 'STUDENT', department: 'Economics', tags: ['campus life'], isAnonymous: true, createdAt: now },
       { id: ids.secretPost, author: { id: ids.student }, postType: 'QUESTION', title: 'Experts-only question',
-        body: 'b', visibility: 'EXPERTS_ONLY', space: 'FACULTY', department: 'Finance', tags: ['grad school'],
+        body: 'b', visibility: 'EXPERTS_ONLY', space: 'EXPERTS', department: 'Finance', tags: ['grad school'],
         isAnonymous: true, createdAt: now },
       { id: ids.alumPost, author: { id: ids.alum }, postType: 'QUESTION', title: 'Alum question', body: 'b',
         visibility: 'PUBLIC', space: 'ALUMNI', tags: ['internships'], isAnonymous: false, createdAt: now },
@@ -78,7 +78,8 @@ describe(filename, function () {
     };
     this.studentSpace = feedIds('students');
     this.alumniSpace = feedIds('alumni');
-    this.professorSpace = feedIds('professors');
+    this.expertsSpace = feedIds('experts');
+    this.facultyAliasSpace = feedIds('faculty');
     this.studentSpaceEcon = feedIds('students', 'Economics');
     this.studentSpaceBio = feedIds('students', 'Biology');
     this.memberIds = ForumApi.listMembers().mapToStr(function (m) { return m.id; });
@@ -118,8 +119,8 @@ describe(filename, function () {
       expect(this.otherDetail.post.author.displayName).not.toBe(this.publicDetail.post.author.displayName);
     });
 
-    it('shows an anonymous faculty reply as "Faculty · {department}" (never "Verified")', function () {
-      expect(this.replyById[this.ids.expertReply].author.displayName).toBe('Faculty · Finance');
+    it('shows an anonymous faculty reply as "Expert · {department}" (never "Verified")', function () {
+      expect(this.replyById[this.ids.expertReply].author.displayName).toBe('Expert · Finance');
     });
 
     it('never serializes an anonymous faculty id, name, or email', function () {
@@ -163,7 +164,15 @@ describe(filename, function () {
     });
 
     it('shows the routed post in its own space', function () {
-      expect(this.professorSpace.contains(this.ids.publicPost)).toBeTrue();
+      expect(this.expertsSpace.contains(this.ids.publicPost)).toBeTrue();
+    });
+
+    it('keeps `faculty` as an alias of the Experts space', function () {
+      expect(this.facultyAliasSpace.contains(this.ids.publicPost)).toBeTrue();
+    });
+
+    it('labels a named faculty member as "Expert · {department}"', function () {
+      expect(this.facultyView.post.experts[0].roleLabel).toBe('Expert · Finance');
     });
 
     it('shows an alumni-space question in the Alumni space', function () {
@@ -183,13 +192,13 @@ describe(filename, function () {
     });
 
     it('lets a member read a post in another space', function () {
-      expect(this.publicDetail.post.space).toBe('FACULTY'); // outsider is a student in Biology
+      expect(this.publicDetail.post.space).toBe('EXPERTS'); // outsider is a student in Biology
     });
   });
 
   describe('reply grouping', function () {
-    it("lists professors' answers above student responses, regardless of time", function () {
-      expect(this.replyOrder).toEqual([this.ids.expertReply + ':FACULTY', this.ids.studentReply + ':STUDENT']);
+    it("lists Experts' (faculty) answers above student responses, regardless of time", function () {
+      expect(this.replyOrder).toEqual([this.ids.expertReply + ':EXPERTS', this.ids.studentReply + ':STUDENT']);
     });
   });
 
@@ -260,7 +269,7 @@ describe(filename, function () {
     });
 
     it('refuses a QUESTION from faculty', function () {
-      expect(this.facultyQuestion.error).toBe('Faculty answer questions but cannot post them.');
+      expect(this.facultyQuestion.error).toBe('Experts answer questions but cannot post them.');
     });
   });
 });

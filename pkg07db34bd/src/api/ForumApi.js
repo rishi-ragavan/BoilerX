@@ -11,14 +11,17 @@ var POST_INCLUDE =
   'id, postType, title, body, visibility, space, department, tags, isAnonymous, createdAt, author.id, ' +
   AUTHOR_INCLUDE.map(function (f) { return 'author.' + f; }).join(', ');
 var FEED_LIMIT = 200;
-/** Feed tab → space. Aliases accepted so the UI can say "Professors". */
+/** Feed tab → space. `faculty` / `professors` are kept as aliases of the Experts space. */
 var SPACE_TABS = {
   students: 'STUDENT', student: 'STUDENT',
-  faculty: 'FACULTY', professors: 'FACULTY',
+  experts: 'EXPERTS', faculty: 'EXPERTS', professors: 'EXPERTS',
   alumni: 'ALUMNI',
 };
-/** Reply grouping on a post: professors above, then alumni, then students. */
-var GROUP_ORDER = { FACULTY: 0, ALUMNI: 1, STUDENT: 2 };
+/** Reply grouping: Experts (faculty) above, then alumni, then students. Values match ReplyView#authorGroup. */
+var GROUP_ORDER = { EXPERTS: 0, ALUMNI: 1, STUDENT: 2 };
+var ROLE_GROUP = { FACULTY: 'EXPERTS', ALUMNI: 'ALUMNI', STUDENT: 'STUDENT' };
+/** Pipeline space → stored space. Accepts the old `FACULTY` value as an alias of EXPERTS. */
+var SPACE_ALIASES = { STUDENT: 'STUDENT', EXPERTS: 'EXPERTS', EXPERT: 'EXPERTS', FACULTY: 'EXPERTS', ALUMNI: 'ALUMNI' };
 
 // ---------------------------------------------------------------------------------------------------------------
 // Helpers
@@ -49,7 +52,7 @@ function levelLabel(level) {
 
 function roleLabelOf(m) {
   var role = str(m.role);
-  if (role === 'FACULTY') return 'Faculty' + (m.department ? ' · ' + m.department : '');
+  if (role === 'FACULTY') return 'Expert' + (m.department ? ' · ' + m.department : '');
   if (role === 'ALUMNI') {
     return 'Alum' + (m.employer ? ' · ' + m.employer : m.department ? ' · ' + m.department : '');
   }
@@ -66,12 +69,12 @@ function authorView(member, postId, isAnonymous, flair) {
   if (anon) {
     var role = str(member.role);
     var display;
-    if (role === 'FACULTY') display = 'Faculty' + (member.department ? ' · ' + member.department : '');
+    if (role === 'FACULTY') display = 'Expert' + (member.department ? ' · ' + member.department : '');
     else if (role === 'ALUMNI') display = 'Alum' + (member.employer ? ' · ' + member.employer : '');
     else display = anonStudentHandle(member.id, postId);
     return AuthorView.make({
       displayName: display,
-      // The handle already says Faculty/Alum; only the student handle needs a role label.
+      // The handle already says Expert/Alum; only the student handle needs a role label.
       roleLabel: role === 'STUDENT' ? 'Student' : null,
       badges: [],
       isAnonymous: true,
@@ -327,9 +330,9 @@ function getPost(actorId, postId) {
     }).objs,
     function (r) { replies.push(r); }
   );
-  // Professors' answers first, then alumni, then students; oldest first within each group.
+  // Experts' (faculty) answers first, then alumni, then students; oldest first within each group.
   replies = replies
-    .map(function (r, i) { return { r: r, g: GROUP_ORDER[str(r.author.role)], i: i }; })
+    .map(function (r, i) { return { r: r, g: GROUP_ORDER[ROLE_GROUP[str(r.author.role)]], i: i }; })
     .sort(function (a, b) { return a.g - b.g || a.i - b.i; }) // explicit tie-break keeps chronological order
     .map(function (x) { return x.r; });
 
@@ -342,7 +345,7 @@ function getPost(actorId, postId) {
         body: r.body,
         createdAt: r.createdAt,
         author: authorView(r.author, post.id, r.isAnonymous, flair),
-        authorGroup: str(r.author.role),
+        authorGroup: ROLE_GROUP[str(r.author.role)],
         isMine: r.author.id === actorId,
       })
     );
@@ -360,7 +363,7 @@ function createPost(actorId, input) {
   }
   var postType = 'QUESTION';
   if (role === 'FACULTY') {
-    return CreatePostResult.make({ ok: false, error: 'Faculty answer questions but cannot post them.' });
+    return CreatePostResult.make({ ok: false, error: 'Experts answer questions but cannot post them.' });
   }
   var visibility = String(input.visibility || 'PUBLIC').toUpperCase() === 'EXPERTS_ONLY' ? 'EXPERTS_ONLY' : 'PUBLIC';
   if (!input.title || !String(input.title).trim()) return CreatePostResult.make({ ok: false, error: 'Title is required.' });
@@ -393,7 +396,7 @@ function createPost(actorId, input) {
     });
   }
 
-  var space = ['STUDENT', 'FACULTY', 'ALUMNI'].indexOf(str(result.space)) >= 0 ? str(result.space) : 'STUDENT';
+  var space = SPACE_ALIASES[String(result.space || '').toUpperCase()] || 'STUDENT';
   var isAnon = role === 'STUDENT' ? true : input.isAnonymous === null || input.isAnonymous === undefined ? !!actor.anonByDefault : !!input.isAnonymous;
 
   // 3. Save the post.
@@ -466,7 +469,7 @@ function reply(actorId, postId, body, isAnonymous) {
     body: String(body).trim(),
     createdAt: DateTime.now(),
     author: authorView(actor, post.id, anon, isExpert ? '🎯 Expert: ' + flairLabel : null),
-    authorGroup: str(actor.role),
+    authorGroup: ROLE_GROUP[str(actor.role)],
     isMine: true,
   });
 }

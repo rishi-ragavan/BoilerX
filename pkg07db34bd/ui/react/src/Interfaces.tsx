@@ -9,15 +9,19 @@ export type Badge = 'PROFESSOR' | 'TA' | 'CLUB_PRESIDENT' | 'CAMPUS_AMBASSADOR';
 /** Only questions exist (articles were removed). */
 export type PostType = 'QUESTION';
 export type Visibility = 'PUBLIC' | 'EXPERTS_ONLY';
-export type Space = 'STUDENT' | 'FACULTY' | 'ALUMNI';
+/** Spaces. The role stays FACULTY, but faculty are labeled "Expert" and their space is EXPERTS. */
+export type Space = 'STUDENT' | 'EXPERTS' | 'ALUMNI';
+export const SPACE_LABELS: Record<Space, string> = { STUDENT: 'Student', EXPERTS: 'Experts', ALUMNI: 'Alumni' };
+/** Reply group, in display order. */
+export type ReplyGroup = 'EXPERTS' | 'ALUMNI' | 'STUDENT';
 /**
- * Feed tabs. The three spaces (`students`, `faculty` — alias `professors`, `alumni`) all work the same: each shows
+ * Feed tabs. The three spaces (`students`, `experts` — aliases `faculty`/`professors`, `alumni`) all work the same: each shows
  * every PUBLIC question the AI routed there, and every tab accepts the optional `dept` filter.
  */
-export type FeedTab = 'foryou' | 'students' | 'faculty' | 'professors' | 'alumni';
+export type FeedTab = 'foryou' | 'students' | 'experts' | 'alumni';
 
 export interface AuthorView {
-  /** Name, or an anonymous handle: "Boiler a3f1" (no #), "Faculty · Finance", "Alum · Google". Never "verified". */
+  /** Name, or an anonymous handle: "Boiler a3f1" (no #), "Expert · Finance", "Alum · Google". Never "verified". */
   displayName: string;
   roleLabel?: string;
   badges?: string[];
@@ -66,8 +70,8 @@ export interface ReplyView {
   body: string;
   createdAt?: string;
   author: AuthorView;
-  /** Replies arrive grouped FACULTY → ALUMNI → STUDENT; render a section header when this changes. */
-  authorGroup?: Role;
+  /** Replies arrive grouped EXPERTS → ALUMNI → STUDENT; render a section header when this changes. */
+  authorGroup?: ReplyGroup;
   isMine?: boolean;
 }
 

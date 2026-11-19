@@ -36,6 +36,6 @@ type MemberView {
   /** Default for the composer's anonymity toggle (always true for students). */
   anonByDefault: boolean
 
-  /** e.g. "Faculty · Finance", "Alum · Google". */
+  /** e.g. "Expert · Finance", "Alum · Google". */
   roleLabel: string
 }

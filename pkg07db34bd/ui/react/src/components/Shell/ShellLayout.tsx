@@ -52,7 +52,7 @@ export function ShellLayout() {
           {actingMember && <p className="mt-2 text-xs text-muted-foreground">{actingMember.roleLabel}</p>}
         </div>
         <div className="rounded-xl border border-border p-4 text-sm text-muted-foreground">
-          Ask anything. BoilerConnect finds the Purdue students, faculty, and alumni who know the answer.
+          Ask anything. BoilerConnect finds the Purdue students, experts, and alumni who know the answer.
         </div>
       </aside>
     </div>

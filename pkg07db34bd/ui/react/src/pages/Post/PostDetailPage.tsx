@@ -33,7 +33,7 @@ export function PostDetailPage() {
           <div key={r.id} className="border-b border-border px-4 py-3">
             {(i === 0 || all[i - 1].authorGroup !== r.authorGroup) && (
               <p className="mb-2 text-xs font-semibold uppercase text-muted-foreground">
-                {r.authorGroup === 'FACULTY' ? 'Professors' : r.authorGroup === 'ALUMNI' ? 'Alumni' : 'Students'}
+                {r.authorGroup === 'EXPERTS' ? 'Experts' : r.authorGroup === 'ALUMNI' ? 'Alumni' : 'Students'}
               </p>
             )}
             <IdentityAuthorLine author={r.author} createdAt={r.createdAt} />
