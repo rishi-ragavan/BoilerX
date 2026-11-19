@@ -1,6 +1,6 @@
 /*
  * Feed row (Lane C owns Feed*). X-style flat row: 40px avatar left; content column right with Lane D's
- * IdentityAuthorLine (+ relative time), space/Article label, title, 3-line body, topic chips, and the action row.
+ * IdentityAuthorLine (+ relative time), space label, title, 3-line body, topic chips, and the action row.
  * The whole row opens the post (stretched title link); buttons and links inside sit above it.
  *
  * Lead rules: no likes; tags render without '#'; tagged experts are never listed — only `expertCount`
@@ -18,9 +18,9 @@ export function spaceLabel(post: Pick<PostView, 'space' | 'department'>): string
   const dept = post.department ? ` · ${post.department}` : '';
   switch (post.space) {
     case 'STUDENT':
-      return `Students${dept}`;
-    case 'FACULTY':
-      return `Professors${dept}`;
+      return `Student${dept}`;
+    case 'EXPERTS':
+      return `Experts${dept}`;
     case 'ALUMNI':
       return `Alumni${dept}`;
     default:
@@ -38,7 +38,6 @@ export function FeedPostCard({
   highlight?: boolean;
   onTagClick?: (tag: string) => void;
 }) {
-  const isArticle = post.postType === 'ARTICLE';
   const tags = post.tags ?? [];
   const space = spaceLabel(post);
   const replyCount = post.replyCount ?? 0;
@@ -53,15 +52,13 @@ export function FeedPostCard({
           <IdentityAuthorLine author={post.author} createdAt={post.createdAt} />
         </div>
 
-        {(isArticle || space) && (
+        {space && (
           <p className="bc-post__space">
-            {isArticle && <span className="bc-post__article">Article</span>}
-            {isArticle && space && <span aria-hidden> · </span>}
             {space}
           </p>
         )}
 
-        <h2 id={`bc-post-title-${post.id}`} className={`bc-post__title ${isArticle ? 'bc-post__title--article' : ''}`}>
+        <h2 id={`bc-post-title-${post.id}`} className="bc-post__title">
           <Link to={`/post/${post.id}`} className="bc-post__link">
             {post.title}
           </Link>
@@ -105,7 +102,7 @@ export function FeedPostCard({
             </span>
           </Link>
 
-          {!isArticle && expertCount > 0 ? (
+          {expertCount > 0 ? (
             <span className="bc-action bc-action--static" title="Tagged experts stay private to protect anonymous answers">
               <span className="bc-action__icon">
                 <UsersRound size={18} aria-hidden />

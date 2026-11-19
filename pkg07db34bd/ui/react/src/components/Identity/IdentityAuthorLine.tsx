@@ -43,8 +43,8 @@ function avatarInitial(author: AuthorView): string {
 
 export function IdentityAuthorLine({ author, createdAt }: { author: AuthorView; createdAt?: string }) {
   const anon = author.isAnonymous;
-  // "Verified Faculty · Finance" already says the role; don't repeat "· Faculty" after it.
-  const showRole = !!author.roleLabel && !(anon && author.displayName.startsWith('Verified'));
+  // Anonymous handles ("Expert · Finance", "Alum · Google") already carry the role; the API sends no roleLabel then.
+  const showRole = !!author.roleLabel;
 
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-sm">
@@ -72,7 +72,7 @@ export function IdentityAuthorLine({ author, createdAt }: { author: AuthorView; 
         <span className="inline-flex items-center gap-1 truncate font-semibold text-foreground">
           {author.displayName}
           {anon && (
-            <ShieldCheck className="size-3.5 shrink-0 text-primary" aria-label="Verified Purdue member" />
+            <ShieldCheck className="size-3.5 shrink-0 text-primary" aria-label="Anonymous Purdue member" />
           )}
         </span>
       )}

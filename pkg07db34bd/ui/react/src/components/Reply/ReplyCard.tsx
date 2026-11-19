@@ -1,17 +1,15 @@
 /*
  * One reply on the post detail page (Lane D): author line (with 🎯 IdentityFlair when the replier is a matched
- * expert), body, relative time, and ♥ like toggle. Expert replies get a subtle gold left rule.
+ * expert), body, and relative time. Expert replies get a subtle gold left rule. No likes.
  */
-import type { LikeResult, ReplyView } from '@/Interfaces';
+import type { ReplyView } from '@/Interfaces';
 import { IdentityAuthorLine } from '@/components/Identity/IdentityAuthorLine';
-import { PostLikeButton } from '@/components/Post/PostLikeButton';
 
 interface ReplyCardProps {
   reply: ReplyView;
-  onLikeChange: (replyId: string, result: LikeResult) => void;
 }
 
-export function ReplyCard({ reply, onLikeChange }: ReplyCardProps) {
+export function ReplyCard({ reply }: ReplyCardProps) {
   const isExpert = !!reply.author.flair;
   return (
     <article
@@ -24,14 +22,6 @@ export function ReplyCard({ reply, onLikeChange }: ReplyCardProps) {
         )}
       </div>
       <p className="mt-1.5 pl-10 text-[15px] leading-relaxed whitespace-pre-wrap text-foreground">{reply.body}</p>
-      <div className="mt-1 pl-9">
-        <PostLikeButton
-          replyId={reply.id}
-          liked={!!reply.likedByMe}
-          count={reply.likeCount ?? 0}
-          onChange={(res) => onLikeChange(reply.id, res)}
-        />
-      </div>
     </article>
   );
 }

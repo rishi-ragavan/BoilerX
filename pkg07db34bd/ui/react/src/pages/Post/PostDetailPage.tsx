@@ -1,9 +1,10 @@
 /*
  * Post detail (Lane D). Route: /post/:postId. Calls ForumApi.getPost(actingMemberId, postId) and renders the
- * focused post, "Experts tagged" chips, the reply box, and replies (🎯 expert-flaired first, then by time).
+ * focused post, the "N experts tagged" summary, the reply box, and replies grouped Experts → Alumni → Students
+ * (order comes from the API; a header is shown per group).
  * EXPERTS_ONLY posts the viewer can't see show the 🔒 notice.
  */
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { ForumApi } from '@/api/boilerApi';
@@ -14,8 +15,8 @@ import { PostFocused } from '@/components/Post/PostFocused';
 import { PostLockedNotice, isAccessError } from '@/components/Post/PostLockedNotice';
 import { ReplyCard } from '@/components/Reply/ReplyCard';
 import { ReplyComposer } from '@/components/Reply/ReplyComposer';
-import { sortReplies } from '@/components/Reply/replySort';
-import type { LikeResult, PostDetailView, PostView, ReplyView } from '@/Interfaces';
+import { REPLY_GROUP_LABEL, insertReply } from '@/components/Reply/replySort';
+import type { PostDetailView, ReplyGroup, ReplyView } from '@/Interfaces';
 
 function PostDetailHeader() {
   return (
@@ -28,25 +29,29 @@ function PostDetailHeader() {
   );
 }
 
-/** Holds local post/replies state so replies and likes update without a refetch. Remounted per load. */
+/** Holds local replies state so a new reply shows without a refetch. Remounted per load. */
 function PostDetailBody({ detail }: { detail: PostDetailView }) {
-  const [post, setPost] = useState<PostView>(detail.post);
+  const post = detail.post;
   const [replies, setReplies] = useState<ReplyView[]>(detail.replies ?? []);
-  const sorted = useMemo(() => sortReplies(replies), [replies]);
-
-  const onPostLike = (res: LikeResult) => setPost((p) => ({ ...p, likedByMe: res.liked, likeCount: res.count }));
-  const onReplyLike = (replyId: string, res: LikeResult) =>
-    setReplies((rs) => rs.map((r) => (r.id === replyId ? { ...r, likedByMe: res.liked, likeCount: res.count } : r)));
-  const onReplied = (reply: ReplyView) => setReplies((rs) => [...rs, reply]);
+  const onReplied = (reply: ReplyView) => setReplies((rs) => insertReply(rs, reply));
 
   return (
     <>
-      <PostFocused post={post} replyCount={replies.length} onLikeChange={onPostLike} />
+      <PostFocused post={post} replyCount={replies.length} />
       <ReplyComposer postId={post.id} onReplied={onReplied} />
-      {sorted.length === 0 ? (
+      {replies.length === 0 ? (
         <p className="p-6 text-center text-sm text-muted-foreground">No replies yet. Be the first to help.</p>
       ) : (
-        sorted.map((r) => <ReplyCard key={r.id} reply={r} onLikeChange={onReplyLike} />)
+        replies.map((r, i) => (
+          <div key={r.id}>
+            {(i === 0 || replies[i - 1].authorGroup !== r.authorGroup) && (
+              <h3 className="border-b border-border bg-muted/40 px-4 py-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                {REPLY_GROUP_LABEL[(r.authorGroup ?? 'STUDENT') as ReplyGroup] ?? 'Replies'}
+              </h3>
+            )}
+            <ReplyCard reply={r} />
+          </div>
+        ))
       )}
     </>
   );

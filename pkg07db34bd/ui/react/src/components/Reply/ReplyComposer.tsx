@@ -1,7 +1,7 @@
 /*
  * Reply box on the post detail page (Lane D). Calls ForumApi.reply(actorId, postId, body, isAnonymous).
  * Anonymity: students are always anonymous (toggle locked on); faculty/alumni default to their anonByDefault.
- * Unverified members cannot reply (the server enforces this too).
+ * Anyone on the platform can reply to any question in any space.
  */
 import { useState } from 'react';
 import { Lock, ShieldCheck } from 'lucide-react';
@@ -21,8 +21,7 @@ export function ReplyComposer({ postId, onReplied }: { postId: string; onReplied
   const [error, setError] = useState<string | null>(null);
 
   const isAnonymous = isStudent ? true : (anonChoice ?? !!actingMember?.anonByDefault);
-  const unverified = actingMember != null && actingMember.verified === false;
-  const canSend = body.trim().length > 0 && !sending && !unverified;
+  const canSend = body.trim().length > 0 && !sending;
   const anonLabel = isStudent ? (
     <>
       <Lock className="size-3" /> Students always reply anonymously
@@ -47,14 +46,6 @@ export function ReplyComposer({ postId, onReplied }: { postId: string; onReplied
       setSending(false);
     }
   };
-
-  if (unverified) {
-    return (
-      <p className="border-b border-border px-4 py-3 text-sm text-muted-foreground">
-        ⚠️ Only verified Purdue members can reply.
-      </p>
-    );
-  }
 
   return (
     <form

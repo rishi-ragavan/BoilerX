@@ -1,6 +1,6 @@
 /*
  * Persona switcher (Lane C), styled like X's account switcher: avatar + name + "role · department" + ellipsis.
- * Opens an elevated menu of every member from `ForumApi.listMembers`, grouped Students / Faculty / Alumni, with a
+ * Opens an elevated menu of every member from `ForumApi.listMembers`, grouped Students / Experts / Alumni, with a
  * gold check on the active persona. `compact` renders the avatar only (collapsed nav and mobile bottom bar).
  */
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -13,7 +13,7 @@ import './PersonaStyles.css';
 
 const GROUPS: { role: Role; label: string }[] = [
   { role: 'STUDENT', label: 'Students' },
-  { role: 'FACULTY', label: 'Faculty' },
+  { role: 'FACULTY', label: 'Experts' },
   { role: 'ALUMNI', label: 'Alumni' },
 ];
 

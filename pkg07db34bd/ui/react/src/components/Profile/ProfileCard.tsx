@@ -1,17 +1,17 @@
 /*
- * Member profile card (Lane D): name, role, level, department/employer, verified status, badges, bio,
+ * Member profile card (Lane D): name, role, level, department/employer, badges, bio,
  * expertise tags, and reputation. Data comes from ForumApi.getMember (a MemberView, never the entity).
  */
-import { BadgeCheck, Building2, GraduationCap, ShieldAlert, Star } from 'lucide-react';
+import { Building2, GraduationCap, Star } from 'lucide-react';
 import type { MemberView } from '@/Interfaces';
 import { IdentityBadge } from '@/components/Identity/IdentityBadge';
 
-const ROLE_LABEL: Record<string, string> = { STUDENT: 'Student', FACULTY: 'Faculty', ALUMNI: 'Alum' };
+const ROLE_LABEL: Record<string, string> = { STUDENT: 'Student', FACULTY: 'Expert', ALUMNI: 'Alum' };
 const LEVEL_LABEL: Record<string, string> = {
   UG: 'Undergraduate',
   MS: "Master's student",
   PHD: 'PhD student',
-  FACULTY: 'Faculty',
+  FACULTY: 'Expert',
   ALUMNI: 'Alumni',
 };
 
@@ -38,15 +38,6 @@ export function ProfileCard({ member: m, isMe }: { member: MemberView; isMe: boo
             )}
           </h2>
           <p className="text-sm text-muted-foreground">{m.roleLabel ?? ROLE_LABEL[m.role] ?? m.role}</p>
-          {m.verified ? (
-            <span className="inline-flex items-center gap-1 text-sm text-foreground">
-              <BadgeCheck className="size-4 text-primary" /> Verified Purdue {ROLE_LABEL[m.role]?.toLowerCase() ?? 'member'}
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 text-sm text-destructive">
-              <ShieldAlert className="size-4" /> {m.role === 'ALUMNI' ? 'Unverified alum' : 'Unverified'}
-            </span>
-          )}
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 /*
- * Feed tabs + department chips (Lane C owns Feed*). Spaces: Students · Professors (`faculty`) · Alumni.
+ * Feed tabs + department chips (Lane C owns Feed*). Spaces: Student · Experts · Alumni (identical behavior).
  * Tabs: equal width; active = bold text with a 4px gold rounded underline sized to the label.
  * Chips: outlined pills, horizontally scrollable; selected = gold-soft background + gold text.
  */
@@ -9,10 +9,9 @@ import './FeedStyles.css';
 // eslint-disable-next-line react-refresh/only-export-components
 export const FEED_TABS: { id: FeedTab; label: string }[] = [
   { id: 'foryou', label: 'For You' },
-  { id: 'students', label: 'Students' },
-  { id: 'faculty', label: 'Professors' },
+  { id: 'students', label: 'Student' },
+  { id: 'experts', label: 'Experts' },
   { id: 'alumni', label: 'Alumni' },
-  { id: 'articles', label: 'Articles' },
 ];
 
 export function FeedTabs({ value, onChange }: { value: FeedTab; onChange: (tab: FeedTab) => void }) {

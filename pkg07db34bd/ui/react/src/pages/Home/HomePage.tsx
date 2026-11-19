@@ -18,24 +18,20 @@ import { ShellEmptyState, ShellErrorBox, ShellPageHeader, ShellSkeleton } from '
 const EMPTY_TEXT: Record<FeedTab, string> = {
   foryou: 'Be the first to ask Purdue something.',
   students: 'No peer or campus-life questions yet.',
-  faculty: 'No academic or research posts here yet.',
-  professors: 'No academic or research posts here yet.',
-  alumni: 'No career or industry posts yet.',
-  articles: 'Faculty and alumni articles will show up here.',
+  experts: 'No academic or research questions here yet.',
+  alumni: 'No career or industry questions yet.',
 };
 
 const SPACE_OF_TAB: Partial<Record<FeedTab, Space>> = {
   students: 'STUDENT',
-  faculty: 'FACULTY',
-  professors: 'FACULTY',
+  experts: 'EXPERTS',
   alumni: 'ALUMNI',
 };
 
-/** Would a freshly created post appear in this tab? (Mirrors ForumApi.feed: spaces show questions + articles.) */
+/** Would a freshly created post appear in this tab? (Mirrors ForumApi.feed.) */
 function belongsInTab(post: PostView, tab: FeedTab, dept: string | null): boolean {
   if (post.visibility !== 'PUBLIC') return false;
   if (dept && post.department !== dept) return false;
-  if (tab === 'articles') return post.postType === 'ARTICLE';
   const space = SPACE_OF_TAB[tab];
   return space ? post.space === space : true;
 }

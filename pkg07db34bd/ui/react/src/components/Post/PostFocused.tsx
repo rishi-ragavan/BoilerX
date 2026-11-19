@@ -1,21 +1,19 @@
 /*
  * The post in X's "focused tweet" style (Lane D): author line, space pill, large title + full body, tags,
- * full timestamp, counts, ♥ like, and the "Experts tagged" chips.
+ * full timestamp, comment count, and the "N experts tagged" summary (no likes; tagged experts never listed).
  */
 import { Lock, MessageCircle } from 'lucide-react';
-import type { LikeResult, PostView } from '@/Interfaces';
+import type { PostView } from '@/Interfaces';
 import { IdentityAuthorLine, fullTimestamp } from '@/components/Identity/IdentityAuthorLine';
 import { ExpertChips } from '@/components/Expert/ExpertChips';
-import { PostLikeButton } from '@/components/Post/PostLikeButton';
 import { PostSpacePill } from '@/components/Post/PostSpacePill';
 
 interface PostFocusedProps {
   post: PostView;
   replyCount: number;
-  onLikeChange: (result: LikeResult) => void;
 }
 
-export function PostFocused({ post, replyCount, onLikeChange }: PostFocusedProps) {
+export function PostFocused({ post, replyCount }: PostFocusedProps) {
   return (
     <article className="flex flex-col gap-3 border-b border-border px-4 pt-3 pb-2">
       <div className="flex items-start justify-between gap-2">
@@ -41,7 +39,7 @@ export function PostFocused({ post, replyCount, onLikeChange }: PostFocusedProps
         <div className="flex flex-wrap gap-1.5">
           {post.tags.map((t) => (
             <span key={t} className="rounded-full bg-muted px-2.5 py-0.5 text-sm text-primary">
-              #{t}
+              {t}
             </span>
           ))}
         </div>
@@ -53,9 +51,9 @@ export function PostFocused({ post, replyCount, onLikeChange }: PostFocusedProps
         </time>
       )}
 
-      {post.postType === 'QUESTION' && post.experts && post.experts.length > 0 && (
+      {(post.expertCount ?? 0) > 0 && (
         <div className="border-t border-border pt-3">
-          <ExpertChips experts={post.experts} />
+          <ExpertChips count={post.expertCount ?? 0} mine={post.viewerIsMatchedExpert ? post.experts?.[0] : null} />
         </div>
       )}
 
@@ -64,14 +62,8 @@ export function PostFocused({ post, replyCount, onLikeChange }: PostFocusedProps
           <span className="p-1.5">
             <MessageCircle className="size-4" />
           </span>
-          {replyCount}
+          {replyCount} {replyCount === 1 ? 'comment' : 'comments'}
         </span>
-        <PostLikeButton
-          postId={post.id}
-          liked={!!post.likedByMe}
-          count={post.likeCount ?? 0}
-          onChange={onLikeChange}
-        />
       </div>
     </article>
   );
