@@ -146,13 +146,20 @@ var ANALYZE_SYSTEM_PROMPT =
   'must kindly point to Purdue CAPS (765-494-6995). If unsafe, experts may be empty. Asking for advice, study ' +
   'strategies, or how to approach a topic is SAFE. Vague, unclear, or gibberish posts are SAFE (route them to ' +
   'STUDENT with generic tags); only the categories above are unsafe.\n' +
-  'ROUTING: STUDENT = peer advice, campus life, clubs, housing, course selection tips. FACULTY = academic, ' +
-  'research, deep subject-matter questions; set department to the best Purdue department. ALUMNI = careers, ' +
-  'internships, industry, job search. Getting into research, joining a lab, grad school / PhD admissions, or ' +
-  'understanding a subject is FACULTY even when the field is business or finance; ALUMNI is only for jobs, ' +
-  'recruiting, interviews, and industry careers. Examples: "how do I get into stock market research" → FACULTY, ' +
-  'Finance; "any ML labs taking undergrads" → FACULTY, Computer Science; "how do quant firms interview" → ALUMNI; ' +
-  '"best dorm for freshmen" → STUDENT.\n' +
+  'ROUTING (decide from the post alone, never from who is in the directory): ' +
+  'FACULTY is the Experts space: anything about an academic subject or field of study: what a field or major is, ' +
+  'what you learn in it or in its courses, why study it, how a topic works, choosing or comparing majors and ' +
+  'minors, course content and prerequisites, research, labs, grad school / PhD admissions, recommendation letters; ' +
+  'set department to the best Purdue department (e.g. Psychological Sciences, Computer Science, Finance). ' +
+  'ALUMNI = the main ask is getting or doing a job: internships, recruiting, interviews, offers, the workplace, ' +
+  'a specific industry career path. STUDENT = campus life and peer logistics only: housing, dorms, dining, clubs, ' +
+  'study spots, social life, roommates, transportation, scheduling and registration logistics. ' +
+  'Tie-breaks: a question about a field of study that also mentions careers is FACULTY; an academic topic is never ' +
+  'STUDENT. Examples: "What is psychology and why should I study it?" → FACULTY, Psychological Sciences; ' +
+  '"is a finance minor worth it for an econ major" → FACULTY, Finance; "how do I get into stock market research" → ' +
+  'FACULTY, Finance; "any ML labs taking undergrads" → FACULTY, Computer Science; "how do quant firms interview" → ' +
+  'ALUMNI; "how did you land your first internship" → ALUMNI; "best dorm for freshmen" → STUDENT; "quiet study ' +
+  'spots near Lawson" → STUDENT. An empty directory or no matching experts never changes the space.\n' +
   'MATCHING: only use member_ids from the directory (students are never tagged). Professors\' tags are research ' +
   'interests; alumni tags are their career role (e.g. SWE, Product Manager). Rank by domain fit between the ' +
   'question and the member\'s tags/bio/department/employer; prefer professors for academic and research ' +
@@ -184,7 +191,7 @@ function analyzeUserPrompt(title, body, askerLevel, dir, aliases) {
 
 /**
  * Deterministic fallback for {@link AiPipeline#analyzePost}: safe=true (unless an obvious safety keyword matches),
- * keyword routing (career → ALUMNI, research/academic → FACULTY, else STUDENT), title keywords as tags, experts
+ * keyword routing ({@link fallbackSpace}: campus life → STUDENT, academic → FACULTY, jobs → ALUMNI), title keywords as tags, experts
  * ranked by 3·tagOverlap + 2·deptMatch.
  */
 function fallbackAnalyze(title, body, askerLevel, directory) {
@@ -196,7 +203,7 @@ function fallbackAnalyze(title, body, askerLevel, directory) {
   if (kw.length < 3) kw = keywords(text, 5);
   var dir = directoryToNative(directory);
   var experts = fallbackExperts(text, kw, askerLevel, dir, 5);
-  var space = CAREER_RE.test(text) ? 'ALUMNI' : RESEARCH_RE.test(text) ? 'FACULTY' : 'STUDENT';
+  var space = fallbackSpace(text);
   return AnalyzeResult.make({
     safe: true,
     safetyReason: null,
@@ -333,8 +340,17 @@ function validateAnalysis(parsed, title, body, askerLevel, dir, aliases) {
   });
 }
 
-var RESEARCH_RE = /\b(research|lab|labs|phd|grad school|graduate school|thesis|publish|professor|course|class)/i;
+var RESEARCH_RE = /\b(research|lab|labs|phd|grad school|graduate school|thesis|publish|professor|course|class|major|minor|field of study|degree|study (it|this|that|psychology|economics|finance|biology|chemistry|computer science|engineering)|what is [a-z]+ology|learn|theory|subject|prerequisite)/i;
 var CAREER_RE = /\b(intern|internship|job|jobs|career|recruit|recruiting|interview|offer|salary|industry|company|co-op|coop|full-time)/i;
+var CAMPUS_RE = /\b(dorm|dorms|housing|apartment|roommate|dining|club|clubs|organization|organizations|study spot|study spots|quiet place|parking|bus|gym|party|parties|football|social)/i;
+
+/** Keyword routing used when the LLM is unavailable: campus life → STUDENT, academic → FACULTY, jobs → ALUMNI. */
+function fallbackSpace(text) {
+  if (CAMPUS_RE.test(text)) return 'STUDENT';
+  if (RESEARCH_RE.test(text)) return 'FACULTY';
+  if (CAREER_RE.test(text)) return 'ALUMNI';
+  return 'STUDENT';
+}
 
 function analyzePost(title, body, askerLevel, directory) {
   var dir = directoryToNative(directory);
