@@ -4,7 +4,7 @@
  * Every method returns VIEW types only. Anonymous items never carry the author's id, name, or email.
  */
 
-var MEMBER_FIELDS = 'id, name, role, level, verified, department, employer, bio, tags, badges, anonByDefault, reputation';
+var MEMBER_FIELDS = 'id, name, email, role, level, verified, department, employer, bio, tags, badges, anonByDefault, reputation';
 var AUTHOR_INCLUDE = ['name', 'role', 'level', 'verified', 'department', 'employer', 'badges'];
 var POST_INCLUDE =
   'id, postType, title, body, visibility, space, department, tags, isAnonymous, createdAt, author.id, ' +
@@ -104,6 +104,11 @@ function loadMember(id) {
   if (!id) return null;
   var res = ForumMember.fetch({ filter: Filter.eq('id', id), include: MEMBER_FIELDS, limit: 1 });
   return res.objs && res.objs.length ? res.objs[0] : null;
+}
+
+/** Verification is recomputed from the email + role rules (§1.4), never trusted from the stored flag alone. */
+function isVerified(m) {
+  return !!m.verified && Verify.check(m.email, str(m.role)).verified;
 }
 
 function requireMember(id) {
@@ -356,7 +361,7 @@ function getPost(actorId, postId) {
 function createPost(actorId, input) {
   var actor = requireMember(actorId);
   var role = str(actor.role);
-  if (!actor.verified) return CreatePostResult.make({ ok: false, error: 'Only verified members can post.' });
+  if (!isVerified(actor)) return CreatePostResult.make({ ok: false, error: 'Only verified members can post.' });
 
   var postType = String(input.postType || 'QUESTION').toUpperCase() === 'ARTICLE' ? 'ARTICLE' : 'QUESTION';
   if (postType === 'ARTICLE' && role !== 'FACULTY' && role !== 'ALUMNI') {
@@ -437,7 +442,7 @@ function createPost(actorId, input) {
 
 function reply(actorId, postId, body, isAnonymous) {
   var actor = requireMember(actorId);
-  if (!actor.verified) throw new Error('Only verified members can reply.');
+  if (!isVerified(actor)) throw new Error('Only verified members can reply.');
   if (!body || !String(body).trim()) throw new Error('Reply cannot be empty.');
   var post = loadPost(postId);
   if (!post) throw new Error('Post not found');
