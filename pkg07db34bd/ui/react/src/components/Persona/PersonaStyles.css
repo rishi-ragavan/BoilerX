@@ -1,0 +1,125 @@
+/* PersonaSwitcher (Lane C). Tokens only: see ShellTheme.css. */
+
+.bc-persona {
+  position: relative;
+  width: 100%;
+}
+
+.bc-persona__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  transition: background-color var(--transition);
+}
+
+.bc-persona__trigger:hover:not(:disabled) {
+  background: var(--bg-hover-card);
+}
+
+.bc-persona__trigger--error .bc-persona__sub {
+  color: var(--gold);
+}
+
+.bc-persona__text,
+.bc-persona__item-text {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  line-height: var(--lh-body);
+}
+
+.bc-persona__name {
+  overflow: hidden;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bc-persona__sub {
+  overflow: hidden;
+  font-size: var(--fs-body);
+  color: var(--text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bc-persona__more {
+  color: var(--text);
+}
+
+.bc-persona--compact .bc-persona__trigger {
+  width: auto;
+  padding: var(--space-1);
+}
+
+.bc-persona--compact .bc-persona__text,
+.bc-persona--compact .bc-persona__more {
+  display: none;
+}
+
+/* ---- Menu ---------------------------------------------------------------------------------------------------- */
+.bc-persona__menu {
+  position: absolute;
+  bottom: calc(100% + var(--space-2));
+  left: 0;
+  z-index: 40;
+  width: var(--menu-width);
+  max-height: min(70vh, 560px);
+  overflow-y: auto;
+  padding: var(--space-3) 0;
+  border-radius: var(--radius-card);
+  background: var(--bg-elevated);
+  box-shadow: var(--menu-shadow);
+}
+
+.bc-persona--compact .bc-persona__menu {
+  right: 0;
+  left: auto;
+}
+
+.bc-persona__menu-note {
+  padding: 0 var(--space-4) var(--space-2);
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-2);
+}
+
+.bc-persona__group {
+  padding: var(--space-2) var(--space-4) var(--space-1);
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.bc-persona__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-4);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  transition: background-color var(--transition);
+}
+
+.bc-persona__item:hover {
+  background: var(--bg-hover-card);
+}
+
+.bc-persona__check {
+  color: var(--gold);
+}

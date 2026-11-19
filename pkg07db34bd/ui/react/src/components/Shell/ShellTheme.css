@@ -1,0 +1,169 @@
+/*
+ * BoilerConnect app-wide theme (Lane C owns this file). X.com "Lights out" re-skinned in black + Purdue gold.
+ *
+ * EVERY color, size, and radius in the app lives here as a CSS variable. Components (all lanes) use `var(--…)`,
+ * never a hard-coded hex. Imported once by ShellLayout, which wraps every route.
+ *
+ * The second block re-points the vendored design-system tokens (`--bg-primary`, `--text-primary`, `--accent`, …)
+ * at our palette, so Tailwind classes such as `bg-background`, `text-foreground`, `text-muted-foreground`,
+ * `border-border`, `bg-muted`, and `text-primary` also render black + gold. `:root[data-theme]` outranks the
+ * library's `[data-theme='dark']` block, so this wins in both light and dark storage states.
+ */
+
+:root,
+:root[data-theme] {
+  color-scheme: dark;
+
+  /* ---- Colors ---------------------------------------------------------------------------------------------- */
+  --bg: #000000; /* page, columns, post rows */
+  --bg-elevated: #16181c; /* right-panel cards, menus, modals, focused composer input */
+  --bg-hover: #080808; /* post-row hover */
+  --bg-hover-card: #1d1f23; /* card rows, menu items */
+  --bg-hover-tab: #181818; /* tab hover */
+  --bg-header: rgba(0, 0, 0, 0.65); /* sticky translucent header */
+  --bg-overlay: rgba(91, 112, 131, 0.4); /* modal backdrop (X uses this blue-grey) */
+  --border: #2f3336; /* every divider / column border (1px) */
+  --text: #e7e9ea; /* primary text */
+  --text-muted: #71767b; /* handles, timestamps, counts, placeholders (darkest text allowed) */
+  --gold: #cfb991; /* Boilermaker Gold: primary actions, active states, links, focus ring, liked heart */
+  --gold-hover: #daaa00; /* Rush gold: hover on gold elements */
+  --gold-soft: rgba(207, 185, 145, 0.12); /* hover halo behind gold icons, selected chips, expert pills */
+  --gold-ring: rgba(207, 185, 145, 0.5); /* faint gold edge (new-post highlight start) */
+  --on-gold: #000000; /* text on gold buttons */
+  --danger: #f4212e; /* safety-error border + icon only */
+  --danger-soft: rgba(244, 33, 46, 0.1); /* safety-error background */
+  --skeleton: #16181c; /* skeleton bars (same as elevated) */
+  --menu-shadow: 0 0 15px rgba(255, 255, 255, 0.2), 0 0 3px 1px rgba(255, 255, 255, 0.15); /* X's menu glow */
+
+  /* ---- Typography ------------------------------------------------------------------------------------------ */
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --fs-body: 15px;
+  --lh-body: 20px;
+  --fs-meta: 13px;
+  --fs-title: 15px;
+  --fs-article-title: 17px;
+  --fs-header: 20px;
+  --fs-card-heading: 20px;
+  --fs-nav: 20px;
+  --fs-wordmark: 23px;
+  --fs-empty-heading: 31px;
+  --fs-tiny: 11px;
+  --fs-composer: 20px; /* composer title (X's "What's happening?" size) */
+  --fs-composer-body: 17px;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+  --fw-heavy: 800;
+
+  /* ---- Spacing (4px grid) ---------------------------------------------------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --row-padding: 12px 16px; /* post row */
+
+  /* ---- Sizes ----------------------------------------------------------------------------------------------- */
+  --avatar: 40px;
+  --avatar-sm: 20px;
+  --avatar-gap: 12px;
+  --icon: 20px;
+  --icon-lg: 22px;
+  --icon-sm: 16px;
+  --icon-stroke: 1.75;
+  --icon-hit: 34px; /* circular hover halo behind action icons */
+  --ask-height: 52px;
+  --nav-item-height: 50px;
+  --tab-height: 53px;
+  --tab-underline: 4px;
+  --header-blur: 12px;
+  --col-left: 275px;
+  --col-left-collapsed: 88px;
+  --col-center: 600px;
+  --col-right: 350px;
+  --bottom-bar: 53px;
+  --fab: 56px;
+  --menu-width: 300px;
+  --modal-width: 600px;
+
+  /* ---- Radii ----------------------------------------------------------------------------------------------- */
+  --radius-pill: 9999px; /* buttons, pills, chips */
+  --radius-card: 16px; /* cards, menus, modals */
+  --radius-input: 4px;
+
+  /* ---- Motion / focus -------------------------------------------------------------------------------------- */
+  --transition: 150ms ease;
+  --focus-ring: 2px solid var(--gold);
+
+  /* ---- Bridge: vendored design-system tokens -> our palette (keeps Tailwind classes on-theme) ---------------- */
+  --bg-primary: var(--bg);
+  --bg-secondary: var(--bg-elevated);
+  --bg-tertiary: var(--bg-hover-card);
+  --bg-canvas: var(--bg);
+  --bg-input: var(--bg);
+  --input: var(--border);
+  --border-focus: var(--gold);
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --accent: var(--gold);
+  --accent-foreground: var(--on-gold);
+  --accent-hover: var(--gold-hover);
+  --error: var(--danger);
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
+
+/* Thin outline icons everywhere (lucide sets stroke-width as an attribute; CSS outranks it). */
+.bc-app svg.lucide {
+  stroke-width: var(--icon-stroke);
+  flex-shrink: 0;
+}
+
+/* Visible gold focus ring for keyboard users on every interactive element. */
+.bc-app :focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.bc-app :disabled,
+.bc-app [aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bc-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@keyframes bc-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes bc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bc-spin {
+  animation: bc-spin 0.8s linear infinite;
+}
