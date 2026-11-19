@@ -66,5 +66,8 @@ Maintained by the agent. Concise map, not a transcript. Full lane/ownership tabl
 - Repo was shallow-fetched by another session (broke merges with "unrelated histories"): fix `git fetch --unshallow origin`.
 - `/usr/workspace` is now on `main` (the live app + preview run from it). Other lanes: C has worktree /home/c3/lane-c-feed-wt.
 
+## Merge 2 (main @ b5ce472)
+- lane-c-feed fea9673 (iconography only) merged cleanly; Student-space + roles rules intact; build green.
+
 ## Status
 - Merge 1 on main. Step 0: types valid (no Pkg issues), data loaded, ForumApi smoke-tested, `npm run build` green, UI running.
